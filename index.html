@@ -23,6 +23,7 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
+            gravity: { y: 0 },
             debug: false
         }
     },
@@ -49,24 +50,37 @@ function preload ()
 {
     this.load.image('sky', 'assets/sky.png');
     this.load.image('ground', 'assets/platform.png');
-    this.load.spritesheet('terimon', 'assets/images/character/ファンタジー系/子供_旅の男の子.png', { frameWidth: 32, frameHeight: 32 });
+    this.load.spritesheet('terimon', 'assets/images/character/terimon1.png', { frameWidth: 32, frameHeight: 32 });
+    // タイルセットとTiled JSONマップを読み込む
+    this.load.image('tiles', 'assets/tileset.png'); // タイルセットの画像
+    this.load.tilemapTiledJSON('map', 'assets/map.json'); // Tiledで作ったJSONマップ
 }
 
 function create ()
 {
     //  ゲーム背景
     this.add.image(400, 300, 'sky');
+    // Tiledマップを作成
+    const map = this.make.tilemap({ key: 'map' });
+    const tileset = map.addTilesetImage('tileset_name_in_tiled', 'tiles');
+    
+    // レイヤーを追加
+    const groundLayer = map.createLayer('Ground Layer', tileset, 0, 0);
+    const objectLayer = map.createLayer('Object Layer', tileset, 0, 0);
+    
+    // 必要に応じて衝突処理を設定
+    groundLayer.setCollisionByProperty({ collides: true });
 
     //  土台
-    platforms = this.physics.add.staticGroup();
+    // platforms = this.physics.add.staticGroup();
 
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-    platforms.create(400, 568, 'ground').setScale(2).refreshBody();
+    // platforms.create(400, 568, 'ground').setScale(2).refreshBody();
 
     //  Now let's create some ledges
-    platforms.create(600, 400, 'ground');
-    platforms.create(50, 250, 'ground');
-    platforms.create(750, 220, 'ground');
+    // platforms.create(600, 400, 'ground');
+    // platforms.create(50, 250, 'ground');
+    // platforms.create(750, 220, 'ground');
 
     // The player and its settings
     player = this.physics.add.sprite(100, 450, 'terimon');
@@ -105,7 +119,9 @@ function create ()
     cursors = this.input.keyboard.createCursorKeys();
 
     //  接触判定
-    this.physics.add.collider(player, platforms);
+    // this.physics.add.collider(player, platforms);
+    // 必要に応じて衝突処理を設定
+    groundLayer.setCollisionByProperty({ collides: true });
 
 }
 
