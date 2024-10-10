@@ -1,0 +1,29 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-image: url(../image/Game-battle-background.jpg);
+    background-repeat:no-repeat;
+    background-size:100%;
+}
+
+h1{
+    color: #ffffff;
+    text-align: center;
+    font-family: "RocknRoll One", sans-serif;
+    font-size: 9vh;
+    margin: 9.52vh 0 9.52vh;
+}
+
+.field{
+    margin-left: auto;
+    margin-right: auto;
+    width: 20vw;
+    height: 40vh;
+    border: 9px solid #589E5A;
+    border-radius:40px;
+    padding: 6vh 0 0 5vw;
+    background-color: rgb(172 224 168 / 84%);
+}
