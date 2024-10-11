@@ -1,69 +1,58 @@
 <?php
+session_start();
 require 'db-connect.php';
 
-// クライアントからのリクエストデータを取得
-$request = json_decode(file_get_contents('php://input'), true);
+function getRandomMonsters($pdo){
+    //monsterテーブルからランダムで３体のモンスターを選択
+    $sql = "SELECT * FROM monster ORDER BY RAND() LIMIT 3";
+    $result = $pdo->query($sql);
+    $monsters = [];
 
-// バトル開始のリクエストが来た場合の処理
-if ($request['action'] === 'start') {
-    // プレイヤーと敵の初期ステータスをデータベースから取得
-    $player = getPlayerStatus($pdo, 1); // 1はプレイヤーのIDの例
-    $enemy = getEnemyStatus($pdo, 1);   // 1は敵のIDの例
-
-    // プレイヤーと敵の初期データをJSON形式で返す
-    echo json_encode(['player' => $player, 'enemy' => $enemy]);
-} elseif ($request['action'] === 'attack') {
-    // 攻撃者がプレイヤーか敵かを確認
-    if ($request['attacker'] === 'player') {
-        // プレイヤーが攻撃した場合、敵にダメージを与える処理を呼び出す
-        $enemy = attackEnemy($pdo, 1);  // 1は敵のIDの例
-    } elseif ($request['attacker'] === 'enemy') {
-        // 敵が攻撃した場合、プレイヤーにダメージを与える処理を呼び出す
-        $player = attackPlayer($pdo, 1);  // 1はプレイヤーのIDの例
+    while($row = $result->fetch_assoc()){
+        $monster = [
+            'id' => $row['monster_id'],
+            'name' => $row['monster_name'],
+            'maxhp' => rand($row['hp_kagen'], $row['hp_zyougen']),
+            'maxmp' => rand($row['mp_kagen'], $row['mp_zyougen']),
+            'pow' => rand($row['pow_kagen'], $row['pow_zyougen']),
+            'def' => rand($row['def_kagen'], $row['def_zyougen']),
+            'speed' => rand($row['speed_kagen'], $row['speed_zyougen']),
+            'lack' => 5,
+            'skills' => getRandomSkills($row['monster_id'], $pdo) // 修正: $row['id']を$monsterIdに修正
+        ];
+        $monsters[] = $monster;
     }
-
-    // 最新のプレイヤーと敵のHPを取得して返す
-    $player = getPlayerStatus($pdo, 1); // プレイヤーの最新データを取得
-    $enemy = getEnemyStatus($pdo, 1);   // 敵の最新データを取得
-    echo json_encode(['player' => $player, 'enemy' => $enemy]); // JSON形式で返す
+    return $monsters;
 }
 
-// プレイヤーのステータスをデータベースから取得する関数
-function getPlayerStatus($pdo, $playerId) {
-    // プレイヤーのHPなどのデータを取得するためのSQL文を準備
-    $stmt = $pdo->prepare('SELECT * FROM players WHERE id = :id');
-    $stmt->execute(['id' => $playerId]); // プレイヤーのIDを指定して実行
-    return $stmt->fetch(PDO::FETCH_ASSOC); // 結果を連想配列として返す
+function getRandomSkills($monsterId, $pdo){
+    //monster_wazaテーブルからモンスターの技をランダムで４つ取得
+    $sql = "SELECT * FROM monster_waza WHERE monster_id = $monsterId ORDER BY RAND() LIMIT 4"; // 修正: $monstereId → $monsterId
+    $result = $pdo->query($sql);
+    $skills = [];
+    while($row = $result->fetch_assoc()){
+        $skills[] = $row['waza_id'];
+    }
+    return $skills;
 }
 
-// 敵のステータスをデータベースから取得する関数
-function getEnemyStatus($pdo, $enemyId) {
-    // 敵のHPなどのデータを取得するためのSQL文を準備
-    $stmt = $pdo->prepare('SELECT * FROM enemies WHERE id = :id');
-    $stmt->execute(['id' => $enemyId]); // 敵のIDを指定して実行
-    return $stmt->fetch(PDO::FETCH_ASSOC); // 結果を連想配列として返す
-}
-
-// プレイヤーが敵を攻撃した場合の処理
-function attackEnemy($pdo, $enemyId) {
-    // プレイヤーが敵に与えるダメージをランダムで決定（例：10～20のダメージ）
-    $damage = rand(10, 20);
+function startBattle($pdo){
+    $monsters = getRandomMonsters($pdo);
+    //プレイヤー情報をDBから取得
+    $player = $_SESSION['player'];
     
-    // 敵のHPを減少させるためのSQL文を準備
-    $stmt = $pdo->prepare('UPDATE enemies SET hp = hp - :damage WHERE id = :id');
-    $stmt->execute(['damage' => $damage, 'id' => $enemyId]); // ダメージと敵のIDを指定して実行
-
-    return getEnemyStatus($pdo, $enemyId); // 更新された敵のステータスを返す
+    //バトル情報の初期化
+    $_SESSION['battle'] = [
+        'player' => $player,
+        'monsters' => $monsters,  // 修正: monstersを$monstersに修正
+        'turn' => 0
+    ];
 }
 
-// 敵がプレイヤーを攻撃した場合の処理
-function attackPlayer($pdo, $playerId) {
-    // 敵がプレイヤーに与えるダメージをランダムで決定（例：5～15のダメージ）
-    $damage = rand(5, 15);
-    
-    // プレイヤーのHPを減少させるためのSQL文を準備
-    $stmt = $pdo->prepare('UPDATE players SET hp = hp - :damage WHERE id = :id');
-    $stmt->execute(['damage' => $damage, 'id' => $playerId]); // ダメージとプレイヤーのIDを指定して実行
+//バトル開始処理
+startBattle($pdo);
 
-    return getPlayerStatus($pdo, $playerId); // 更新されたプレイヤーのステータスを返す
-}
+//JSONとして返す
+header('Content-Type: application/json');
+echo json_encode($_SESSION['battle']);
+?>
