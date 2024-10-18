@@ -1,0 +1,25 @@
+<?php
+    session_start();
+    require 'db-connect.php';
+    header('Content-Type:application/json');
+    echo json_encode($_SESSION["user"]);
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>テリモンのわんだーらんど</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
+    <script type="module" src="main.js" defer></script>
+    <style>
+        body{
+            margin:10px 10px;
+            overflow:hidden;
+        }
+    </style>
+</head>
+<body>
+    
+</body>
+</html>

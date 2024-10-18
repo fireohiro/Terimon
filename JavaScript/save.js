@@ -1,6 +1,6 @@
 // save.js
 
-function saveGame() {
+export function saveGame() {
     // PHPを使ってデータベースにセーブ処理を行う
     $.post('save_game.php', {
         playerStats: playerStats,

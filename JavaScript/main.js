@@ -1,103 +1,55 @@
-// main.js
+//呼び出すメソッドが存在するクラスを宣言する？
+//import {メソッド名（複数ある場合は,~とする)}from 'クラス名';
+import {mappreload,createMap} from './map.js';
+import {createPause} from './pause.js';
+import {checkPosition} from '.player.js';
+import {saveGame} from './save.js';
 
-// Phaserの設定
+function userData(){
+    return fetch('session_get.php')
+        .then(response => response.json())
+        .catch(error =>{
+            console.error('Error fetching session data:',error);
+            return null;
+        });
+}
+
+//Phaserの設定
 const config = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: { y: 0 },
-            debug: false
-        }
-    },
-    scene: {
-        preload: preload,
-        create: create,
-        update: update
+    type:Phaser.AUTO,//自動的に適切なレンダラー？を選択
+    width:800,//ゲームの横幅
+    height:600,//ゲームの縦幅
+    scene:{//ゲームのシーン
+        preload:preload,//プリロード関数
+        create:create,//作成関数
+        update:update//更新関数    
     }
 };
 
+//ゲームのインスタンスを作成
 const game = new Phaser.Game(config);
+let pauseflg = false;
 
-// プレイヤー、敵、その他の変数を定義
-let player;
-let enemies = [];
-let encounterFlag = false;
-
-// プレイヤーのステータス
-let playerStats = {
-    HP: 50,
-    MP: 20,
-    strength: 10,
-    defense: 10,
-    speed: 10,
-    luck: 5
-};
-
-// ゲームロード時の処理
-function preload() {
-    // アセットのプリロード
-    this.load.image('player', 'assets/player.png');
-    this.load.image('enemy', 'assets/enemy.png');
-    // 他のアセットも必要に応じて追加
+//アセット（画像、音声など）の読み鋳込み
+function preload(){
+    this.load.image('sky','assets/img/sky.png');//背景画像を読み込む
+    mappreload(this.load);//map.jsのpreload処理を読み込む
 }
 
-// ゲーム開始時の処理
-function create() {
-    // プレイヤーを作成
-    player = this.physics.add.sprite(400, 300, 'player');
+//ゲームの作成処理
+async function create(){
+    //背景を表示
+    this.add.image(400,300,'sky');
 
-    // 敵を作成
-    for (let i = 0; i < 3; i++) {
-        let enemy = this.physics.add.sprite(400 + i * 50, 100, 'enemy');
-        enemies.push(enemy);
-    }
+    const userData = await fetchUserData();
+    //sessionのマップIDを定数に入れてそれを表示させる
+    const map_id = userData.map_id;
+    createMap.call(this,map_id);
 
-    // キーボード入力
-    this.input.keyboard.on('keydown-ESC', pauseGame, this);
+    //pauseのcreate処理
+    createPause.call(this,pauseflg);
 }
-
-// ゲーム更新処理
-function update() {
-    // プレイヤーの移動処理
-    if (this.input.keyboard.isDown(Phaser.Input.Keyboard.KeyCodes.W)) {
-        player.y -= 2;
-    }
-    if (this.input.keyboard.isDown(Phaser.Input.Keyboard.KeyCodes.S)) {
-        player.y += 2;
-    }
-    if (this.input.keyboard.isDown(Phaser.Input.Keyboard.KeyCodes.A)) {
-        player.x -= 2;
-    }
-    if (this.input.keyboard.isDown(Phaser.Input.Keyboard.KeyCodes.D)) {
-        player.x += 2;
-    }
-
-    // エンカウント処理
-    if (encounterFlag) {
-        checkEncounter();
-    }
+//ゲームの更新処理
+function update(){
+    saaveGame();
 }
-
-// ポーズ画面を表示する関数
-function pauseGame() {
-    // ポーズウィンドウ表示の実装
-}
-
-// エンカウントチェック
-function checkEncounter() {
-    // 乱数生成でエンカウント判定
-    let randomNum = Phaser.Math.Between(1, 100);
-    if (randomNum <= 20) {
-        startBattle();
-    }
-}
-
-// バトル開始処理
-function startBattle() {
-    // バトル画面に遷移する処理を実装
-}
-
-// ここに他の機能を呼び出す関数を追加
