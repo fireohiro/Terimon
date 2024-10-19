@@ -1,27 +1,18 @@
-function userData(){
-    return fetch('session_get.php')
-        .then(response => response.json())
-        .catch(error =>{
-            console.error('Error fetching session data:',error);
-            return null;
-        });
-}
-
-export function createPause(loader,pauseflg){
+export function createPause(loader,gameStatus){
     this.input.keyboard.on('keydown',(event) => {
         if(event.key === 'Escape'){
-            pauseStart.call(loader,pauseflg);
+            pauseStart.call(this,gameStatus);
         }
     });
     menuBar(this);
 }
 
-function pauseStart(pauseflg){
-    pauseflg = !pauseflg;
-    menuContainer.setVisible(pauseflg);//メニューの表示切替
+function pauseStart(gamestatus){
+    gamestatus.pauseflg = !gameStatus.pauseflg;
+    menuContainer.setVisible(gameStatus.pauseflg);//メニューの表示切替
 
     //ポーズ中の物理処理の停止と再稼働
-    if(pauseflg){
+    if(gameStatus.pauseflg){
         this.physics.world.pause();//停止
     }else{
         this.physics.world.resume();//再稼働
@@ -39,19 +30,19 @@ async function menuBar(loader){
     const logouttext = loader.add.text(0.5,0,'タイトルへ戻る',{fontSize:'18px'});
 
     //クリックイベント
-    itemtext.setInterval().on('pointerdown',()=>{
+    itemtext.setInteractive().on('pointerdown',()=>{
         //アイテム使用用のプログラムの関数を呼び出す
     });
-    geartext.setInterval().on('pointerdown',()=>{
+    geartext.setInteractive().on('pointerdown',()=>{
         //装備用のプログラムの関数を呼び出す
     });
-    statustext.setInterval().on('pointerdown',()=>{
+    statustext.setInteractive().on('pointerdown',()=>{
         //ステータス表示用のプログラムの関数を呼び出す
     });
-    savetext.setInterval().on('pointerdown',()=>{
+    savetext.setInteractive().on('pointerdown',()=>{
         //セーブ用のプログラムの関数を呼び出す
     });
-    logouttext.setInterval().on('pointerdown',()=>{
+    logouttext.setInteractive().on('pointerdown',()=>{
         //ログアウト用のプログラムの関数を呼び出す
     });
 
@@ -64,9 +55,9 @@ async function menuBar(loader){
     //所持金のテキスト
     const moneytext = loader.add.text(
         //文字の設定兼表示内容
-
+        10,10,//表示位置ｘとｙ
         //表示文字と文字の設定
-        '所持金\n',money,
+        `所持金\n${money}`,
         {fontSize:'18px',fill:'#fff'}
     );
 

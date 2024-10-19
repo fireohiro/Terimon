@@ -1,36 +1,39 @@
 export function mappreload(loader){
     for(let i = 1; i <= 15; i++){
-        loader.image(`tileset${i}`,`../assets/tilesets${i}.png`);
+        loader.image(`town${i}`,`../assets/tilesets/town${i}.png`);
     }
 }
-export function createMap(map){
+export function createMap(playerStatus){
+    const map_id = playerStatus.map_id || 1;
     let mapData;
     let tilesets = [];
+    let layersu;
     //マップidごとに表示させる
-    if(map === 1){
-        mapData = "assets/tilemaps/town.json";//ここは変えましょうかね
+    if(map_id === 1){
+        mapData = "../assets/tilemaps/town.json";//ここは変えましょうかね
         for(let i = 1; i <= 15; i++){
-            tilesets.push(`tileset${i}`);//タイルセット名を格納
+            tilesets.push(`town${i}`);//タイルセット名を格納
+            layersu = 4;//レイヤーの数を格納
         }
-    }else if(map === 2){
+    }else if(map_id === 2){
         mapData = "Desert Map";//適宜修正
-    }else if(map === 3){
+    }else if(map_id === 3){
         mapData = "Mountain Map";//此処も適宜修正
-    }else if(map === 4){
+    }else if(map_id === 4){
         mapData = "City Map";//ここも
     }
     //読み込んだマップ情報をdisplayMapに送る
-    displayMap.call(this,{mapData,tilesets});//ここは固定
+    displayMap.call(this,{mapData,tilesets,layersu});//ここは固定
 }
 
-function displayMap({mapData,tilesets}){
+function displayMap({mapData,tilesets,layersu}){
     //タイルマップを作成
     const map = this.make.tilemap({key:mapData});
     //タイルセットを追加
     const addTilesets = tilesets.map(tileset => map.addTilesetImage(tileset,tileset));
 
-    for(let i = 1; i <= tilesets.length; i++){
+    for(let i = 1; i <= layersu; i++){
         const layerName = `layer${i}`;//レイヤー名をそろえる
-        map.createLayer(layerName,addedTilesets,0,0);
+        map.createLayer(layerName,addTilesets,0,0);
     }
 }

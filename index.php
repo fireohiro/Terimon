@@ -1,9 +1,3 @@
-<?php
-    session_start();
-    require 'db-connect.php';
-    header('Content-Type:application/json');
-    echo json_encode($_SESSION["user"]);
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,11 +9,9 @@
     <style>
         body{
             margin:10px 10px;
-            overflow:hidden;
         }
     </style>
 </head>
 <body>
-    
 </body>
 </html>
