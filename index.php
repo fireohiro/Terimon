@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>テリモンのわんだーらんど</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
-    <script type="module" src="main.js" defer></script>
+    <script type="module" src="JavaScript/main.js" defer></script>
     <style>
         body{
             margin:10px 10px;

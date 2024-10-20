@@ -3,12 +3,11 @@
 import {mappreload,createMap} from './map.js';
 import {createPause} from './pause.js';
 import {checkPosition} from './player.js';
-import {saveGame} from './save.js';
-import {battlepreload,battlecreate,battleupdate} from './battle.js';
+import {battlepreload,battleupdate} from './battle.js';
 
 function userData(){
     //何やってるかわからんけどphpを実行してセッションデータをとってきてる
-    return fetch('session_get.php')
+    return fetch('../get_playersession.php')
         .then(response => response.json())
         .catch(error =>{
             console.error('Error fetching session data:',error);
@@ -31,8 +30,24 @@ const config = {
 //ゲームのインスタンスを作成
 const game = new Phaser.Game(config);
 //ポーズのbooleanをオブジェクトで管理することで、他プログラムで中身を同期できる
-const gameStatus = {pauseflg:false,battleflg:false};
+const gameStatus = {pauseflg:false,battleflg:false,temotisu:0,playerfight:true};
 const playerStatus = {};
+const friend1Status ={};
+const friend2Status ={};
+const friend3Status ={};
+
+//手持ちモンスターの情報格納
+export async function loadFriends(){
+    const response = await fetch('../get_temoti.php');
+    const friends = await response.json();
+    //最大三体のオブジェクトに割り当て
+    const statuses = [friend1Status,friend2Status,friend3Status];
+    friends.slice(0,3).forEach((friend,index)=>{
+        Object.assign(statuses[index],friend);
+    });
+    //gameStatus.temotisuに取得したモンスターの数を格納
+    gameStatus.temotisu = friends.length;
+}
 
 //アセット（画像、音声など）の読み鋳込み
 function preload(){
@@ -45,22 +60,19 @@ function preload(){
 async function create(){//asyncとは、非同期処理を使えるようにする
     //背景を表示
     this.add.image(400,300,'sky');
-
+    //プレイヤーステータスを持ってくてuserDataに入れる
     const userData = await userData();//awaitはこの処理が終わってから次の処理に行くこと
-    //sessionのマップIDを定数に入れてそれを表示させる
-    const map_id = userData.map_id;
-    createMap.call(this,map_id);
+    Object.assign(playerStatus, userData);//セッションデータをオブジェクトに保存
+    createMap.call(this,playerStatus);
 
     //pauseのcreate処理
-    createPause.call(this,gameStatus);
-    //battleのcreate処理
-    battlecreate.call(this,gameStatus);
+    createPause.call(this,gameStatus,playerStatus);
 }
 //ゲームの更新処理
 function update(){
-    if(gamestatus.battleflg){
+    if(gameStatus.battleflg){
         //バトル中はバトル処理だけをして、その他を実行しない
-        battleupdate.call(this,gameStatus);
+        battleupdate.call(this,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status);
         return;
     }
     if(gameStatus.pauseflg){

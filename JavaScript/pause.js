@@ -1,10 +1,10 @@
-export function createPause(loader,gameStatus){
+export function createPause(gameStatus,playerStatus){
     this.input.keyboard.on('keydown',(event) => {
         if(event.key === 'Escape'){
             pauseStart.call(this,gameStatus);
         }
     });
-    menuBar(this);
+    menuBar(this,playerStatus);
 }
 
 function pauseStart(gamestatus){
@@ -19,7 +19,7 @@ function pauseStart(gamestatus){
     }
 }
 
-async function menuBar(loader){
+async function menuBar(loader,playerStatus){
     //メニューのサイズを設定
 
     //テキスト（ボタンを設定）の例
@@ -57,7 +57,7 @@ async function menuBar(loader){
         //文字の設定兼表示内容
         10,10,//表示位置ｘとｙ
         //表示文字と文字の設定
-        `所持金\n${money}`,
+        `所持金\n${playerStatus.money}`,
         {fontSize:'18px',fill:'#fff'}
     );
 
