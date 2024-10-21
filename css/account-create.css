@@ -1,0 +1,190 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-image: url(../image/Game-battle-background.jpg);
+    background-repeat:no-repeat;
+    background-size:100%;
+
+    position: relative;
+    display: block;
+    font-weight: bold;
+}
+
+h1{
+    color: #ffffff;
+    text-align: center;
+    font-family: "RocknRoll One", sans-serif;
+    font-size: 9vh;
+    margin: 3vh 0 3vh;
+}
+
+h2{
+    color: #ffffff;
+    text-align: center;
+    font-family: "M PLUS 1p", sans-serif;
+    font-size: 4.5vh;
+    margin-bottom: 6vh;
+}
+
+.field{
+    margin-left: auto;
+    margin-right: auto;
+    width: 70vw;
+    height: 70vh;
+    border: 9px solid #589E5A;
+    border-radius:40px;
+    padding: 4vh 0 0 5vw;
+    background-color: rgb(172 224 168 / 84%);
+}
+
+
+.font1{
+    color: #ffffff;
+    font-family: "M PLUS Rounded 1c", sans-serif;
+    font-size: 4.5vh;
+}
+
+.font2{
+    font-family: "RocknRoll One", sans-serif;
+    font-size: 3.5vh;
+    text-align: center;
+    background:linear-gradient(0deg, rgb(255, 255, 255) 25%, rgb(203, 203, 203) 50% ,rgb(255, 255, 255) 75%);
+    border-radius:28px;
+    border: none;
+}
+
+.border{
+    border-bottom: 2px solid #32982B;
+    width: 64vw;
+    margin-bottom: 2vh;
+}
+
+.content-row, .content-row-m{
+    display: flex;
+}
+
+input{
+    height: 6vh;
+    width: 15vw;
+    background-color: #32982B;
+    border-radius:10px;
+    border: none;
+}
+
+input[type="text"], input[type="password"]{
+    color: #ffffff;
+    font-family: "M PLUS Rounded 1c", sans-serif;
+    font-size: 4.5vh;
+    font-weight: bold;
+}
+
+.space{
+    margin-left: 3vw;
+}
+
+select{
+    height: 6vh;
+    width: 15vw;
+    background-color: #32982B;
+    border-radius:10px;
+    border: none;
+    
+    font-family: "M PLUS Rounded 1c", sans-serif;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.status1, .status1-3, .status2, .status2-4, .status3 ,.status3-3{
+    height: 6vh;
+    background-color: #32982B;
+    border-radius: 5px;
+    
+    text-align: center;
+    font-family: "M PLUS 1p", sans-serif;
+    font-size: 4vh;
+    color: #ffffff;
+    line-height: auto;
+}
+
+.status1, .status2, .status3{
+    width: 5vw;
+}
+
+.status1{
+
+}
+
+.status2{
+    position: absolute;
+    right: 55%;
+}
+
+.status3{
+    position: absolute;
+    right: 30%;
+    /* margin-left: auto; */
+}
+
+.status1-3, .status3-3{
+    width: 7.5vw;
+}
+
+.status1-3{
+
+}
+
+.status2-4{
+    width: 10vw;
+
+    position: absolute;
+    right: 50%;
+}
+
+.status3-3{
+    position: absolute;
+    right: 27.5%;
+    /* margin-left: auto; */
+}
+
+.status-value1, .status-value2, .status-value3{
+    font-family: "M PLUS 1p", sans-serif;
+    font-size: 4vh;
+    color: #ffffff;
+    padding-left: 1vw;
+}
+
+.status-value1{
+
+}
+
+.status-value2{
+    position: absolute;
+    right: 46%;
+}
+
+.status-value3{
+    position: absolute;
+    right: 24%;
+    /* margin-right: 15vw; */
+}
+
+.block{
+    display: flex;
+}
+
+.content-row-m{
+    margin-top: 5.3vh;
+    margin-bottom: 5.3vh;
+}
+
+button{
+    width: 11vw;
+    height: 6vh;
+    border-radius:28px;
+    border: 1px solid;
+    display: block;
+    margin: 0 3vw 3vh auto;
+}
