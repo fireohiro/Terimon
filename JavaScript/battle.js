@@ -11,27 +11,28 @@ export function battlepreload(loader){
     loader.image('battleback','../assets/battleimg/vsback.png');
 }
 
-export async function battleStart(bunrui,gameStatus,friend1Status,friend2Status,friend3Status){
+export async function battleStart(scene,bunrui,gameStatus,friend1Status,friend2Status,friend3Status){
     let enemies = [];
     gameStatus.battleflg = true;
     const response = await fetch('../battle.php');
     const html = await response.text();
-    document.getElementById('main-content').innerHTML = html;//画面に挿入
+    let res;
+    document.getElementById('game-container').innerHTML = html;//画面に挿入
     if(bunrui === 1){
-        const response = await fetch('../get_zako.php');
-        enemies = await response.json();
+        res = await fetch('../get_zako.php');
+        enemies = await res.json();
     }else if(bunrui === 2){
-        const response = await fetch('../tyuboss.php');
-        enemies = await response.json();
+        res = await fetch('../tyuboss.php');
+        enemies = await res.json();
     }else if(bunrui === 3){
-        const response = await fetch('../boss.php');
-        enemies = await response.json();
+        res = await fetch('../boss.php');
+        enemies = await res.json();
     }
     Object.assign(enemy1,enemies[0]);
     Object.assign(enemy2,enemies[1]);
     Object.assign(enemy3,enemies[2]);
 
-    const battleback = this.add.image(640,480,'battleback');//左上端っこに背景画像表示※後でカメラの座標をオブジェクトに入れてそれを持ってくる
+    const battleback = scene.add.image(640,480,'battleback');//左上端っこに背景画像表示※後でカメラの座標をオブジェクトに入れてそれを持ってくる
     battleback.setDisplaySize(1280,960);//画像のサイズを画面のサイズに合わせる
     battleback.setDepth(0);
 
@@ -42,9 +43,8 @@ export async function battleStart(bunrui,gameStatus,friend1Status,friend2Status,
         {enemy:enemy3,x:960}
     ];
 
-    enemyImages.forEach(({enemy,x},index)=>{
-        const imagePath = `../assets/battleimg/${enemy.gazou}`;//画像パス
-        const monsterImage = this.add.image(x,300,imagePath);//モンスター画像
+    enemyImages.forEach(({teki,x},index)=>{
+        const monsterImage = scene.add.image(x,300,`teki${enemy.id}`);//モンスター画像
         monsterImage.setDisplaySize(150,150);
         monsterImage.setDepth(1);//背景の上に
         
@@ -60,7 +60,7 @@ export async function battleStart(bunrui,gameStatus,friend1Status,friend2Status,
         gameStatus.playerfight = false;
         const friend = friendStatuses[i];
         const friendImagePath = `../assets/battleimg/${friend.gazou}`;
-        const friendImage = this.add.image(startX + i * spacing,startY,friendImagePath);
+        const friendImage = scene.add.image(startX + i * spacing,startY,friendImagePath);
         friendImage.setDisplaySize(50,50);
         friendImage.setDepth(1);
     }
@@ -110,6 +110,28 @@ function battleEnd(gameStatus){
     gameStatus.battleflg = false;
 }
 
-export function battleupdate(gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
-    
+export async function battleupdate(gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
+    const statusContainer = document.getElementById('status-container');
+    if(!statusContainer){
+        const response = await fetch('../battle.php');
+        const topstatus = await response.text();
+        document.getElementById('status-container').innerHTML = topstatus;//画面に挿入
+    }
+    //画面上部のステータス表示の準備
+    const statusContainerUpdated = document.getElementById('status-container');
+    statusContainerUpdated.innerHTML = '';//既存の愛用をクリア
+
+    const friendStatuses = [friend1Status,friend2Status,friend3Status];
+    const displayData = gameStatus.playerfight ? [playerStatus]:friendStatuses.slice(0,gameStatus.temotisu);
+
+    //ステータスを動的に生成して表示
+    displayData.forEach((data)=>{
+        const statusDiv = document.createElement('div');
+        statusDiv.style.border = '1px solid gray';
+        statusDiv.style.padding = '10px';
+        statusDiv.style.textAlign = 'center';
+
+        //ステータスをコンテナに追加
+        statusContainerUpdated.appendChild(statusDiv);
+    });
 }

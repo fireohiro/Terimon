@@ -46,10 +46,6 @@ async function menuBar(loader,playerStatus){
         //ログアウト用のプログラムの関数を呼び出す
     });
 
-    //所持金
-    const sessiondata = await userData();//awaitでこの処理が終わるまで次の処理が始まらないようにしている
-    const money = sessiondata.money;
-    
     //所持金欄の大きさ設定
 
     //所持金のテキスト
