@@ -38,7 +38,7 @@ async function menuBar(loader,playerStatus,config){
     //クリックイベント
     itemtext.setInteractive().on('pointerdown',()=>{
         //アイテム使用用のプログラムの関数を呼び出す
-        
+        createStatusScreen(loader, playerStatus, config); 
     });
     geartext.setInteractive().on('pointerdown',()=>{
         //装備用のプログラムの関数を呼び出す

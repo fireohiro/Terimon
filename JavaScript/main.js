@@ -76,6 +76,12 @@ function update(){
         return;
     }
     if(gameStatus.pauseflg){
+        //メニューの位置をカメラに追従させる
+        const cameraCenterX = this.cameras.main.scrollX + this.cameras.main.width / 2;
+        const cameraCenterY = this.cameras.main.scrollY + this.cameras.main.height / 2;
+
+        //メニューをカメラ中心に配置し、少し左にずらす
+        menuContainer.setPosition(cameraCenterX - config.width * 0.15,cameraCenterY-130);
         //ポーズ中はupdate内の処理をすべて行わない
         return;
     }    
