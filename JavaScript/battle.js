@@ -115,7 +115,10 @@ export async function battleupdate(gameStatus,playerStatus,friend1Status,friend2
     if(!statusContainer){
         const response = await fetch('../battle.php');
         const topstatus = await response.text();
-        document.getElementById('status-container').innerHTML = topstatus;//画面に挿入
+        const newContainer = document.createElement('div');
+        newContainer.id ='status-container';
+        newContainer.innerHTML = topstatus;
+        document.body.appendChild(newContainer);
     }
     //画面上部のステータス表示の準備
     const statusContainerUpdated = document.getElementById('status-container');
@@ -131,7 +134,15 @@ export async function battleupdate(gameStatus,playerStatus,friend1Status,friend2
         statusDiv.style.padding = '10px';
         statusDiv.style.textAlign = 'center';
 
+        //ステータスの内容を動的に設定
+        statusDiv.innerHTML=`
+            <strong>${data.name}</strong><br>
+            HP:${data.nokori_hp}/${data.hp}<br>
+            MP:${data.nokori_mp}/${data.mp}
+        `;
+
         //ステータスをコンテナに追加
         statusContainerUpdated.appendChild(statusDiv);
     });
+    
 }
