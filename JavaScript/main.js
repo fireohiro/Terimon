@@ -66,7 +66,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     createMap.call(this,playerStatus);
 
     //pauseのcreate処理
-    createPause.call(this,gameStatus,playerStatus);
+    createPause.call(this,gameStatus,playerStatus,config);
 }
 //ゲームの更新処理
 function update(){

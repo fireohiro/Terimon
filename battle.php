@@ -15,6 +15,18 @@
             align-items: center; /* 垂直中央寄せ */
             font-size: 24px; /* フォントサイズ */
         }
+
+        #status-container{
+            position:absolute;
+            top:10px;
+            width:9vw;
+            height:25vh;
+            border:2px solid black;
+            display:flex;
+            justify-content:space-around;
+            align-items:center;
+            background-color;white;
+        }
     </style>
 </head>
 <body>
@@ -22,6 +34,10 @@
         <div id="under-text" class="under-text"></div>
     </div>
 
-    <script src="JavaScript/battle.js"></script> <!-- battle.jsを読み込む -->
+    <div id="status-container">
+        <div id="status-data" class="status-data"></div>
+    </div>
+
+    <script type="module" src="JavaScript/battle.js"></script> <!-- battle.jsを読み込む -->
 </body>
 </html>
