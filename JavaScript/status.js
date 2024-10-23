@@ -1,4 +1,4 @@
-export function createStatusScreen(loader, playerStatus, config) {
+export function createStatusScreen(loader, playerStatus,friend1Status,friend2Status,friend3Status, config) {
     const statusWidth = config.width * 0.60;
     const statusHeight = config.height * 0.70;
 
@@ -23,9 +23,15 @@ export function createStatusScreen(loader, playerStatus, config) {
     // モンスター情報（例として追加）
     const monsters = playerStatus.monsters; // モンスターリスト
     let yOffset = 150;
-    for (let i = 0; i < monsters.length; i++) {
-        loader.add.image(50, yOffset + i * 100, 'monsterSprite'); // モンスター画像
-        loader.add.text(100, yOffset + i * 100, `モンスター Lv.${monsters[i].level}`, { fontSize: '16px', fill: '#000' });
+    const friendStatuses = [friend1Status,friend2Status,friend3Status];
+    for(let i=0;i<3;i++){
+        loader.add.image(50, yOffset + i * 100, 'monsterSprite'+i); // モンスター画像
+        
     }
+    // let yOffset = 150;
+    // for (let i = 0; i < monsters.length; i++) {
+    //     loader.add.image(50, yOffset + i * 100, 'monsterSprite'); // モンスター画像
+    //     loader.add.text(100, yOffset + i * 100, `モンスター Lv.${monsters[i].level}`, { fontSize: '16px', fill: '#000' });
+    // }
 
 }
