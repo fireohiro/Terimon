@@ -28,12 +28,4 @@ export function createStatusScreen(loader, playerStatus, config) {
         loader.add.text(100, yOffset + i * 100, `モンスター Lv.${monsters[i].level}`, { fontSize: '16px', fill: '#000' });
     }
 
-    // ステータス画面を閉じるボタン
-    const closeButton = loader.add.text(statusWidth * 0.9, statusHeight * 0.1, '閉じる', { fontSize: '18px', fill: '#f00' });
-    closeButton.setInteractive().on('pointerdown', () => {
-        statusBackground.setVisible(false);
-        playerInfo.setVisible(false);
-        attributes.setVisible(false);
-        closeButton.setVisible(false);
-    });
 }
