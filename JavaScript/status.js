@@ -24,12 +24,13 @@ export function createStatusScreen(loader,gameStatus, playerStatus,friend1Status
     let yOffset = 150;
     const friendStatuses = [friend1Status,friend2Status,friend3Status];
     for(let i=1;i<friendStatuses.length;i++){
+        const friendStatus = friendStatuses[`friend${i}Status`];
         loader.add.image(50, yOffset + i * 100, 'monsterSprite'+i); // モンスター画像
         loader.add.text(statusWidth * 0.1, statusHeight * 0.1, 
-            `勇者 Lv.${friendStatuses[i].level}\nHP: ${friendStatuses[i].hp_nokori} / ${friendStatuses[i].hp}\nMP: ${friendStatuses[i].mp_nokori} / ${friendStatuses[i].mp}`,
+            `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}\nMP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
             { fontSize: '18px', fill: '#000' });
         loader.add.text(statusWidth * 0.1, statusHeight * 0.3,
-            `こうげき: ${friendStatuses[i].pow}\nまもり: ${friendStatuses[i].def}\nすばやさ: ${friendStatuses[i].speed}\n運: ${friendStatuses[i].luck}`,
+            `こうげき: ${friendStatus.pow}\nまもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}\n運: ${friendStatus.luck}`,
             { fontSize: '16px', fill: '#000' });
     }
     // const monsters = playerStatus.monsters; // モンスターリスト
