@@ -1,4 +1,4 @@
-export function createStatusScreen(loader, playerStatus,friend1Status,friend2Status,friend3Status, config) {
+export function createStatusScreen(loader,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config) {
     const statusWidth = config.width * 0.60;
     const statusHeight = config.height * 0.70;
 
@@ -24,9 +24,14 @@ export function createStatusScreen(loader, playerStatus,friend1Status,friend2Sta
     const monsters = playerStatus.monsters; // モンスターリスト
     let yOffset = 150;
     const friendStatuses = [friend1Status,friend2Status,friend3Status];
-    for(let i=0;i<3;i++){
+    for(let i=1;i<friendStatuses.length;i++){
         loader.add.image(50, yOffset + i * 100, 'monsterSprite'+i); // モンスター画像
-        
+        loader.add.text(statusWidth * 0.1, statusHeight * 0.1, 
+            `勇者 Lv.${friendStatuses[i].level}\nHP: ${friendStatuses[i].hp_nokori} / ${friendStatuses[i].hp}\nMP: ${friendStatuses[i].mp_nokori} / ${friendStatuses[i].mp}`,
+            { fontSize: '18px', fill: '#000' });
+        loader.add.text(statusWidth * 0.1, statusHeight * 0.3,
+            `こうげき: ${friendStatuses[i].pow}\nまもり: ${friendStatuses[i].def}\nすばやさ: ${friendStatuses[i].speed}\n運: ${friendStatuses[i].luck}`,
+            { fontSize: '16px', fill: '#000' });
     }
     // let yOffset = 150;
     // for (let i = 0; i < monsters.length; i++) {

@@ -38,7 +38,7 @@ async function menuBar(loader,playerStatus,config){
     //クリックイベント
     itemtext.setInteractive().on('pointerdown',()=>{
         //アイテム使用用のプログラムの関数を呼び出す
-        createStatusScreen(loader, playerStatus,friend1Status,friend2Status,friend3Status, config); 
+        createStatusScreen(loader,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config); 
     });
     // マウスがテキストに乗ったときの動作
     itemtext.on('pointerover', () => {
