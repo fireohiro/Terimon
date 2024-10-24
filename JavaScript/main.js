@@ -51,21 +51,16 @@ export async function loadFriends(){
 
 //アセット（画像、音声など）の読み鋳込み
 function preload(){
-    this.load.image('sky','assets/img/sky.png');//背景画像を読み込む
     mappreload(this.load);//map.jsのpreload処理を読み込む
     battlepreload(this.load);//battle.jsのpreload処理を読み込む
 }
 
 //ゲームの作成処理
 async function create(){//asyncとは、非同期処理を使えるようにする
-    //背景を表示
-    this.add.image(400,300,'sky');
     //プレイヤーステータスを持ってくてuserDataに入れる
     const userData = await userData();//awaitはこの処理が終わってから次の処理に行くこと
     Object.assign(playerStatus, userData);//セッションデータをオブジェクトに保存
-    Object.assign(friend1Status, userData);//セッションデータをオブジェクトに保存
-    Object.assign(friend2Status, userData);//セッションデータをオブジェクトに保存
-    Object.assign(friend3Status, userData);//セッションデータをオブジェクトに保存
+    loadFriends();
     createMap.call(this,playerStatus);
 
     //pauseのcreate処理
