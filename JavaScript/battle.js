@@ -11,6 +11,16 @@ export function battlepreload(loader){
     loader.image('battleback','../assets/battleimg/vsback.png');
 }
 
+function battleEnd(gameStatus){
+    gameStatus.battleflg = false;
+}
+
+export async function battleupdate(gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
+    const friendStatuses = [friend1Status,friend2Status,friend3Status];
+    const displayData = gameStatus.playerfight ? [playerStatus]:friendStatuses.slice(0,gameStatus.temotisu);
+    displayStatus();    
+}
+
 export async function battleStart(scene,config,bunrui,gameStatus,friend1Status,friend2Status,friend3Status){
     let enemies = [];
     gameStatus.battleflg = true;
@@ -119,16 +129,6 @@ async function displaymessage(scene,config,message){
     displayNextChar();
     //Promiseを返すことで、後続の処理がENTERを押すまで待機するようにするウ
     await waitForEnter;
-}
-
-function battleEnd(gameStatus){
-    gameStatus.battleflg = false;
-}
-
-export async function battleupdate(gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
-    const friendStatuses = [friend1Status,friend2Status,friend3Status];
-    const displayData = gameStatus.playerfight ? [playerStatus]:friendStatuses.slice(0,gameStatus.temotisu);
-    displayStatus();    
 }
 
 //味方ステータス表示

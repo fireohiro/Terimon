@@ -72,7 +72,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
 function update(){
     if(gameStatus.battleflg){
         //バトル中はバトル処理だけをして、その他を実行しない
-        battleupdate.call(this,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status);
+        battleupdate.call(this,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config);
         return;
     }
     if(gameStatus.pauseflg){
