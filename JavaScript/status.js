@@ -21,7 +21,6 @@ export function createStatusScreen(loader,gameStatus, playerStatus,friend1Status
     );
 
     // モンスター情報（例として追加）
-    const monsters = playerStatus.monsters; // モンスターリスト
     let yOffset = 150;
     const friendStatuses = [friend1Status,friend2Status,friend3Status];
     for(let i=1;i<friendStatuses.length;i++){
@@ -33,6 +32,7 @@ export function createStatusScreen(loader,gameStatus, playerStatus,friend1Status
             `こうげき: ${friendStatuses[i].pow}\nまもり: ${friendStatuses[i].def}\nすばやさ: ${friendStatuses[i].speed}\n運: ${friendStatuses[i].luck}`,
             { fontSize: '16px', fill: '#000' });
     }
+    // const monsters = playerStatus.monsters; // モンスターリスト
     // let yOffset = 150;
     // for (let i = 0; i < monsters.length; i++) {
     //     loader.add.image(50, yOffset + i * 100, 'monsterSprite'); // モンスター画像
