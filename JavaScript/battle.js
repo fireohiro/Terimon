@@ -11,13 +11,20 @@ export function battlepreload(loader){
     loader.image('battleback','../assets/battleimg/vsback.png');
 }
 
-export async function battleStart(scene,bunrui,gameStatus,friend1Status,friend2Status,friend3Status){
+function battleEnd(gameStatus){
+    gameStatus.battleflg = false;
+}
+
+export async function battleupdate(gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
+    const friendStatuses = [friend1Status,friend2Status,friend3Status];
+    const displayData = gameStatus.playerfight ? [playerStatus]:friendStatuses.slice(0,gameStatus.temotisu);
+    displayStatus();    
+}
+
+export async function battleStart(scene,config,bunrui,gameStatus,friend1Status,friend2Status,friend3Status){
     let enemies = [];
     gameStatus.battleflg = true;
-    const response = await fetch('../battle.php');
-    const html = await response.text();
     let res;
-    document.getElementById('game-container').innerHTML = html;//画面に挿入
     if(bunrui === 1){
         res = await fetch('../get_zako.php');
         enemies = await res.json();
@@ -44,7 +51,7 @@ export async function battleStart(scene,bunrui,gameStatus,friend1Status,friend2S
     ];
 
     enemyImages.forEach(({teki,x},index)=>{
-        const monsterImage = scene.add.image(x,300,`teki${enemy.id}`);//モンスター画像
+        const monsterImage = scene.add.image(x,300,teki.id);//モンスター画像
         monsterImage.setDisplaySize(150,150);
         monsterImage.setDepth(1);//背景の上に
         
@@ -67,82 +74,64 @@ export async function battleStart(scene,bunrui,gameStatus,friend1Status,friend2S
 
     //敵の名前と～が現れた！をhtmlと一緒に表示
     const message = `${enemy1.name}と${enemy2.name}と${enemy3.name}が現れた！`;
-    await messageanimation(message);
+    await displaymessage(scene,config,message);
 }
 
-async function messageanimation(message){
-    const underText = document.getElementById('under-text');
-    underText.innerText = '';//テキスト初期化
-    let index = 0;
-    return new Promise((resolve)=>{
-        const interval = setInterval(()=>{
-            underText.innerText += message[index];
-            index++;
-            if(index >= message.length){
-                clearInterval(interval);//全文表示完了
-                showArrow();//▾を表示
-                stayEnter(resolve);//Enterキー待ち
-            }
-        },100);//１文字ずつ100ms感覚で表示
-    });
-}
+//１文字ずつ表示するメッセージ用の枠作成と表示関数
+async function displaymessage(scene,config,message){
+    const messageWidth = config.width * 0.9;
+    const messageHeight = config.height * 0.3;
+    const messageX = scene.cameras.main.centerX;//変更予定
+    const messageY = scene.cameras.main.height - messageHeight - 10;//変更予定
 
-function showArrow(){
-    const arrow = document.createElement('span');
-    arrow.innerText = ' ▾';
-    arrow.style.fontSize = '24px';
-    arrow.style.marginLeft = '10px';
-    document.getElementById('under-text').appendChild(arrow);
-}
+    const messageBox = scene.add.rectangle(messageX,messageY,messageWidth,messageHeight,0xFFFFFF);
+    messageBox.setStrokeStyle(2,0x000000);
+    messageBox.setRadius(10);
 
-//Enterキーが押されるのを待つ関数
-function stayEnter(resolve){
-    function onEnterPress(event){
-        if(event.key === 'Enter'){
-            document.removeEventListener('keydown',onEnterPress);//イベント削除
-            resolve();//次の処理に進む
+    const messagetext = scene.add.text(
+        messageX - messageWidth / 2 + 20,
+        messageY - messageHeight / 2 + 20,
+        '',
+        {fontSize:'24px',fill:'#0000000',wordWrap:{width:messageWidth - 40}}
+    );
+
+    let currentCharIndex = 0;
+
+    function displayNextChar(){
+        if(currentCharIndex < message.elngth){
+            messagetext.text += message[currentCharIndex];
+            currentCharIndex++;
+            scene.time.delayedCall(50,displayNextChar);
+        }else{
+            displayEndMarker();
         }
     }
-    document.addEventListener('keydown',onEnterPress);
-}
 
-function battleEnd(gameStatus){
-    gameStatus.battleflg = false;
-}
-
-export async function battleupdate(gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
-    const statusContainer = document.getElementById('status-container');
-    if(!statusContainer){
-        const response = await fetch('../battle.php');
-        const topstatus = await response.text();
-        const newContainer = document.createElement('div');
-        newContainer.id ='status-container';
-        newContainer.innerHTML = topstatus;
-        document.body.appendChild(newContainer);
+    function displayEndMarker(){
+        const marker = scene.add.text(
+            messageX + messageWidth / 2 - 30,
+             messageY + messageHeight / 2 - 40 ,
+             '▾',
+             {fontSize:'24px',fill:'#000000'}
+        );
+        waitForEnter(marker);
     }
-    //画面上部のステータス表示の準備
-    const statusContainerUpdated = document.getElementById('status-container');
-    statusContainerUpdated.innerHTML = '';//既存の愛用をクリア
 
-    const friendStatuses = [friend1Status,friend2Status,friend3Status];
-    const displayData = gameStatus.playerfight ? [playerStatus]:friendStatuses.slice(0,gameStatus.temotisu);
+    function waitForEnter(marker){
+        return new Promise(resolve =>{
+            scene.input.keyboard.once('keydown-ENTER',()=>{
+                marker.destroy();
+                resolve();//ENTERが押されたことを通知
+            });
+        });
+    }
 
-    //ステータスを動的に生成して表示
-    displayData.forEach((data)=>{
-        const statusDiv = document.createElement('div');
-        statusDiv.style.border = '1px solid gray';
-        statusDiv.style.padding = '10px';
-        statusDiv.style.textAlign = 'center';
+    displayNextChar();
+    //Promiseを返すことで、後続の処理がENTERを押すまで待機するようにするウ
+    await waitForEnter;
+}
 
-        //ステータスの内容を動的に設定
-        statusDiv.innerHTML=`
-            <strong>${data.name}</strong><br>
-            HP:${data.nokori_hp}/${data.hp}<br>
-            MP:${data.nokori_mp}/${data.mp}
-        `;
+//味方ステータス表示
+function displayStatus(){
 
-        //ステータスをコンテナに追加
-        statusContainerUpdated.appendChild(statusDiv);
-    });
-    
 }

@@ -51,18 +51,16 @@ export async function loadFriends(){
 
 //アセット（画像、音声など）の読み鋳込み
 function preload(){
-    this.load.image('sky','assets/img/sky.png');//背景画像を読み込む
     mappreload(this.load);//map.jsのpreload処理を読み込む
     battlepreload(this.load);//battle.jsのpreload処理を読み込む
 }
 
 //ゲームの作成処理
 async function create(){//asyncとは、非同期処理を使えるようにする
-    //背景を表示
-    this.add.image(400,300,'sky');
     //プレイヤーステータスを持ってくてuserDataに入れる
     const userData = await userData();//awaitはこの処理が終わってから次の処理に行くこと
     Object.assign(playerStatus, userData);//セッションデータをオブジェクトに保存
+    loadFriends();
     createMap.call(this,playerStatus);
 
     //pauseのcreate処理
@@ -72,10 +70,16 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
 function update(){
     if(gameStatus.battleflg){
         //バトル中はバトル処理だけをして、その他を実行しない
-        battleupdate.call(this,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status);
+        battleupdate.call(this,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config);
         return;
     }
     if(gameStatus.pauseflg){
+        //メニューの位置をカメラに追従させる
+        const cameraCenterX = this.cameras.main.scrollX + this.cameras.main.width / 2;
+        const cameraCenterY = this.cameras.main.scrollY + this.cameras.main.height / 2;
+
+        //メニューをカメラ中心に配置し、少し左にずらす
+        menuContainer.setPosition(cameraCenterX - config.width * 0.15,cameraCenterY-130);
         //ポーズ中はupdate内の処理をすべて行わない
         return;
     }    
