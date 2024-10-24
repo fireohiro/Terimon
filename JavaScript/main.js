@@ -63,6 +63,9 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     //プレイヤーステータスを持ってくてuserDataに入れる
     const userData = await userData();//awaitはこの処理が終わってから次の処理に行くこと
     Object.assign(playerStatus, userData);//セッションデータをオブジェクトに保存
+    Object.assign(friend1Status, userData);//セッションデータをオブジェクトに保存
+    Object.assign(friend2Status, userData);//セッションデータをオブジェクトに保存
+    Object.assign(friend3Status, userData);//セッションデータをオブジェクトに保存
     createMap.call(this,playerStatus);
 
     //pauseのcreate処理
