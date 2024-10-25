@@ -10,7 +10,7 @@ export function createMap(playerStatus){
     let layersu;
     //マップidごとに表示させる
     if(map_id === 1){
-        mapData = "../assets/tilemaps/town.json";//ここは変えましょうかね
+        mapData = "../assets/tilemaps/town.json";
         for(let i = 1; i <= 15; i++){
             tilesets.push(`town${i}`);//タイルセット名を格納
             layersu = 4;//レイヤーの数を格納

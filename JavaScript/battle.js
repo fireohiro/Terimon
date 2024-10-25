@@ -15,10 +15,11 @@ function battleEnd(gameStatus){
     gameStatus.battleflg = false;
 }
 
-export async function battleupdate(gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
-    const friendStatuses = [friend1Status,friend2Status,friend3Status];
+export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config){
+    const friendStatuses = [friend1Status,friend2Status,friend3Status,config];
     const displayData = gameStatus.playerfight ? [playerStatus]:friendStatuses.slice(0,gameStatus.temotisu);
-    displayStatus();    
+    displayStatus(scene,gameStatus,displayData,config);
+    selectact(scene,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config);
 }
 
 export async function battleStart(scene,config,bunrui,gameStatus,friend1Status,friend2Status,friend3Status){
@@ -132,6 +133,85 @@ async function displaymessage(scene,config,message){
 }
 
 //味方ステータス表示
-function displayStatus(){
+function displayStatus(scene,gameStatus,displayData,config){
+    const statusWidth = config.width * 0.9;
+    const statusHeight = config.height * 0.3;
+    let startX = 10;
+    const startY = 10;
 
+    const statusBox = scene.add.rectangle(startX,startY,statusWidth,statusHeight,0xFFFFFF);
+    statusBox.setStrokeStyle(2,0x000000);
+    statusBox.setRadius(10);
+    statusBox.setOrigin(0,0);
+
+    let textX = startX + 10;
+    const textY = startY + 10;
+    displayData.forEach((data,index)=>{
+        const statusText = `
+            Lv:${data.level}\n
+            ${data.name}\n
+            HP:${data.nokori_hp} ／ ${data.hp}\n
+            MP:${data.nokori_mp} ／ ${data.mp}
+        `;
+
+        const statusDisplay = scene.add.text(textX,textY,statusText,{
+            fontSize:'16px',
+            fill:'#000000',
+            wordWrap:{width:statusWidth - 20}
+        });
+        statusDisplay.setOrigin(0,0);
+        textX += statusWidth / displayData.length;
+    });
+    statusBox.setSize(statusWidth,statusHeight);
+}
+
+async function selectact(secen,playerStatus,friend1Status,friend2Status,friend3Status,config){
+    const actWidth = config.width * 0.2;
+    const actHeight = config.height * 0.2;
+    actX = 10;
+    actY = (config.height - actHeight - 10);//表示座標を一番下から少し上にする
+    const actions = gameStatus.playerfight ? ["こうげき","アイテム","まほう","やっぱ引く"]:["こうげき","アイテム","まほう","俺が出る"];
+    const actionBoxes = [];
+
+    actions.forEach((action,index)=>{
+        const offsetX = (index % 2) * (actWidth + 10);
+        const offsetY = Math.floor(index/2)*(actHeight + 10);
+        const boxX = actX + offsetX;
+        const boxY = actY + offsetY;
+
+        const actBox = scneadd.rectangle(boxX,boxY,actWidth,actHeight,0xFFFFFF);
+        actBox.setStrokeStyle(2,0x000000);
+        actBox.setRadius(10);
+        actBox.setOrigin(0,0);
+
+        const actionText = scene.add.text(boxX + 10,boxY + 10,action,{
+            fontSize:'18px',
+            fill:'#000000'
+        });
+        //クリック時に行動を選択して進める処理
+        actBox.setInteractive().on('pointerdown',()=>{
+            handleActionSelection(action,scee);
+        });
+        actionBoxes.push(actBox);
+    });
+    //行動が選択されるまで待機する関数
+    function handleActionSelection(action,scene){
+        switch(action){
+            case "こうげき":
+                //こうげきの処理
+                break;
+            case "まほう":
+                //まほうの処理
+                break;
+            case "アイテム":
+                //アイテムの処理
+                break;
+            case "俺が出る":
+                gameStatus.playerfight = true;
+                break;
+            case "やっぱ引く":
+                gameStatus.playerfight = false;
+                break;
+        }
+    }
 }
