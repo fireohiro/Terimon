@@ -1,10 +1,12 @@
-export function createPause(gameStatus,playerStatus,config){
+import {saveEvent,saveGame} from './save.js';
+export function createPause(gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status){
     this.input.keyboard.on('keydown',(event) => {
         if(event.key === 'Escape'){
             pauseStart.call(this,gameStatus);
         }
     });
-    menuBar(this,playerStatus,config);
+    saveGame(this,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
+    menuBar(this,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
 }
 
 function pauseStart(gamestatus){
@@ -19,13 +21,13 @@ function pauseStart(gamestatus){
     }
 }
 
-async function menuBar(loader,playerStatus,config){
+async function menuBar(loader,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status){
     //メニューのサイズを設定
     const menuWidth = config.width * 0.20;
     const menuHeight = config.height * 0.70;
 
     // メニュー背景を作成し、左に少しスペースを開ける
-    const menuBackground = loader.add.rectangle(menuWidth * -0.5, 0, menuWidth, menuHeight, 0x93C572, 0.8);
+    const menuBackground = loader.add.rectangle(menuWidth * -0.5, 2, menuWidth, menuHeight, 0x93C572, 0.8);
     menuBackground.setStrokeStyle(4, 0xFFFDD0); // 緑枠
 
     //テキスト（ボタンを設定）の例
@@ -51,7 +53,7 @@ async function menuBar(loader,playerStatus,config){
         //ステータス表示用のプログラムの関数を呼び出す
     });
     savetext.setInteractive().on('pointerdown',()=>{
-        //セーブ用のプログラムの関数を呼び出す
+        saveEvent(gameStatus);
     });
     logouttext.setInteractive().on('pointerdown',()=>{
         //ログアウト用のプログラムの関数を呼び出す
@@ -75,5 +77,5 @@ async function menuBar(loader,playerStatus,config){
     //メニュー要素をコンテナにまとめる
     menuContainer = loader.add.container(0,-500,[ここに枠の設定とテキストを変数,定数を入れる]);
     menuContainer.setVisible(false);//初期状態は非表示
-    menuContainer.setDepth(10);//一意晩上に表示されるようにする
+    menuContainer.setDepth(7);//一意晩上に表示されるようにする
 }

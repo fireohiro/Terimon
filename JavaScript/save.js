@@ -1,54 +1,29 @@
-// save.js
-
-export function saveGame() {
-    // PHPを使ってデータベースにセーブ処理を行う
-    $.post('save_game.php', {
-        playerStats: playerStats,
-        // 他のデータも送信
-    }).done(function(response) {
-        console.log("Game saved: ", response);
-    });
-}
-function saveGame(playerStatus, friendStatuses) {
-    const data = {
-        playerStatus: playerStatus,
-        friendStatuses: friendStatuses
-    };
-
-    // サーバーにデータを送信（POSTリクエスト）
-    fetch('save.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data), // プレイヤーのデータをJSONに変換
-    })
-    .then(response => response.json())
-    .then(result => {
-        // 成功時の処理
-        if (result.success) {
-            console.log('ゲームデータが正常にセーブされました');
-        } else {
-            console.log('セーブに失敗しました');
-        }
-    })
-    .catch(error => {
-        console.error('エラー:', error);
-    });
+export function saveEvent(gameStatus){
+    gameStatus.saveflg = !gameStatus.saveflg;
+    saveContainer.setVisible(gameStatus.saveflg);
 }
 
-// 例: プレイヤーと友達のステータスをセーブ
-const playerStatus = {
-    level: 10,
-    hp: 100,
-    mp: 50
-};
+export async function saveGame(loader,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status){
+    //メニューのサイズを設定
+    const saveWidth = config.width * 0.6;
+    const saveHeight = config.height * 0.95;
 
-const friendStatuses = [
-    { level: 5, hp: 80, mp: 30 },
-    { level: 7, hp: 90, mp: 40 },
-    { level: 6, hp: 85, mp: 35 }
-];
+    // メニュー背景を作成し、左に少しスペースを開ける
+    const saveback = loader.add.rectangle(config.width * 0.3 + 10, 2, saveWidth, saveHeight, 0xFFFFFF, 0.8);
+    saveback.setStrokeStyle(2,0x000000); // 緑枠
+    saveback.setRadius(10);
 
-// セーブ処理を実行
-saveGame(playerStatus, friendStatuses);
+    //テキスト（ボタンを設定）の例
+    const savetext = loader.add.text(config.width * 0.3 + 10 + saveWidth/2,saveHeight / -2 - 50,'はい',{fontSize:'18px'});
+    const backtext = loader.add.text(config.width * 0.3 + 10 + saveWidth/2,saveHeight / -2,'いいえ',{fontSize:'18px'});
+    //クリックイベント
+    savetext.setInteractive().on('pointerdown',()=>{
+        //セーブ用PHPを作って接続して引数としてplayerStatus,friend1~3Statusを渡たす
+    });
+    backtext.setInteractive().on('pointerdown',()=>{
+         saveEvent(gameStatus);
+    });
+    saveContainer.loader.add.container(0,-500,[saveback,sevetext,backtext]);
+    saveContainer.setVisible(false);
+    saveContainer.setDepth(7);
+}

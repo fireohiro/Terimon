@@ -30,7 +30,7 @@ const config = {
 //ゲームのインスタンスを作成
 const game = new Phaser.Game(config);
 //ポーズのbooleanをオブジェクトで管理することで、他プログラムで中身を同期できる
-const gameStatus = {pauseflg:false,battleflg:false,temotisu:0,playerfight:true};
+const gameStatus = {pauseflg:false,battleflg:false,temotisu:0,playerfight:true,itemflg:false,gearflg:false,statusflg:false,saveflg:false,logoutflg:false};
 const playerStatus = {};
 const friend1Status ={};
 const friend2Status ={};
@@ -64,7 +64,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     createMap.call(this,playerStatus);
 
     //pauseのcreate処理
-    createPause.call(this,gameStatus,playerStatus,config);
+    createPause.call(this,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status);
 }
 //ゲームの更新処理
 function update(){
@@ -82,7 +82,5 @@ function update(){
         menuContainer.setPosition(cameraCenterX - config.width * 0.15,cameraCenterY-130);
         //ポーズ中はupdate内の処理をすべて行わない
         return;
-    }    
-    //ここにプレイヤーの移動、エンカウント、バトルの発生処理を行っているメソッドを呼び出す
-    
+    }
 }
