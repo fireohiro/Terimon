@@ -14,8 +14,8 @@ export function battlepreload(loader){
 function battleEnd(gameStatus,playerStatus,winflg){
     gameStatus.battleflg = false;
     if(!winflg){
-        playerStatus.nokori_hp = playerStatus.hp;
-        playerStatus.nokori_mp = playerStatus.mp;
+        playerStatus.hp_nokori = playerStatus.hp;
+        playerStatus.mp_nokori = playerStatus.mp;
         const lostmoney = playerStatus.money * 0.05;
         const message = `${playerStatus.name}は負けてしまったストレスから、${lostmoney}チピチャパをぶちまけた！`;
         displaymessage(scene,config,message);
@@ -51,13 +51,13 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
         }
     }
     //勝利条件チェック
-    const allEnemiesDefeated = enemyes.every(enemy => enemy.nokori_hp <= 0);
+    const allEnemiesDefeated = enemyes.every(enemy => enemy.hp_nokori <= 0);
     if(allEnemiesDefeated){
         displaymessage(scene,config,"勝利しました！");
         battleEnd(gameStatus,playerStatus,true);
     }
-    
-    if(playerStatus.nokori_hp <= 0){
+    //敗北条件チェック
+    if(playerStatus.hp_nokori <= 0){
         battleEnd(gameStatus,playerStatus,false);
     }
 }
@@ -190,8 +190,8 @@ function displayStatus(scene,gameStatus,displayData,config){
         const statusText = `
             Lv:${data.level}\n
             ${data.name}\n
-            HP:${data.nokori_hp} ／ ${data.hp}\n
-            MP:${data.nokori_mp} ／ ${data.mp}
+            HP:${data.hp_nokori} ／ ${data.hp}\n
+            MP:${data.mp_nokori} ／ ${data.mp}
         `;
 
         const statusDisplay = scene.add.text(textX,textY,statusText,{
@@ -242,14 +242,20 @@ async function selectact(scene,gameStatus,playerStatus,friend1Status,friend2Stat
         const enemys = [enemy1,enemy2,enemy3];
         switch(action){
             case "こうげき":
-                //格的に対してダメージ計算とHP減少を行う(会心処理などはまだ作っていないので、適宜追加します)
+                //格的に対してダメージ計算とHP減少を行う。会心も作成済み
                 enemys.forEach(enemy => {
-                    if(enemy.nokori_hp > 0){
-                        const damage = Math.ceil(combatant.pow / 1.5 - (enemy.def / 2));
+                    let damage;
+                    if(enemy.hp_nokori > 0){
+                        const randnum = Math.floor(Math.random() * 100) + 1;
+                        if(combatant.luck <= randnum){
+                            damage = Math.ceil(combatant.pow / 1.5) * 2;
+                            //会心の音などを入れたい場合はここら辺にフラグやら関数呼び出しやらを入れましょう
+                        }else{
+                            damage = Math.ceil(combatant.pow / 1.5 - (enemy.def / 2));
+                        }
                         attack(enemy,damage,scene,config,playerStatus,friend1Status,friend2Status,friend3Status,gameStatus)
                     }
-                })
-                
+                });
                 break;
             case "まほう":
                 //まほうの処理
@@ -268,9 +274,9 @@ async function selectact(scene,gameStatus,playerStatus,friend1Status,friend2Stat
     function attack(enemy,damage,scene,config,playerStatus,friend1Status,friend2Status,friend3Status,gameStatus){
         //ダメージ表示（ダメージエフェクトをつけたいのならここにつけましょ
         const damag = `${enemy.name}に${damage}ダメージを与えた！`;
-        displaymessage(scene,config,damag);enemy.nokori_hp -= damage;
-        if(enemy.nokori_hp < 0){
-            enemy.nokori_hp = 0;
+        displaymessage(scene,config,damag);enemy.hp_nokori -= damage;
+        if(enemy.hp_nokori < 0){
+            enemy.hp_nokori = 0;
             //モンスター名＋を倒した！を下のメッセージボックス内で表示
             const message = `${enemy.name}を倒した！`;
             displaymessage(scene,config,message);
