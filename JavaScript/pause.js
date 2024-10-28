@@ -10,6 +10,7 @@ export function createPause(gameStatus,playerStatus,config,friend1Status,friend2
     saveGame(this,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
     logoutMessage(this,config);
     menuBar(this,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
+    createStatusScreen(loader,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
 }
 
 function pauseStart(gamestatus){
@@ -29,6 +30,7 @@ function pauseStart(gamestatus){
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            statusEvent(gameStatus);
         }
         if(gameStatus.saveflg === true){
             //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -71,6 +73,7 @@ async function menuBar(loader,playerStatus,config,gameStatus,friend1Status,frien
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            statusEvent(gameStatus);
         }
         if(gameStatus.saveflg === true){
             //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -90,6 +93,7 @@ async function menuBar(loader,playerStatus,config,gameStatus,friend1Status,frien
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            statusEvent(gameStatus);
         }
         if(gameStatus.saveflg === true){
             //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -128,6 +132,7 @@ async function menuBar(loader,playerStatus,config,gameStatus,friend1Status,frien
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            statusEvent(gameStatus);
         }
         if(gameStatus.logoutflg === true){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -147,6 +152,7 @@ async function menuBar(loader,playerStatus,config,gameStatus,friend1Status,frien
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            statusEvent(gameStatus);
         }
         if(gameStatus.saveflg === true){
             //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
