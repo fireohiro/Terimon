@@ -48,7 +48,7 @@ export async function saveGame(loader,playerStatus,config,gameStatus,friend1Stat
     backtext.setInteractive().on('pointerdown',()=>{
          saveEvent(gameStatus);
     });
-    saveContainer.loader.add.container(0,0,[saveback,sevetext,backtext]);
+    saveContainer.loader.add.container(0,0,[saveback,savetext,backtext]);
     saveContainer.setVisible(false);
     saveContainer.setDepth(7);
 }

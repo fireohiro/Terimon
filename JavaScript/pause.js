@@ -178,7 +178,7 @@ async function menuBar(loader,playerStatus,config,gameStatus,friend1Status,frien
     );
 
     //メニュー要素をコンテナにまとめる
-    menuContainer = loader.add.container(0,-500,[ここに枠の設定とテキストを変数,定数を入れる]);
+    menuContainer = loader.add.container(0,0,[ここに枠の設定とテキストを変数,定数を入れる]);
     menuContainer.setVisible(false);//初期状態は非表示
     menuContainer.setDepth(7);//一意晩上に表示されるようにする
 }
