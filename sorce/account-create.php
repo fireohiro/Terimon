@@ -29,7 +29,7 @@ if (isset($_POST['job_id']) && isset($_POST['name']) && isset($_POST['password']
             $pow = $job['pow'];
             $def = $job['def'];
             $speed = $job['speed'];
-            $luck = $job['lack'];
+            $luck = $job['luck'];
         } else {
             echo "Error: 該当する職業が見つかりません。";
         }
