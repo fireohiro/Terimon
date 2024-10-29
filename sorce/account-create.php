@@ -1,16 +1,22 @@
 <?php session_start();
 require '../modules/DBconnect.php';
 
-        $hp = "";
-        $mp = "";
-        $pow = "";
-        $def = "";
-        $speed = "";
-        $luck = "";
+        $hp = "0";
+        $mp = "0";
+        $pow = "0";
+        $def = "0";
+        $speed = "0";
+        $luck = "0";
 
-if (isset($_POST['job_id'])) {
+if(isset($_POST['name'])){
+    $name = $_POST['name'];
+}
+if(isset($_POST['password'])){
+    $pass = $_POST['password'];
+}
+
+if (isset($_POST['job_id']) && isset($_POST['name']) && isset($_POST['password'])) {
     $job_id = $_POST['job_id'];
-
     try {
         $stmt = $pdo->prepare('SELECT * FROM job WHERE job_id = ?');
         $stmt->execute([$job_id]);
@@ -18,14 +24,12 @@ if (isset($_POST['job_id'])) {
 
         if ($job) {
             $job_name = $job['job_name'];
-            $name = $_POST['name'];
-            $pass = $_POST['password'];
             $hp = $job['hp'];
             $mp = $job['mp'];
             $pow = $job['pow'];
             $def = $job['def'];
             $speed = $job['speed'];
-            $luck = $job['lack'];
+            $luck = $job['luck'];
         } else {
             echo "Error: 該当する職業が見つかりません。";
         }
@@ -33,10 +37,11 @@ if (isset($_POST['job_id'])) {
         echo "Error: " . $e->getMessage();
     }
 } else {
-    echo "Error: job_id が選択されていません。";
+    // echo "Error: job_id が選択されていません。";
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $_SESSION['job_id'] = $_POST['job_id'];
     $_SESSION['name'] = $_POST['name'];
     $_SESSION['password'] = $_POST['password'];
     $_SESSION['hp'] = $hp;
@@ -49,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 ?>
 
-?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -70,8 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form action="account-create.php" method="post" class="form">
             <div class="content-row">
-                <div class="block"><div class="font1">アカウント名：</div><input type="text" name="name" value="<?php echo htmlspecialchars($name ?? ''); ?>"></div>
-                <div class="block"><div class="font1 space">パスワード：</div><input type="password" name="password" value="<?php echo htmlspecialchars($pass ?? ''); ?>"></div>
+                <div class="block"><div class="font1">アカウント名：</div><input type="text" name="name" value="<?php echo htmlspecialchars($name ?? ''); ?>" onchange="this.form.submit()"></div>
+                <div class="block"><div class="font1 space">パスワード：</div><input type="password" name="password" value="<?php echo htmlspecialchars($pass ?? ''); ?>" onchange="this.form.submit()"></div>
             </div>
 
             <p class="border">　</p>
@@ -79,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="content-row-m">
                 <div class="font1">職　　　　業：</div>
             <select name="job_id" id="jobSelect" onchange="this.form.submit()">
-            <option value="" selected hidden><?php echo htmlspecialchars($job_name ?? ''); ?></option>
+            <option value="<?php echo htmlspecialchars($job_id ?? ''); ?>" selected hidden><?php echo htmlspecialchars($job_name ?? ''); ?></option>
             <?php
             try {
                 $sql = $pdo->query('SELECT * FROM job');
@@ -108,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="status3">運</div><div class="status-value3"><?php echo $luck; ?></div>
 </div>
 
-<button type="button" onclick="location.href='account-create-complete.php'"><div class="font2">作成</div></button>
+<button type="submit" formaction="account-create-complete.php"><div class="font2">作成</div></button>
 
 </form>
 </body>
