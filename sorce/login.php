@@ -17,20 +17,20 @@
 
     <?php unset($_SESSION['user']); ?>
 
-    <div class="font1">アカウント名：<input type="text" name="account_name" require></div>
-    <div class="font1">パスワード：　<input type="password" name="password" require></div>
-    <button type="submit" ><div class="font2">ログイン</div></button><br>
-    </form>
-    <button type="button" onclick="location.href='b.html'"><div class="font2">新規作成</div></button>
-    </div>
-
     <?php
     if(isset($_GET['hogeA'])){
         echo '<p style="color:red">',htmlspecialchars($_GET['hogeA']),'</p>';
     }else{
         echo '<p style="color:red"><br></p>';
     }
-?>
+    ?>
+
+    <div class="font1">アカウント名：<input type="text" name="account_name" require></div>
+    <div class="font1">パスワード：　<input type="password" name="password" require></div>
+    <button type="submit" ><div class="font2">ログイン</div></button><br>
+    </form>
+    <button type="button" onclick="location.href='account-create.php'"><div class="font2">新規作成</div></button>
+    </div>
 
 </body>
 </html>

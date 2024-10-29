@@ -21,7 +21,7 @@ h1{
     margin-left: auto;
     margin-right: auto;
     width: 70vw;
-    height: 45vh;
+    height: 50vh;
     border: 9px solid #589E5A;
     border-radius:40px;
     padding: 6vh 0 0 5vw;
@@ -63,4 +63,10 @@ button{
     border: 1px solid;
     display: block;
     margin: 0 3vw 2vh auto;
+}
+
+p{
+    font-family: "RocknRoll One", sans-serif;
+    text-align: center;
+    font-size: 3.6vh;
 }
