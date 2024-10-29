@@ -9,14 +9,14 @@ export function createStatusScreen(loader,gameStatus, playerStatus,friend1Status
     // プレイヤーのステータス情報を表示
     const playerInfo = loader.add.text(
         statusWidth * 0.1, statusHeight * 0.1, 
-        `勇者 Lv.${playerStatus.level}\nHP: ${playerStatus.hp_nokori} / ${playerStatus.hp}\nMP: ${playerStatus.mp_nokori} / ${playerStatus.mp}`,
+        `勇者 Lv.${playerStatus.level}\nHP: ${playerStatus.hp_nokori} / ${playerStatus.hp}　　　MP: ${playerStatus.mp_nokori} / ${playerStatus.mp}`,
         { fontSize: '18px', fill: '#000' }
     );
 
     // ステータス属性の表示
     const attributes = loader.add.text(
         statusWidth * 0.1, statusHeight * 0.3,
-        `こうげき: ${playerStatus.pow}\nまもり: ${playerStatus.def}\nすばやさ: ${playerStatus.speed}\n運: ${playerStatus.luck}`,
+        `こうげき: ${playerStatus.pow}まもり: ${playerStatus.def}\nすばやさ: ${playerStatus.speed}運: ${playerStatus.luck}`,
         { fontSize: '16px', fill: '#000' }
     );
 
@@ -31,10 +31,10 @@ export function createStatusScreen(loader,gameStatus, playerStatus,friend1Status
             const friendStatus = friendStatuses[`friend${i}Status`];
             friendimage = loader.add.image(50, yOffset + i * 100, 'monsterSprite'+i); // モンスター画像
             friendInfo = loader.add.text(statusWidth * 0.1, statusHeight * 0.1, 
-                `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}\nMP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
+                `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
                 { fontSize: '18px', fill: '#000' });
             friendattributes = loader.add.text(statusWidth * 0.1, statusHeight * 0.3,
-                `こうげき: ${friendStatus.pow}\nまもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}\n運: ${friendStatus.luck}`,
+                `こうげき: ${friendStatus.pow}まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}運: ${friendStatus.luck}`,
                 { fontSize: '16px', fill: '#000' });
         }
     }
