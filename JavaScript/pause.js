@@ -1,4 +1,6 @@
 import {saveEvent,saveGame} from './save.js';
+import{logoutMessege,logoutdisplay} from'./logout.js';
+
 export function createPause(gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status){
     this.input.keyboard.on('keydown',(event) => {
         if(event.key === 'Escape'){
@@ -6,6 +8,7 @@ export function createPause(gameStatus,playerStatus,config,friend1Status,friend2
         }
     });
     saveGame(this,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
+    logoutMessage(this,config);
     menuBar(this,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
     createStatusScreen(loader,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
 }

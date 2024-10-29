@@ -1,3 +1,6 @@
+import {dataMap} from './player.js';
+let map;
+
 export function mappreload(loader){
     for(let i = 1; i <= 15; i++){
         loader.image(`town${i}`,`../assets/tilesets/town${i}.png`);
@@ -28,7 +31,9 @@ export function createMap(playerStatus){
 
 function displayMap({mapData,tilesets,layersu}){
     //タイルマップを作成
-    const map = this.make.tilemap({key:mapData});
+    map = this.make.tilemap({key:mapData});
+    dataMap(map);
+    
     //タイルセットを追加
     const addTilesets = tilesets.map(tileset => map.addTilesetImage(tileset,tileset));
 

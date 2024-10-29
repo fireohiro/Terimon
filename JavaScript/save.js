@@ -17,13 +17,38 @@ export async function saveGame(loader,playerStatus,config,gameStatus,friend1Stat
     const savetext = loader.add.text(config.width * 0.3 + 10 + saveWidth/2,saveHeight / -2 - 50,'はい',{fontSize:'18px'});
     const backtext = loader.add.text(config.width * 0.3 + 10 + saveWidth/2,saveHeight / -2,'いいえ',{fontSize:'18px'});
     //クリックイベント
-    savetext.setInteractive().on('pointerdown',()=>{
-        //セーブ用PHPを作って接続して引数としてplayerStatus,friend1~3Statusを渡たす
+    savetext.setInteractive().on('pointerdown',async()=>{
+            //保存データ準備
+            const saveData = {
+                playerStatus,
+                friend1Status,
+                friend2Status,
+                friend3Status,
+            };
+    
+            try{
+                //fetch関数を使ってデータをsave.phpに送信
+                const response = await fetch('../save.php',{
+                    method:'POST',//HTTPのPOSTメソッドを使用
+                    headers:{
+                        'Content-Type':'application/json',//送信データがJSON形式であることを宣言
+                    },
+                    body:JSON.stringify(saveData),//saveDataオブジェクトをJSON形式の文字列に変換し、送信
+                });
+                const result = await response.json();
+                if(result.success){
+                    alert('セーブが完了しました！');
+                }else{
+                    alert('セーブに失敗しました');
+                }
+            }catch(error){
+                console.error("セーブエラー",error);
+            }
     });
     backtext.setInteractive().on('pointerdown',()=>{
          saveEvent(gameStatus);
     });
-    saveContainer.loader.add.container(0,-500,[saveback,sevetext,backtext]);
+    saveContainer.loader.add.container(0,0,[saveback,sevetext,backtext]);
     saveContainer.setVisible(false);
     saveContainer.setDepth(7);
 }
