@@ -1,42 +1,84 @@
-let playerPosition = { x: 0, y: 0 };  // プレイヤーの初期位置
+//エンカウントしたらバトルが始まってほしいので↓
+import {battleStart} from './battle.js';
+const battlerate = 2;
+let player;
+let isMoving = false;//動いているのかの確認
+let mapdata;
 
-// PHPからプレイヤーの位置情報を取得
-fetch('get_player_position.php')
-    .then(response => response.json())
-    .then(data => {
-        playerPosition.x = data.x;
-        playerPosition.y = data.y;
-    });
+export function playerpreload(){
+    this.load.image('player','../assets/character/terimon1.png');
+}
 
-// キーボード操作でプレイヤーを動かす
-document.addEventListener('keydown', function(event) {
-    switch (event.key) {
-        case 'ArrowUp':
-            playerPosition.y -= 1;
-            break;
-        case 'ArrowDown':
-            playerPosition.y += 1;
-            break;
-        case 'ArrowLeft':
-            playerPosition.x -= 1;
-            break;
-        case 'ArrowRight':
-            playerPosition.x += 1;
-            break;
-        case 'Enter':
-            // 調べる処理
-            checkPosition(playerPosition);
-            break;
+export function playercreate(loader,playerStatus){
+    //プレイヤーをセーブ地に出現させる
+    player = loader.physics.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'player');
+    //カメラ調整,必要に応じて調整
+    loader.cameras.startFollow(player);//プレイヤー追従
+    if(playerStatus.map_id === 1){
+        //今のところmap_idの１はtown.jsonなので
+        loader.cameras.main.setZoom(1.5);//カメラを通常の1.5倍近づける
+    }else if(playerStatus.map_id === 2){
+        //必要に応じて変える
+        loader.cameras.main.setZoom(1.0);
     }
-    // 移動ごとにエンカウントチェック
-    checkEncounter();
-});
+    //ここに大きさ調整だったりプレイヤーがいる層の設定をする
 
-// プレイヤーが特定の位置を調べた際の処理
-function checkPosition(position) {
-    if (position.x === 5 && position.y === 3) {
-        alert("宝箱を発見しました！");
-    } else {
-        alert("何も見つかりませんでした");
+    //カーソルキーの設定をPhaserを使ってやりやすくする
+    cursors = loader.input.keyboard.createCursorKeys();
+}
+
+export function playerupdate(loader,config,playerStatus,friend1Status,friend2Status,friend3Status){
+    isMoving = false;//最初は動いていないことにする
+    if(cursors.up.isDown){
+        //上入力処理
+    }else if(cursors.dpwm/isDown){
+        //下入力処理
+    }//左右処理を別のif分で書くことで斜め移動を可能にしている
+
+    if(cursors.left.isDown){
+        //左入力処理
+    }else if(cursors.right.isDown){
+        //右入力処理
     }
+    //移動していたらエンカウント処理を行う（最速1フレームに１回）
+    if(isMoving){
+        //エンカウント処理
+        let encountnum = Math.floor(Math.random() * 100) + 1;
+        if(encountnum <= battlerate){//2%の確率でバトル発生
+            //バトル発生、configの後の引数はそのバトル相手が雑魚なのか中ボスなのかボスなのかを判定（１＝雑魚、２＝中ボス、３＝ボス）カスタムも可
+            battleStart(loader,config,1,gameStatus,friend1Status,friend2Status,friend3Status);
+        }
+    }
+    
+    //map情報をもとにプレイヤーがマップの外に行かないように調整する
+    const mapWidth = map.widthInPixels;
+    const mapHeight = map.heightInPixels;
+    if(playerStatus.savepoint_x < 0){
+        playerStatus.savepoint_x = 0;
+    }else if(playerStatus.savepoint_x > mapWidth){
+        playerStatus.savepoint_x = mapWidth;
+    }
+    if(playerStatus.savepoint_y < 0){
+        playerStatus.savepoint_y = 0;
+    }else if(playerStatus.savepoint_y > mapHeight){
+        playerStatus.savepoint_y = mapHeight;
+    }
+
+    //それぞれのマップごとにマップが切り替わるポイントを指定
+    if(playerStatus.map_id === 1){
+        if(playerStatus.savepoint_x <= 32 && playerStatus.savepoint_y <= 320 && playerStatus.savepoint_y >= 160){//マップ変更座標地はあくまで例なので、後で変更してください
+            playerStatus.map_id = 2;//map_idと書いているが、どのidがどのマップを表しているかは未定
+            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
+        }else if(playerStatus.savepoint_x >= mapWidth - 32 && playerStatus.savepoint_y <= 64 && playerStatus.savepoint_y >= 0){//処理内容を簡単に書くと、今いるポイントがX座標が端or端に近い場所であるかつY座標が一定の高さ以上一定の高さ未満であるときにマップの変更を行いますというもの
+            playerStatus.map_id = 3;
+        }
+    }else if(playerStatus.map_id === 2){
+        if(playerStatus.savepoint_x <= 10 && playerStatus.savepoint_y <= 500 && playerStatus.savepoint_y >= 450){
+            playerStatus.map_id = 4;
+        }
+    }
+}
+
+export function dataMap(mapdata){
+    map = mapdata;
 }
