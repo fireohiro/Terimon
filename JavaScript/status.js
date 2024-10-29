@@ -19,6 +19,11 @@ export function createStatusScreen(loader,gameStatus, playerStatus,friend1Status
         `こうげき: ${playerStatus.pow}まもり: ${playerStatus.def}\nすばやさ: ${playerStatus.speed}運: ${playerStatus.luck}`,
         { fontSize: '16px', fill: '#000' }
     );
+    const line = loader.add.lineStyle(2, 0xFFFFE0);
+    line.beginPath();
+    line.moveTo(statusWidth, statusHeight*0.5);   // 始点の座標 (x1, y1)
+    line.lineTo(statusWidth+200, statusHeight*0.5);  // 終点の座標 (x2, y2)
+    line.strokePath();
 
     // モンスター情報（例として追加）
     let yOffset = 150;
@@ -38,7 +43,7 @@ export function createStatusScreen(loader,gameStatus, playerStatus,friend1Status
                 { fontSize: '16px', fill: '#000' });
         }
     }
-    statusContainer.loader.add.container(0,0,[statusBackground,playerInfo,attributes,friendimage,friendInfo,friendattributes]);
+    statusContainer.loader.add.container(0,0,[statusBackground,playerInfo,attributes,friendimage,friendInfo,friendattributes,line]);
     statusContainer.setVisible(false);
     statusContainer.setDepth(7);
     // const monsters = playerStatus.monsters; // モンスターリスト
