@@ -130,7 +130,7 @@
         {
          "columns":16,
          "firstgid":625,
-         "image":"../tliesets/house4.png",
+         "image":"../tilesets/house4.png",
          "imageheight":512,
          "imagewidth":512,
          "margin":0,
@@ -196,11 +196,11 @@
         {
          "columns":8,
          "firstgid":1841,
-         "image":"..\/..\/..\/..\/..\/..\/Desktop\/\u5bb6\u7d20\u6750\/Inside-Town-A5.png",
+         "image":"../tilesets/house2.png",
          "imageheight":512,
          "imagewidth":256,
          "margin":0,
-         "name":"Inside-Town-A5",
+         "name":"house2",
          "spacing":0,
          "tilecount":128,
          "tileheight":32,
