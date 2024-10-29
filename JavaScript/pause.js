@@ -7,6 +7,7 @@ export function createPause(gameStatus,playerStatus,config,friend1Status,friend2
     });
     saveGame(this,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
     menuBar(this,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
+    createStatusScreen(loader,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
 }
 
 function pauseStart(gamestatus){
@@ -18,6 +19,24 @@ function pauseStart(gamestatus){
         this.physics.world.pause();//停止
     }else{
         this.physics.world.resume();//再稼働
+        if(gameStatus.itemflg === true){
+            //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+        }
+        if(gameStatus.gearflg === true){
+            //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+        }
+        if(gameStatus.statusflg === true){
+            //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            statusEvent(gameStatus);
+        }
+        if(gameStatus.saveflg === true){
+            //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            saveEvent(gameStatus);
+        }
+        if(gameStatus.logoutflg === true){
+            //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            logoutdisplay(gameStatus);
+        }
     }
 }
 
@@ -44,19 +63,80 @@ async function menuBar(loader,playerStatus,config,gameStatus,friend1Status,frien
     });
     // マウスがテキストに乗ったときの動作
     itemtext.on('pointerover', () => {
+        if(gameStatus.gearflg === true){
+            //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+        }
+        if(gameStatus.statusflg === true){
+            //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            statusEvent(gameStatus);
+        }
+        if(gameStatus.saveflg === true){
+            //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            saveEvent(gameStatus);
+        }
+        if(gameStatus.logoutflg === true){
+            //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            logoutdisplay(gameStatus);
+        }
         statustext.setStyle({ fill: '#ffff00', fontStyle: 'bold', underline: true });
     });
     geartext.setInteractive().on('pointerdown',()=>{
         //装備用のプログラムの関数を呼び出す
+        if(gameStatus.itemflg === true){
+            //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+        }
+        if(gameStatus.statusflg === true){
+            //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            statusEvent(gameStatus);
+        }
+        if(gameStatus.saveflg === true){
+            //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            saveEvent(gameStatus);
+        }
+        if(gameStatus.logoutflg === true){
+            //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            logoutdisplay(gameStatus);
+        }
     });
     statustext.setInteractive().on('pointerdown',()=>{
         //ステータス表示用のプログラムの関数を呼び出す
     });
     savetext.setInteractive().on('pointerdown',()=>{
+        if(gameStatus.itemflg === true){
+            //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+        }
+        if(gameStatus.gearflg === true){
+            //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+        }
+        if(gameStatus.statusflg === true){
+            //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            statusEvent(gameStatus);
+        }
+        if(gameStatus.logoutflg === true){
+            //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            logoutdisplay(gameStatus);
+        }
+        //セーブの表示と非表示
         saveEvent(gameStatus);
     });
     logouttext.setInteractive().on('pointerdown',()=>{
         //ログアウト用のプログラムの関数を呼び出す
+        if(gameStatus.itemflg === true){
+            //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+        }
+        if(gameStatus.gearflg === true){
+            //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+        }
+        if(gameStatus.statusflg === true){
+            //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            statusEvent(gameStatus);
+        }
+        if(gameStatus.saveflg === true){
+            //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            saveEvent(gameStatus);
+        }
+        //ログアウトウィンドウ表示
+        logoutdisplay(gameStatus);
     });
 
     //所持金欄の大きさ設定
