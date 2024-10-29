@@ -2,7 +2,7 @@
 //import {メソッド名（複数ある場合は,~とする)}from 'クラス名';
 import {mappreload,createMap} from './map.js';
 import {createPause} from './pause.js';
-import {playerpreload,playercreate,playerupdate} from './player.js';
+import {checkPosition} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
 
 function userData(){
@@ -51,9 +51,8 @@ export async function loadFriends(){
 
 //アセット（画像、音声など）の読み鋳込み
 function preload(){
-    mappreload(this.load);//map.jsのpreload処理を行う
-    playerpreload();//player.jsのpreload処理を行う
-    battlepreload(this.load);//battle.jsのpreload処理を行う
+    mappreload(this.load);//map.jsのpreload処理を読み込む
+    battlepreload(this.load);//battle.jsのpreload処理を読み込む
 }
 
 //ゲームの作成処理
@@ -63,9 +62,6 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     Object.assign(playerStatus, userData);//セッションデータをオブジェクトに保存
     loadFriends();
     createMap.call(this,playerStatus);
-
-    //プレイヤーを最後にいた地に表示
-    playercreate.call(this,playerStatus)
 
     //pauseのcreate処理
     createPause.call(this,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status);
@@ -87,6 +83,4 @@ function update(){
         //ポーズ中はupdate内の処理をすべて行わない
         return;
     }
-    //バトルでもポーズでもないときの処理↓
-    playerupdate.call(this,config,playerStatus,friend1Status,friend2Status,friend3Status);
 }

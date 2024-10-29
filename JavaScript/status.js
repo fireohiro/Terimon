@@ -22,19 +22,25 @@ export function createStatusScreen(loader,gameStatus, playerStatus,friend1Status
 
     // モンスター情報（例として追加）
     let yOffset = 150;
+    const friendimage=0;
+    const friendInfo=0;
+    const friendattributes=0;
     const friendStatuses = [friend1Status,friend2Status,friend3Status];
     for(let i=1;i<friendStatuses.length;i++){
         if(friendStatuses[i] != null){
             const friendStatus = friendStatuses[`friend${i}Status`];
-            loader.add.image(50, yOffset + i * 100, 'monsterSprite'+i); // モンスター画像
-            loader.add.text(statusWidth * 0.1, statusHeight * 0.1, 
+            friendimage = loader.add.image(50, yOffset + i * 100, 'monsterSprite'+i); // モンスター画像
+            friendInfo = loader.add.text(statusWidth * 0.1, statusHeight * 0.1, 
                 `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}\nMP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
                 { fontSize: '18px', fill: '#000' });
-            loader.add.text(statusWidth * 0.1, statusHeight * 0.3,
+            friendattributes = loader.add.text(statusWidth * 0.1, statusHeight * 0.3,
                 `こうげき: ${friendStatus.pow}\nまもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}\n運: ${friendStatus.luck}`,
                 { fontSize: '16px', fill: '#000' });
         }
     }
+    statusContainer.loader.add.container(0,0,[statusBackground,playerInfo,attributes,friendimage,friendInfo,friendattributes]);
+    statusContainer.setVisible(false);
+    statusContainer.setDepth(7);
     // const monsters = playerStatus.monsters; // モンスターリスト
     // let yOffset = 150;
     // for (let i = 0; i < monsters.length; i++) {
@@ -42,4 +48,9 @@ export function createStatusScreen(loader,gameStatus, playerStatus,friend1Status
     //     loader.add.text(100, yOffset + i * 100, `モンスター Lv.${monsters[i].level}`, { fontSize: '16px', fill: '#000' });
     // }
 
+}
+
+export function statusEvent(gameStatus){
+    gameStatus.statusflg = !gameStatus.statusflg;
+    statusContainer.setVisible(gameStatus.statusflg);
 }
