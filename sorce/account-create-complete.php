@@ -13,7 +13,7 @@
     $luck = $_SESSION['luck'];
 
 
-    $sql = $pdo->prepare('INSERT INTO account (account_name, level, experimence, job_id, hp, hp_nokori, mp, mp_nokori, pow, def, speed, luck, money, savepoint_x, savepoint_y,pass) 
+    $sql = $pdo->prepare('INSERT INTO account (account_name, level, experience, job_id, hp, hp_nokori, mp, mp_nokori, pow, def, speed, luck, money, savepoint_x, savepoint_y,pass) 
     VALUES (?, 1, 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, 300, 1, 1, ?)');
     $sql->execute([$name, $job_id, $hp, $hp, $mp, $mp, $pow, $def, $spe, $luck, $pass]);
 ?>
