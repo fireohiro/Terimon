@@ -20,6 +20,9 @@ function battleEnd(gameStatus,playerStatus,winflg){
         const message = `${playerStatus.name}は負けてしまったストレスから、${lostmoney}チピチャパをぶちまけた！`;
         displaymessage(scene,config,message);
         playerStatus.money *= 0.95;
+    }else{
+        const message = '勝った';
+        displaymessage(scene,config,message);
     }
 }
 
@@ -249,7 +252,7 @@ async function selectact(scene,gameStatus,playerStatus,friend1Status,friend2Stat
                         const randnum = Math.floor(Math.random() * 100) + 1;
                         if(combatant.luck >= randnum){
                             damage = Math.ceil(combatant.pow / 1.5) * 2;
-                            //会心の音などを入れたい場合はここら辺にフラグやら関数呼び出しやらを入れましょう
+                            //会心の音などを入れたい場合はここら辺にフラグやら関数呼び出しやらを入れる
                         }else{
                             damage = Math.ceil(combatant.pow / 1.5 - (enemy.def / 2));
                         }
