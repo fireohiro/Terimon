@@ -1,6 +1,4 @@
 import {saveEvent,saveGame} from './save.js';
-import{logoutMessege,logoutdisplay} from'./logout.js';
-
 export function createPause(gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status){
     this.input.keyboard.on('keydown',(event) => {
         if(event.key === 'Escape'){
@@ -8,7 +6,6 @@ export function createPause(gameStatus,playerStatus,config,friend1Status,friend2
         }
     });
     saveGame(this,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
-    logoutMessage(this,config);
     menuBar(this,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
 }
 
@@ -21,23 +18,6 @@ function pauseStart(gamestatus){
         this.physics.world.pause();//停止
     }else{
         this.physics.world.resume();//再稼働
-        if(gameStatus.itemflg === true){
-            //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.gearflg === true){
-            //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.statusflg === true){
-            //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.saveflg === true){
-            //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            saveEvent(gameStatus);
-        }
-        if(gameStatus.logoutflg === true){
-            //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            logoutdisplay(gameStatus);
-        }
     }
 }
 
@@ -62,98 +42,21 @@ async function menuBar(loader,playerStatus,config,gameStatus,friend1Status,frien
         //アイテム使用用のプログラムの関数を呼び出す
         createStatusScreen(loader,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config); 
     });
-    // マウスがテキストに乗ったときの動作、2つ以上の枠が出ないように、一旦全部のflgをオフにする
-
-    //アイテム
+    // マウスがテキストに乗ったときの動作
     itemtext.on('pointerover', () => {
-        if(gameStatus.gearflg === true){
-            //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.statusflg === true){
-            //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.saveflg === true){
-            //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            saveEvent(gameStatus);
-        }
-        if(gameStatus.logoutflg === true){
-            //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            logoutdisplay(gameStatus);
-        }
         statustext.setStyle({ fill: '#ffff00', fontStyle: 'bold', underline: true });
     });
-    //装備
     geartext.setInteractive().on('pointerdown',()=>{
         //装備用のプログラムの関数を呼び出す
-        if(gameStatus.itemflg === true){
-            //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.statusflg === true){
-            //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.saveflg === true){
-            //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            saveEvent(gameStatus);
-        }
-        if(gameStatus.logoutflg === true){
-            //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            logoutdisplay(gameStatus);
-        }
     });
-    //ステータス
     statustext.setInteractive().on('pointerdown',()=>{
         //ステータス表示用のプログラムの関数を呼び出す
-        if(gameStatus.itemflg === true){
-            //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.gearflg === true){
-            //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.saveflg === true){
-            //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            saveEvent(gameStatus);
-        }
-        if(gameStatus.logoutflg === true){
-            //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            logoutdisplay(gameStatus);
-        }
     });
-    //セーブ
     savetext.setInteractive().on('pointerdown',()=>{
-        if(gameStatus.itemflg === true){
-            //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.gearflg === true){
-            //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.statusflg === true){
-            //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.logoutflg === true){
-            //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            logoutdisplay(gameStatus);
-        }
-        //セーブの表示と非表示
         saveEvent(gameStatus);
     });
-    //ログアウト
     logouttext.setInteractive().on('pointerdown',()=>{
         //ログアウト用のプログラムの関数を呼び出す
-        if(gameStatus.itemflg === true){
-            //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.gearflg === true){
-            //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.statusflg === true){
-            //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-        }
-        if(gameStatus.saveflg === true){
-            //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            saveEvent(gameStatus);
-        }
-        //ログアウトウィンドウ表示
-        logoutdisplay(gameStatus);
     });
 
     //所持金欄の大きさ設定
@@ -172,7 +75,7 @@ async function menuBar(loader,playerStatus,config,gameStatus,friend1Status,frien
     );
 
     //メニュー要素をコンテナにまとめる
-    menuContainer = loader.add.container(0,0,[ここに枠の設定とテキストを変数,定数を入れる]);
+    menuContainer = loader.add.container(0,-500,[ここに枠の設定とテキストを変数,定数を入れる]);
     menuContainer.setVisible(false);//初期状態は非表示
     menuContainer.setDepth(7);//一意晩上に表示されるようにする
 }
