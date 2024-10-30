@@ -87,11 +87,11 @@
         {
          "columns":8,
          "firstgid":1,
-         "image":"..\/tilesets\/share1.png",
+         "image":"..\/tilesets\/home1.png",
          "imageheight":7968,
          "imagewidth":256,
          "margin":0,
-         "name":"share1",
+         "name":"home1",
          "spacing":0,
          "tilecount":1992,
          "tileheight":32,
