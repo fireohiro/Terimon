@@ -59,7 +59,7 @@ export function playerupdate(loader,config,playerStatus,friend1Status,friend2Sta
         //上入力処理
         player.setVelocityY(-160);
         player.anims.play('playerup', true);
-    }else if(cursors.dpwm/isDown){
+    }else if(cursors.down.isDown){
         //下入力処理
         player.setVelocityY(160);
         player.anims.play('playerdown', true);
