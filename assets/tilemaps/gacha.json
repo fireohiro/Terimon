@@ -199,7 +199,7 @@
         {
          "columns":8,
          "firstgid":1,
-         "image":"../tilesets/share1.png",
+         "image":"..\/tilesets\/share1.png",
          "imageheight":7968,
          "imagewidth":256,
          "margin":0,

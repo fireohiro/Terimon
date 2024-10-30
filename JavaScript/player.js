@@ -25,20 +25,54 @@ export function playercreate(loader,playerStatus){
 
     //カーソルキーの設定をPhaserを使ってやりやすくする
     cursors = loader.input.keyboard.createCursorKeys();
+
+    // プレイヤーのアニメーション
+    scene.anims.create({
+        key: 'playerdown',
+        frames: scene.anims.generateFrameNumbers('player', { start: 0, end: 2 }),
+        frameRate: 10,
+        repeat: -1
+    });
+    scene.anims.create({
+        key: 'playerleft',
+        frames: scene.anims.generateFrameNumbers('player', { start: 3, end: 5 }),
+        frameRate: 10,
+        repeat: -1
+    });
+    scene.anims.create({
+        key: 'playerright',
+        frames: scene.anims.generateFrameNumbers('player', { start: 6, end: 8 }),
+        frameRate: 10,
+        repeat: -1
+    });
+    scene.anims.create({
+        key: 'playerup',
+        frames: scene.anims.generateFrameNumbers('player', { start: 9, end: 11 }),
+        frameRate: 10,
+        repeat: -1
+    });
 }
 
 export function playerupdate(loader,config,playerStatus,friend1Status,friend2Status,friend3Status){
     isMoving = false;//最初は動いていないことにする
     if(cursors.up.isDown){
         //上入力処理
-    }else if(cursors.dpwm/isDown){
+        player.setVelocityY(-160);
+        player.anims.play('playerup', true);
+    }else if(cursors.down.isDown){
         //下入力処理
+        player.setVelocityY(160);
+        player.anims.play('playerdown', true);
     }//左右処理を別のif分で書くことで斜め移動を可能にしている
 
     if(cursors.left.isDown){
         //左入力処理
+        player.setVelocityX(-160);
+        player.anims.play('playerleft', true);
     }else if(cursors.right.isDown){
         //右入力処理
+        player.setVelocityX(160);
+        player.anims.play('playerright', true);
     }
     //移動していたらエンカウント処理を行う（最速1フレームに１回）
     if(isMoving){

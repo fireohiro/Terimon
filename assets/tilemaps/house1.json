@@ -91,7 +91,7 @@
         {
          "columns":16,
          "firstgid":1,
-         "image":"../tilesets/house1.png",
+         "image":"..\/tilesets\/house1.png",
          "imageheight":480,
          "imagewidth":512,
          "margin":0,
@@ -104,7 +104,7 @@
         {
          "columns":8,
          "firstgid":241,
-         "image":"../tilesets/house2.png",
+         "image":"..\/tilesets\/house2.png",
          "imageheight":512,
          "imagewidth":256,
          "margin":0,
@@ -117,7 +117,7 @@
         {
          "columns":16,
          "firstgid":369,
-         "image":"../tilesets/house3.png",
+         "image":"..\/tilesets\/house3.png",
          "imageheight":512,
          "imagewidth":512,
          "margin":0,
@@ -130,7 +130,7 @@
         {
          "columns":16,
          "firstgid":625,
-         "image":"../tilesets/house4.png",
+         "image":"..\/tilesets\/house4.png",
          "imageheight":512,
          "imagewidth":512,
          "margin":0,
@@ -143,7 +143,7 @@
         {
          "columns":16,
          "firstgid":881,
-         "image":"../tilesets/house5.png",
+         "image":"..\/tilesets\/house5.png",
          "imageheight":512,
          "imagewidth":512,
          "margin":0,
@@ -156,7 +156,7 @@
         {
          "columns":16,
          "firstgid":1137,
-         "image":"../tilesets/house6.png",
+         "image":"..\/tilesets\/house6.png",
          "imageheight":512,
          "imagewidth":512,
          "margin":0,
@@ -169,7 +169,7 @@
         {
          "columns":16,
          "firstgid":1393,
-         "image":"../tilesets/house7.png",
+         "image":"..\/tilesets\/house7.png",
          "imageheight":384,
          "imagewidth":512,
          "margin":0,
@@ -182,11 +182,11 @@
         {
          "columns":16,
          "firstgid":1585,
-         "image":"..\/..\/..\/..\/..\/..\/Downloads\/CastleTown-B.png",
+         "image":"..\/tilesets\/house8.png",
          "imageheight":512,
          "imagewidth":512,
          "margin":0,
-         "name":"CastleTown-B",
+         "name":"house8",
          "spacing":0,
          "tilecount":256,
          "tileheight":32,
@@ -196,7 +196,7 @@
         {
          "columns":8,
          "firstgid":1841,
-         "image":"../tilesets/house2.png",
+         "image":"..\/tilesets\/house2.png",
          "imageheight":512,
          "imagewidth":256,
          "margin":0,
