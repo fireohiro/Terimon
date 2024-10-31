@@ -2,6 +2,10 @@
 const enemy1 = {};
 const enemy2 = {};
 const enemy3 = {};
+const friendImages = [];
+let actX;
+let actY;
+
 export function battlepreload(loader){
     //敵画像
     for(let i = 1; i <= 10;i++){
@@ -32,6 +36,23 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
     const displayData = gameStatus.playerfight ? [playerStatus]:friendStatuses.slice(0,gameStatus.temotisu);
     displayStatus(scene,gameStatus,displayData,config);
     let combatants;
+    //プレイヤー以外が戦っているときに、全モンスターが倒れたら、強制的にプレイヤーが戦うように前線に出す
+    if(!gameStatus.playerfight){
+        if(gameStatus.temotisu === 1){
+            if(friend1Status.hp_nokori === 0){
+                gameStatus.playerfight = true;
+            }
+        }else if(gameStatus.temotisu === 2){
+            if(friend1Status.hp_nokori === 0 && friend2Status.hp_nokori === 0){
+                gameStatus.playerfight = true;
+            }
+        }else if(gameStatus.temotisu === 3){
+            if(friend1Status.hp_nokori === 0 && friend2Status.hp_nokori === 0 && friend3Status.hp_nokori === 0){
+                gameStatus.playerfight = true;
+            }
+        }
+    }
+    //ターン計算
     if(gameStatus.playerfight){
         //playerfightがtrueであればプレイヤーと敵のスピードを比較
         combatants = [playerStatus,...enemyes];
@@ -46,7 +67,7 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
     for(const combatant of combatants){
         if(combatant.type === 'enemy'){
             //敵であればenemyaction関数を呼び出す
-            enemyaction(combatant);//未作成
+            enemyaction(combatant,gameStatus);//作成済み
         }else{
             //味方の場合はselectact関数を呼び出す
             //friend1~3Statusオブジェクトにはtypeデータがないのでundefindでプレイヤーと味方はこっちに入る
@@ -56,15 +77,40 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
     //勝利条件チェック
     const allEnemiesDefeated = enemyes.every(enemy => enemy.hp_nokori <= 0);
     if(allEnemiesDefeated){
-        displaymessage(scene,config,"勝利しました！");
         battleEnd(gameStatus,playerStatus,true);
     }
     //敗北条件チェック
     if(playerStatus.hp_nokori <= 0){
         battleEnd(gameStatus,playerStatus,false);
     }
+
+    function enemyaction(combatant){
+        if(gameStatus.playerfight){
+            const damage = combatant.pow / 1.5 - (playerStatus.def / 2);
+            playerStatus.hp_nokori -= damage;
+            displaymessage(scene,config,`${playerStatus.name}本体に${damage}のダメージ！！`);
+            if(playerStatus.hp_nokori <= 0){
+                playerStatus.hp_nokori = 0;
+                battleEnd(gameStatus,playerStatus,false);
+            }
+        }else{
+            let i = 0;
+            const member = [friend1Status,friend2Status,friend3Status].slice(0,gameStatus.temoti);
+            member.forEach(friend => {
+                const damage = combatant.pow / 1.5 - (friend.def / 2);
+                friend.hp_nokori -= damage;
+                displaymessage(scene,config,`${friend.name}に${damage}ダメージ！`);
+                if(friend.hp_nokori <= 0){
+                    friend.hp_nokori = 0;
+                    displaymessage(scene,config,`${friend.name}は倒れた！`);
+                    friendImages[i].setVisible(false);
+                }
+            });
+        }
+    }
 }
 
+//バトルスタート
 export async function battleStart(scene,config,bunrui,gameStatus,friend1Status,friend2Status,friend3Status){
     let enemies = [];
     gameStatus.battleflg = true;
@@ -101,22 +147,25 @@ export async function battleStart(scene,config,bunrui,gameStatus,friend1Status,f
         
     });
 
-    //手持ちモンスターを右下に表示する処理
-    const friendStatuses = [friend1Status,friend2Status,friend3Status];
-    const startX = 900;
-    const startY = 700;
-    const spacing = 60;
+    //モンスターが戦う場合、手持ちモンスターを右下に表示する処理
+    if(!gameStatus.playerfight){
+        const friendStatuses = [friend1Status,friend2Status,friend3Status];
+        const startX = 900;
+        const startY = 700;
+        const spacing = 60;
 
-    for(let i = 0; i <= gameStatus.temotisu;i++){
-        gameStatus.playerfight = false;
-        const friend = friendStatuses[i];
-        const friendImagePath = `../assets/battleimg/${friend.gazou}`;
-        const friendImage = scene.add.image(startX + i * spacing,startY,friendImagePath);
-        friendImage.setDisplaySize(50,50);
-        friendImage.setDepth(1);
+        for(let i = 0; i <= gameStatus.temotisu;i++){
+            gameStatus.playerfight = false;
+            const friend = friendStatuses[i];
+            const friendImagePath = `../assets/battleimg/${friend.gazou}`;
+            const friendImage = scene.add.image(startX + i * spacing,startY,friendImagePath);
+            friendImage.setDisplaySize(50,50);
+            friendImage.setDepth(1);
+            friendImages.push(friendImage);
+        }
     }
 
-    //敵の名前と～が現れた！をhtmlと一緒に表示
+    //敵の名前と～が現れた！を表示
     const message = `${enemy1.name}と${enemy2.name}と${enemy3.name}が現れた！`;
     await displaymessage(scene,config,message);
 }
@@ -261,45 +310,57 @@ async function selectact(scene,gameStatus,playerStatus,friend1Status,friend2Stat
                 });
                 break;
             case "まほう":
-                //まほうの処理
+                if(playerStatus.playerfight){
+                    displaymessage(scene,config,`${playerStatus.name}は人間なので、まほうはつかえない！`);
+                }else{
+                    const wazaIds = [
+                        combatant.waza_id1,
+                        combatant.waza_id2,
+                        combatant.waza_id3,
+                        combatant.waza_id4
+                    ];
+                    
+                }
                 break;
             case "アイテム":
                 //アイテムの処理
                 break;
             case "俺が出る":
                 gameStatus.playerfight = true;
+                displaymessage(scene,config,`${playerStatus.name}が前に出た！`);
                 break;
             case "やっぱ引く":
                 gameStatus.playerfight = false;
+                displaymessage(scene,config,`${playerStatus.name}はやっぱり家に引きこもることを決めた！`);
                 break;
         }
     }
-    function attack(enemy,damage,scene,config,playerStatus,friend1Status,friend2Status,friend3Status,gameStatus){
-        //ダメージ表示（ダメージエフェクトをつけたいのならここにつけましょ
-        const damag = `${enemy.name}に${damage}ダメージを与えた！`;
-        displaymessage(scene,config,damag);enemy.hp_nokori -= damage;
-        if(enemy.hp_nokori < 0){
-            enemy.hp_nokori = 0;
-            //モンスター名＋を倒した！を下のメッセージボックス内で表示
-            const message = `${enemy.name}を倒した！`;
-            displaymessage(scene,config,message);
-            //指定していたお金ドロップの量を手持ち金額に追加して表示する
-            playerStatus.money += enemy.drop_money;
-            const message2 = `${enemy.drop_money}チピチャパを手に入れた！`;
-            displaymessage(scene,config,message2);
-            //レベルアップ処理
-            if(gameStatus.playerfight){
-                playerStatus.experimence += enemy.experience;
-            }else{
-                friend1Status.get_experience += enemy.experience;
-                friend2Status.get_experience += enemy.experience;
-                friend3Status.get_experience += enemy.experience;
-            }
-            //一定の経験値量でレベルアップ
-            
-            //一定の確率で仲間になりたがる
-
-            //仲間になるならない関係なく、倒したモンスターの画像をゲーム画面から消す
+}
+function attack(enemy,damage,scene,config,playerStatus,friend1Status,friend2Status,friend3Status,gameStatus){
+    //ダメージ表示（ダメージエフェクトをつけたいのならここにつけましょ
+    const damag = `${enemy.name}に${damage}ダメージを与えた！`;
+    displaymessage(scene,config,damag);enemy.hp_nokori -= damage;
+    if(enemy.hp_nokori < 0){
+        enemy.hp_nokori = 0;
+        //モンスター名＋を倒した！を下のメッセージボックス内で表示
+        const message = `${enemy.name}を倒した！`;
+        displaymessage(scene,config,message);
+        //指定していたお金ドロップの量を手持ち金額に追加して表示する
+        playerStatus.money += enemy.drop_money;
+        const message2 = `${enemy.drop_money}チピチャパを手に入れた！`;
+        displaymessage(scene,config,message2);
+        //レベルアップ処理
+        if(gameStatus.playerfight){
+            playerStatus.experimence += enemy.experience;
+        }else{
+            friend1Status.get_experience += enemy.experience;
+            friend2Status.get_experience += enemy.experience;
+            friend3Status.get_experience += enemy.experience;
         }
+        //一定の経験値量でレベルアップ
+        
+        //一定の確率で仲間になりたがる
+
+        //仲間になるならない関係なく、倒したモンスターの画像をゲーム画面から消す
     }
 }

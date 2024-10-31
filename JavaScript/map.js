@@ -49,7 +49,7 @@ export function checkAndCreateMap(playerStatus){
     }
 }
 
-function map_idHashChanged(playerStatus){
+function map_idHasChanged(playerStatus){
     if(previousMapId !== playerStatus.map_id){
         previousMapId = playerStatus.map_id;
         return true;
@@ -58,6 +58,10 @@ function map_idHashChanged(playerStatus){
 }
 
 export function createMap(playerStatus){
+    if(map){
+        map.destroy();
+        tilesets = [];
+    }
     const map_id = playerStatus.map_id;
     //マップidごとに表示させる
     if(map_id === 1){
@@ -73,30 +77,30 @@ export function createMap(playerStatus){
     }else if(map_id === 3){
         mapData = 'grassMap';
         for(let i = 1; i <= 2; i++){
-            tilesets.push(`grass{id}`)
+            tilesets.push(`grass${i}`)
         }
         layersu = 2;
     }else if(map_id === 4){
         mapData = 'townMap';
         for(let i = 1; i <= 15; i++){
-            tilesets.push(`town${id}`)
+            tilesets.push(`town${i}`)
         }
         layersu = 4;
     }else if(map_id === 5){
         mapData = 'gachaMap';
         for(let i = 1; i <= 1; i++){
-            tilesets.push(`gacha${id}`)
+            tilesets.push(`gacha${i}`)
         }
         layersu = 2;
     }else if(map_id === 6){
         mapData = 'entryMap';
         for(let i = 1; i <= 2; i++){
-            tilesets.push(`entry${id}`)
+            tilesets.push(`entry${i}`)
         }
     }else if(map_id === 7){
         mapData = 'dungeonMap';
         for(let i = 1; i <= 7; i++){
-            tilesets.push(`rock${id}`)
+            tilesets.push(`rock${i}`)
         }
         layersu = 3;
     }
