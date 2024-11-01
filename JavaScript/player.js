@@ -100,9 +100,11 @@ export function playerupdate(loader,config,playerStatus,friend1Status,friend2Sta
 
     //それぞれのマップごとにマップが切り替わるポイントを指定
     if(playerStatus.map_id === 1){
-        if(playerStatus.savepoint_x <= 32 && playerStatus.savepoint_y <= 320 && playerStatus.savepoint_y >= 160){//マップ変更座標地はあくまで例なので、後で変更してください
+        if((200 <= playerStatus.savepoint_x && playerStatus.savepoint_x <= 230 ) && ( 500 <= playerStatus.savepoint_y && playerStatus.savepoint_y <= 530)){
             playerStatus.map_id = 2;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
+            checkAndCreateMap(playerStatus);
+            player.setPosition(915, 285);
         }else if(playerStatus.savepoint_x >= mapWidth - 32 && playerStatus.savepoint_y <= 64 && playerStatus.savepoint_y >= 0){//処理内容を簡単に書くと、今いるポイントがX座標が端or端に近い場所であるかつY座標が一定の高さ以上一定の高さ未満であるときにマップの変更を行いますというもの
             playerStatus.map_id = 3;
         }

@@ -44,7 +44,7 @@ export function mappreload(loader){
 }
 //マップが切り替わったかを確認
 export function checkAndCreateMap(playerStatus){
-    if(!map || map_idHasChanged(playerStatus)){
+    if(!map || map_idHashChanged(playerStatus)){
         createMap(playerStatus);
     }
 }
@@ -59,6 +59,9 @@ function map_idHashChanged(playerStatus){
 
 export function createMap(playerStatus){
     const map_id = playerStatus.map_id;
+    tilesets = []; // タイルセットをリセット
+    layersu = 0; // レイヤー数もリセット
+
     //マップidごとに表示させる
     if(map_id === 1){
         mapData = 'houseMap';
