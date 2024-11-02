@@ -19,17 +19,17 @@ CREATE TABLE Maps (
 CREATE TABLE Job (
     job_id INT AUTO_INCREMENT,                      -- ジョブの一意な識別子
     job_name VARCHAR(20) NOT NULL,                  -- ジョブ名
-    start_hp INT NOT NULL,                          --HP初期値
+    start_hp INT NOT NULL,                          -- HP初期値
     add_hp INT NOT NULL,                            -- HP増加値
-    start_mp INT NOT NULL,                          --MP初期値
+    start_mp INT NOT NULL,                          -- MP初期値
     add_mp INT NOT NULL,                            -- MP増加値
-    start_strength INT NOT NULL,                          --ちから初期値
+    start_strength INT NOT NULL,                          -- ちから初期値
     add_strength INT NOT NULL,                      -- ちから増加値
-    start_defense INT NOT NULL,                          --まもり初期値
+    start_defense INT NOT NULL,                          -- まもり初期値
     add_defense INT NOT NULL,                       -- まもり増加値
-    start_speed INT NOT NULL,                          --スピード初期値
+    start_speed INT NOT NULL,                          -- スピード初期値
     add_speed INT NOT NULL,                         -- スピード増加値
-    start_luck INT NOT NULL,                          --運初期値
+    start_luck INT NOT NULL,                          -- 運初期値
     add_luck INT NOT NULL,                          -- 運増加値
     PRIMARY KEY(job_id)
 );
@@ -61,7 +61,7 @@ CREATE TABLE Waza (
     might INT NOT NULL,                              -- 威力
     hit_rate INT NOT NULL,                          -- 命中率
     waza_manual VARCHAR(255) NOT NULL,                  -- 技の説明 
-    PRIMARY KEY(item_id)
+    PRIMARY KEY(waza_id)
 );
 
 -- 耐性TABLE
@@ -84,7 +84,7 @@ CREATE TABLE Resistance (
     PRIMARY KEY(resistance_id)
 );
 
---モンスターごとの攻撃耐性と運は固定
+-- モンスターごとの攻撃耐性と運は固定
 -- 育成アイテムは使用回数に制限
 -- ポイント振り分け(ランダム？)
 -- レベルごとのポイントを別テーブルで分けてもいいかも(大器晩成、早熟とか)
@@ -96,7 +96,7 @@ CREATE TABLE Monster (
     monster_name VARCHAR(20) NOT NULL,           -- モンスターの名前
     image VARCHAR(50) NOT NULL,                      -- モンスターの画像パス
     bunrui VARCHAR(10) NOT NULL,                      -- モンスターの分類
-    resist_id INT NOT NULL,             -- 攻撃耐性(技に対する耐性)
+    resistance_id INT NOT NULL,             -- 攻撃耐性(技に対する耐性)
     level_start INT NOT NULL,               -- レベル初期値
     hp_start INT NOT NULL,                  -- HP初期値
     mp_start INT NOT NULL,                  -- MP初期値
@@ -107,7 +107,7 @@ CREATE TABLE Monster (
     experience INT NOT NULL,                  -- ドロップ経験値
     drop_money INT NOT NULL,                  -- ドロップ金額
     PRIMARY KEY(monster_id),
-    FOREIGN KEY (resist_id) REFERENCES Resistance(resist_id)
+    FOREIGN KEY (resistance_id) REFERENCES Resistance(resistance_id)
 );
 
 -- セーブデータTABLE
@@ -172,6 +172,9 @@ CREATE TABLE Friends (
     FOREIGN KEY (monster_id) REFERENCES Monster(monster_id),
     FOREIGN KEY (job_id) REFERENCES Job(job_id),
     FOREIGN KEY (waza_id1) REFERENCES Waza(waza_id),
+    FOREIGN KEY (waza_id2) REFERENCES Waza(waza_id),
+    FOREIGN KEY (waza_id3) REFERENCES Waza(waza_id),
+    FOREIGN KEY (waza_id4) REFERENCES Waza(waza_id)
 );
 
 
@@ -199,7 +202,7 @@ CREATE TABLE Inventory (
 -- セーブデータに紐づいた武器TABLE
 CREATE TABLE Inventory_Gear (
     save_id INT NOT NULL,            -- セーブデータの一意な識別子
-    gear_id_id INT NOT NULL,                 -- 武器の一意な識別子
+    gear_id INT NOT NULL,                 -- 武器の一意な識別子
     gear_sum INT NOT NULL,                  -- 個数
     gear_used_sum INT NOT NULL,             -- 使用中の個数
     PRIMARY KEY(save_id,gear_id),
