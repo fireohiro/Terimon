@@ -138,7 +138,7 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
         const actHeight = config.height * 0.4;
         actX = config.width * 0.05;
         actY = config.height * 0.5;//表示座標を一番下から少し上にする
-        const actions = gameStatus.playerfight ? ["こうげき","アイテム","まほう","やっぱ引く"]:["こうげき","アイテム","まほう","俺が出る"];
+        const actions = gameStatus.playerfight ? ["こうげき","どうぐ","まほう","やっぱ引く"]:["こうげき","どうぐ","まほう","俺が出る"];
         const actionContainer = scene.add.container();
     
         actions.forEach((action,index)=>{
@@ -197,7 +197,7 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
                         fetch('../get_waza.php',{
                             method:'POST',
                             headers:{
-                                'Content-Tyepe':'application/json'
+                                'Content-Type':'application/json'
                             },
                             body:JSON.stringify({waza_id:wazaIds})
                         })
@@ -228,8 +228,38 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
                         
                     }
                     break;
-                case "アイテム":
-                    //アイテムの処理
+                case "どうぐ":
+                    fetch('../get_item.php',{
+                        method:'POST',
+                        headers:{
+                            'Content-Type':'application/json'
+                        },
+                        body:JSON.stringify({account_id:playerStatus.account_id})
+                    })
+                    .then(response=>response.json())
+                    .then(data=>{
+                        itemList = data.items;
+
+                        //枠作成
+                        const frameWidth = config.width *0.4;
+                        const frameHeight = config.height * 0.4;
+                        const frameX = 60;
+                        const frameY = 310;
+
+                        const frame = scene.add.rectangle(frameX,frameY,frameWidth,frameHeight,0x000000);
+                        frame.setStrokeStyle(2,0xffffff);
+                        frame.setRadius(10);
+                        frame.setDepth(3);
+
+                        let textY = frameY - frameHeight + 20;
+                        magicList.forEach((magic,index)=>{
+                            const wazatext=scene.add.text(frameX + 10,textY,`${magic.waza_name}　　　MP:${shouhi_mp}　　　分類：${naiyou}`,{fontSize:'16px',fill:'#ffffff'});
+                            wazatext.setInteractive().on('pointerdown',()=>{
+                                magicRole(magic);
+                            });
+                            textY += 15;
+                        });
+                    })
                     break;
                 case "俺が出る":
                     gameStatus.playerfight = true;

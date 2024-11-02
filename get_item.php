@@ -1,24 +1,17 @@
 <?php
-session_start();
-require 'db-connect.php';
+    session_start();
+    require 'db-connect.php';
+    $pdo = new PDO($connect,USER,PASS);
+    $data = json_decode(file_get_contents("php://input"),true);
+    $account_id = $data['account_id'];
 
-function getItems($pdo) {
-    $accountId = $_SESSION['account_id'];
-    
-    // 所持品テーブルからアイテムを取得
-    $sql = "SELECT * FROM get_item WHERE account_id = ?";
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([$accountId]);
-    
     $items = [];
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $items[] = $row;
-    }
-    
-    return $items;
-}
-
-// アイテム取得処理
-header('Content-Type: application/json');
-echo json_encode(getItems($pdo));
+    $sql=$pdo->prepare(
+        'SELECT i.*, gi.su 
+         FROM item AS i 
+         INNER JOIN get_item AS gi ON i.item_id = gi.item_id 
+         WHERE gi.account_id = ? AND gi.su >= 1');
+    $sql->execute([$account_id]);
+    $items = $sql->fetchAll(PDO::FETCH_ASSOC);
+    echo json_encode(['items' => $items]);
 ?>
