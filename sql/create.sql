@@ -1,5 +1,5 @@
 
--- ユーザーDB
+-- ユーザーTABLE
 CREATE TABLE User (
     user_id INT AUTO_INCREMENT,                       -- ユーザーの一意な識別子
     loginId VARCHAR(255) NOT NULL UNIQUE,             -- ログインID、一意
@@ -8,14 +8,14 @@ CREATE TABLE User (
     PRIMARY KEY(user_id)
 );
 
--- マップDB
+-- マップTABLE
 CREATE TABLE Maps (
     map_id INT AUTO_INCREMENT,                       -- マップの一意な識別子
     map_name VARCHAR(255) NOT NULL,                  -- マップ名
     PRIMARY KEY(map_id)
 );
 
--- ジョブDB
+-- ジョブTABLE
 CREATE TABLE Job (
     job_id INT AUTO_INCREMENT,                      -- ジョブの一意な識別子
     job_name VARCHAR(20) NOT NULL,                  -- ジョブ名
@@ -36,7 +36,7 @@ CREATE TABLE Job (
 
 -- 武器やアイテムの処理はPhaser側で行う
 
--- 武器DB
+-- 武器TABLE
 CREATE TABLE Gear (
     gear_id INT AUTO_INCREMENT,                      -- 武器の一意な識別子
     gear_name VARCHAR(20) NOT NULL,                  -- 武器名
@@ -45,7 +45,7 @@ CREATE TABLE Gear (
     PRIMARY KEY(gear_id)
 );
 
--- アイテムDB
+-- アイテムTABLE
 CREATE TABLE Item (
     item_id INT AUTO_INCREMENT,                      -- アイテムの一意な識別子
     item_name VARCHAR(20) NOT NULL,                  -- アイテム名
@@ -53,7 +53,7 @@ CREATE TABLE Item (
     PRIMARY KEY(item_id)
 );
 
--- 技DB
+-- 技TABLE
 CREATE TABLE Waza (
     waza_id INT AUTO_INCREMENT,                      -- 技の一意な識別子
     waza_name VARCHAR(20) NOT NULL,                  -- 技名
@@ -64,20 +64,39 @@ CREATE TABLE Waza (
     PRIMARY KEY(item_id)
 );
 
+-- 耐性TABLE
+CREATE TABLE Resistance (
+    resistance_id INT AUTO_INCREMENT,  -- 耐性の一意な識別子
+    fire_resistance DECIMAL(3, 2) DEFAULT 1.0,   -- 火属性の耐性
+    water_resistance DECIMAL(3, 2) DEFAULT 1.0,  -- 水属性の耐性
+    wind_resistance DECIMAL(3, 2) DEFAULT 1.0,   -- 風属性の耐性
+    earth_resistance DECIMAL(3, 2) DEFAULT 1.0,   -- 地耐性
+    grass_resistance DECIMAL(3, 2) DEFAULT 1.0,   -- 草耐性
+    lightning_resistance DECIMAL(3, 2) DEFAULT 1.0,-- 雷耐性
+    ice_resistance DECIMAL(3, 2) DEFAULT 1.0,    -- 氷属性の耐性
+    physical_resistance DECIMAL(3, 2) DEFAULT 1.0,-- 物理耐性
+    magic_resistance DECIMAL(3, 2) DEFAULT 1.0,  -- 魔法耐性
+    death_resistance DECIMAL(3, 2) DEFAULT 1.0,  -- 即死耐性
+    healing_resistance DECIMAL(3, 2) DEFAULT 1.0,-- 回復耐性
+    poison_resistance DECIMAL(3, 2) DEFAULT 1.0, -- 毒耐性
+    paralysis_resistance DECIMAL(3, 2) DEFAULT 1.0,-- 麻痺耐性
+    curse_resistance DECIMAL(3, 2) DEFAULT 1.0,   -- 呪い耐性
+    PRIMARY KEY(resistance_id)
+);
+
 --モンスターごとの攻撃耐性と運は固定
 -- 育成アイテムは使用回数に制限
 -- ポイント振り分け(ランダム？)
 -- レベルごとのポイントを別テーブルで分けてもいいかも(大器晩成、早熟とか)
--- 強いモンスターはその分レベルアップ回数を少なくして自由度を減らす
--- 耐性も別テーブルにして全耐性とか実現できる(IDにしてPhaser側で処理を分けてもいいかも)
+-- 強いモンスターはその分レベルアップ回数を少なくして自由度を減らすとか？
 
--- モンスターデータテーブル
+-- モンスターデータTABLE
 CREATE TABLE Monster (
     monster_id INT AUTO_INCREMENT,               -- モンスターの一意な識別子
     monster_name VARCHAR(20) NOT NULL,           -- モンスターの名前
     image VARCHAR(50) NOT NULL,                      -- モンスターの画像パス
     bunrui VARCHAR(10) NOT NULL,                      -- モンスターの分類
-    resist VARCHAR(5) NOT NULL,             -- 攻撃耐性(技に対する耐性)
+    resist_id INT NOT NULL,             -- 攻撃耐性(技に対する耐性)
     level_start INT NOT NULL,               -- レベル初期値
     hp_start INT NOT NULL,                  -- HP初期値
     mp_start INT NOT NULL,                  -- MP初期値
@@ -87,10 +106,11 @@ CREATE TABLE Monster (
     lack INT NOT NULL,                        -- 運の良さ
     experience INT NOT NULL,                  -- ドロップ経験値
     drop_money INT NOT NULL,                  -- ドロップ金額
-    PRIMARY KEY(monster_id)
+    PRIMARY KEY(monster_id),
+    FOREIGN KEY (resist_id) REFERENCES Resistance(resist_id)
 );
 
--- セーブデータDB
+-- セーブデータTABLE
 CREATE TABLE SaveData (
     save_id INT AUTO_INCREMENT,         -- セーブデータの一意な識別子
     user_id INT NOT NULL,                           -- ユーザーの識別子 (Usersテーブルの外部キー)
@@ -118,7 +138,7 @@ CREATE TABLE SaveData (
     FOREIGN KEY (map_id) REFERENCES Maps(map_id)                     -- Mapsテーブルへの外部キー制約
 );
 
--- 取得技DB
+-- 取得技TABLE
 CREATE TABLE Monster_Waza (
     monster_id INT NOT NULL,            -- モンスターの一意な識別子
     waza_id INT NOT NULL,                 -- 技の一意な識別子
@@ -128,7 +148,7 @@ CREATE TABLE Monster_Waza (
     FOREIGN KEY (waza_id) REFERENCES Waza(waza_id)
 );
 
--- セーブデータに紐づいた仲間一覧(牧場等で表示される)
+-- セーブデータに紐づいた仲間一覧(牧場等で表示される)TABLE
 CREATE TABLE Friends (
     friend_id INT NOT NULL AUTO_INCREMENT,  -- 仲間の一意な識別子
     save_id INT NOT NULL,                   -- セーブデータの一意な識別子
@@ -155,7 +175,7 @@ CREATE TABLE Friends (
 );
 
 
--- セーブデータに紐づいたパーティーメンバー(連れている仲間)
+-- セーブデータに紐づいたパーティーメンバー(連れている仲間)TABLE
 CREATE TABLE Friends_party (
     friend_id INT NOT NULL,
     party_id INT NOT NULL,                          -- パーティ(１～３までの)ID
@@ -166,7 +186,7 @@ CREATE TABLE Friends_party (
     FOREIGN KEY (friend_id) REFERENCES Friends(friend_id)
 );
 
--- セーブデータに紐づいたインベントリ
+-- セーブデータに紐づいたインベントリTABLE
 CREATE TABLE Inventory (
     save_id INT NOT NULL,            -- セーブデータの一意な識別子
     item_id INT NOT NULL,                 -- アイテムの一意な識別子
@@ -176,7 +196,7 @@ CREATE TABLE Inventory (
     FOREIGN KEY (item_id) REFERENCES Item(item_id)
 );
 
--- セーブデータに紐づいた武器
+-- セーブデータに紐づいた武器TABLE
 CREATE TABLE Inventory_Gear (
     save_id INT NOT NULL,            -- セーブデータの一意な識別子
     gear_id_id INT NOT NULL,                 -- 武器の一意な識別子
