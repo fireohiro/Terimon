@@ -5,8 +5,8 @@ let player;
 let isMoving = false;//動いているのかの確認
 let mapdata;
 
-export function playerpreload(){
-    this.load.image('player','../assets/character/terimon1.png');
+export function playerpreload(loader){
+    loader.image('player','../assets/character/terimon1.png');
 }
 
 export function playercreate(loader,playerStatus){

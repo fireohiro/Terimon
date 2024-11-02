@@ -19,7 +19,7 @@ require '../modules/DBconnect.php';
     <div class="field">
         <a href="newgame.php" class="location1"><div class="font">ニューゲーム</div></a>
         <p class="border">　</p>
-        <a href="index.php" class="location2"><div class="font">コンティニュー</div></a>
+        <a href="../index.php" class="location2"><div class="font">コンティニュー</div></a>
     </div>
 </body>
 </html>

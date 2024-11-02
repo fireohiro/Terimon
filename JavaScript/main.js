@@ -52,7 +52,7 @@ export async function loadFriends(){
 //アセット（画像、音声など）の読み鋳込み
 function preload(){
     mappreload(this.load);//map.jsのpreload処理を行う
-    playerpreload();//player.jsのpreload処理を行う
+    playerpreload(this.load);//player.jsのpreload処理を行う
     battlepreload(this.load);//battle.jsのpreload処理を行う
 }
 

@@ -17,13 +17,13 @@
         $pow = $job['pow'];
         $def = $job['def'];
         $speed = $job['speed'];
-        $luck = $job['lack'];
+        $luck = $job['luck'];
     } else {
         echo "Error: 該当する職業が見つかりません。";
     }
 
-    $sql = $pdo->prepare('UPDATE account SET level = ? ,experimence = ?, hp = ?, hp_nokori = ?, mp = ?, mp_nokori = ?, pow = ?, def = ?, speed = ?, luck = ?, money = ?, gear_id = ?, map_id = ?, savepoint_x = ?, savepoint_y = ? ,event_flg = ?');
-    $sql->execute([1, 0, $hp, $hp, $mp, $mp, $pow, $def, $speed, $luck, 0, NULL, 1, 1, 1, 0]);
+    $sql = $pdo->prepare('UPDATE account SET level = ? ,experience = ?, hp = ?, hp_nokori = ?, mp = ?, mp_nokori = ?, pow = ?, def = ?, speed = ?, luck = ?, money = default, gear_id = default, map_id = default, savepoint_x = default, savepoint_y = default ,event_flg = default');
+    $sql->execute([1, 0, $hp, $hp, $mp, $mp, $pow, $def, $speed, $luck]);
 
     $_SESSION['user'] = [];
     
@@ -31,7 +31,7 @@
         "account_id" => $id,
         "account_name" => $name,
         "level" => 1,
-        "experimence" => 0,
+        "experience" => 0,
         "job_id" => $job_id,
         "hp" => $hp,
         "hp_nokori" => $hp,
@@ -48,21 +48,6 @@
         "event_flg" => 1,
         "pass" => 0,
     ];
+    header("Location: ../index.php");
+    exit; 
 ?>
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0;URL=index.php">
-    <link rel="stylesheet" href="../css/title.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=RocknRoll+One&display=swap" rel="stylesheet">
-    <title>テリモンのわんだーらんど</title>
-</head>
-<body>
-
-</body>
-</html>
