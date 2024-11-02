@@ -18,8 +18,8 @@ function userData(){
 //Phaserの設定
 const config = {
     type:Phaser.AUTO,//自動的に適切なレンダラー？を選択
-    width:800,//ゲームの横幅
-    height:600,//ゲームの縦幅
+    width:1500,//ゲームの横幅
+    height:750,//ゲームの縦幅
     scene:{//ゲームのシーン
         preload:preload,//プリロード関数
         create:create,//作成関数
