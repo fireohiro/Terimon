@@ -5,16 +5,6 @@ import {createPause} from './pause.js';
 import {playerpreload,playercreate,playerupdate} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
 
-function userData(){
-    //何やってるかわからんけどphpを実行してセッションデータをとってきてる
-    return fetch('../get_playersession.php')
-        .then(response => response.json())
-        .catch(error =>{
-            console.error('Error fetching session data:',error);
-            return null;
-        });
-}
-
 //Phaserの設定
 const config = {
     type:Phaser.AUTO,//自動的に適切なレンダラー？を選択
@@ -38,7 +28,7 @@ const friend3Status ={};
 
 //手持ちモンスターの情報格納
 export async function loadFriends(){
-    const response = await fetch('../get_temoti.php');
+    const response = await fetch('get_temoti.php');
     const friends = await response.json();
     //最大三体のオブジェクトに割り当て
     const statuses = [friend1Status,friend2Status,friend3Status];
@@ -58,23 +48,23 @@ function preload(){
 
 //ゲームの作成処理
 async function create(){//asyncとは、非同期処理を使えるようにする
-    //プレイヤーステータスを持ってくてuserDataに入れる
-    const userData = await userData();//awaitはこの処理が終わってから次の処理に行くこと
-    Object.assign(playerStatus, userData);//セッションデータをオブジェクトに保存
+    //プレイヤーステータスを持ってくてuserに入れる
+    const user = await userData();//awaitはこの処理が終わってから次の処理に行くこと
+    Object.assign(playerStatus, user);//セッションデータをオブジェクトに保存
     loadFriends();
-    createMap.call(this,playerStatus);
+    createMap(this,playerStatus);
 
     //プレイヤーを最後にいた地に表示
-    playercreate.call(this,playerStatus)
+    playercreate(this,playerStatus);
 
     //pauseのcreate処理
-    createPause.call(this,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status);
+    createPause(this.load,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status);
 }
 //ゲームの更新処理
 function update(){
     if(gameStatus.battleflg){
         //バトル中はバトル処理だけをして、その他を実行しない
-        battleupdate.call(this,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config);
+        battleupdate(this,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config);
         return;
     }
     if(gameStatus.pauseflg){
@@ -88,5 +78,18 @@ function update(){
         return;
     }
     //バトルでもポーズでもないときの処理↓
-    playerupdate.call(this,config,playerStatus,friend1Status,friend2Status,friend3Status);
+    playerupdate(this,config,playerStatus,friend1Status,friend2Status,friend3Status);
+}
+function userData() {
+    return fetch('get_playersession.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .catch(error => {
+            console.error('Error fetching session data:', error);
+            return null;
+        });
 }

@@ -28,7 +28,7 @@ export async function saveGame(loader,playerStatus,config,gameStatus,friend1Stat
     
             try{
                 //fetch関数を使ってデータをsave.phpに送信
-                const response = await fetch('../save.php',{
+                const response = await fetch('save.php',{
                     method:'POST',//HTTPのPOSTメソッドを使用
                     headers:{
                         'Content-Type':'application/json',//送信データがJSON形式であることを宣言

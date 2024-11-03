@@ -1,15 +1,15 @@
 import {saveEvent,saveGame} from './save.js';
 import{logoutmessage,logoutdisplay} from './logout.js';
 
-export function createPause(gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status){
+export function createPause(loader,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status){
     this.input.keyboard.on('keydown',(event) => {
         if(event.key === 'Escape'){
-            pauseStart.call(this,gameStatus);
+            pauseStart.call(scene,gameStatus);
         }
     });
-    saveGame(this,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
-    logoutmessage(this,config);
-    menuBar(this,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
+    saveGame(loader,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
+    logoutmessage(loader,config);
+    menuBar(loader,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
     createStatusScreen(loader,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
 }
 

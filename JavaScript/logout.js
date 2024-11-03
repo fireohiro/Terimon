@@ -25,13 +25,13 @@ export function logoutmessage(loader,config){
         });
 
         //PHP側で$_SESSION["user"]をリセットする処理
-        await fetch('../logout.php',{
+        await fetch('logout.php',{
             method:'POST',
             credentials:'include',
         });
 
         //タイトル画面に遷移
-        window.location.href='../sorce/title.php';
+        window.location.href='sorce/title.php';
     });
     backtext.setInteractive().on('pointerdown',()=>{
          logoutdisplay(gameStatus);

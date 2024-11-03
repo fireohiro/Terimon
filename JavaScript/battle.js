@@ -13,10 +13,10 @@ let dieflg = false;
 export function battlepreload(loader){
     //敵画像
     for(let i = 1; i <= 10;i++){
-        loader.image(`enemy${i}`,`../assets/battleimg/Enemy${i}.png`);
+        loader.image(`enemy${i}`,`assets/battleimg/Enemy${i}.png`);
     }
     //戦闘背景の読み込み
-    loader.image('battleback','../assets/battleimg/vsback.png');
+    loader.image('battleback','assets/battleimg/vsback.png');
 }
 
 export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config){
@@ -194,7 +194,7 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
                             combatant.waza_id3,
                             combatant.waza_id4
                         ];
-                        fetch('../get_waza.php',{
+                        fetch('get_waza.php',{
                             method:'POST',
                             headers:{
                                 'Content-Type':'application/json'
@@ -229,7 +229,7 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
                     }
                     break;
                 case "どうぐ":
-                    fetch('../get_item.php',{
+                    fetch('get_item.php',{
                         method:'POST',
                         headers:{
                             'Content-Type':'application/json'
@@ -413,13 +413,13 @@ export async function battleStart(scene,config,bunrui,gameStatus,friend1Status,f
     gameStatus.battleflg = true;
     let res;
     if(bunrui === 1){
-        res = await fetch('../get_zako.php');
+        res = await fetch('get_zako.php');
         enemies = await res.json();
     }else if(bunrui === 2){
-        res = await fetch('../tyuboss.php');
+        res = await fetch('tyuboss.php');
         enemies = await res.json();
     }else if(bunrui === 3){
-        res = await fetch('../boss.php');
+        res = await fetch('boss.php');
         enemies = await res.json();
     }
     Object.assign(enemy1,enemies[0]);
@@ -454,7 +454,7 @@ export async function battleStart(scene,config,bunrui,gameStatus,friend1Status,f
         for(let i = 0; i < gameStatus.temotisu;i++){
             gameStatus.playerfight = false;
             const friend = friends[i];
-            const friendImagePath = `../assets/battleimg/${friend.gazou}`;
+            const friendImagePath = `assets/battleimg/${friend.gazou}`;
             const friendImage = scene.add.image(startX + i * spacing,startY,friendImagePath);
             friendImage.setDisplaySize(50,50);
             friendImage.setDepth(1);

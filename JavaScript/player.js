@@ -3,28 +3,28 @@ import {battleStart} from './battle.js';
 const battlerate = 2;
 let player;
 let isMoving = false;//動いているのかの確認
-let mapdata;
+let map;
+let cursors;
 
 export function playerpreload(loader){
-    loader.image('player','../assets/character/terimon1.png');
+    loader.image('playerimage','assets/character/terimon1.png');
 }
 
-export function playercreate(loader,playerStatus){
+export function playercreate(scene,playerStatus){
     //プレイヤーをセーブ地に出現させる
-    player = loader.physics.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'player');
+    player = scene.physics.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'playerimage');
     //カメラ調整,必要に応じて調整
-    loader.cameras.startFollow(player);//プレイヤー追従
+    scene.cameras.startFollow(player);//プレイヤー追従
     if(playerStatus.map_id === 1){
-        //今のところmap_idの１はtown.jsonなので
-        loader.cameras.main.setZoom(1.5);//カメラを通常の1.5倍近づける
+        scene.cameras.main.setZoom(1.5);//カメラを通常の1.5倍近づける
     }else if(playerStatus.map_id === 2){
         //必要に応じて変える
-        loader.cameras.main.setZoom(1.0);
+        scene.cameras.main.setZoom(1.0);
     }
     //ここに大きさ調整だったりプレイヤーがいる層の設定をする
 
     //カーソルキーの設定をPhaserを使ってやりやすくする
-    cursors = loader.input.keyboard.createCursorKeys();
+    cursors = scene.input.keyboard.createCursorKeys();
 
     // プレイヤーのアニメーション
     scene.anims.create({
@@ -57,20 +57,24 @@ export function playerupdate(loader,config,playerStatus,friend1Status,friend2Sta
     isMoving = false;//最初は動いていないことにする
     if(cursors.up.isDown){
         //上入力処理
+        isMoving=true;
         player.setVelocityY(-160);
         player.anims.play('playerup', true);
     }else if(cursors.down.isDown){
         //下入力処理
+        isMoving=true;
         player.setVelocityY(160);
         player.anims.play('playerdown', true);
     }//左右処理を別のif分で書くことで斜め移動を可能にしている
 
     if(cursors.left.isDown){
         //左入力処理
+        isMoving=true;
         player.setVelocityX(-160);
         player.anims.play('playerleft', true);
     }else if(cursors.right.isDown){
         //右入力処理
+        isMoving=true;
         player.setVelocityX(160);
         player.anims.play('playerright', true);
     }
