@@ -1,5 +1,6 @@
-//エンカウントしたらバトルが始まってほしいので↓
 import {battleStart} from './battle.js';
+import {checkAndCreateMap} from './map.js';
+
 const battlerate = 2;
 let player;
 let isMoving = false;//動いているのかの確認
@@ -12,15 +13,18 @@ export function playerpreload(loader){
 
 export function playercreate(scene,playerStatus){
     //プレイヤーをセーブ地に出現させる
-    player = scene.physics.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'playerimage');
+    console.log(scene);
+    player = scene.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'playerimage');
     //カメラ調整,必要に応じて調整
-    scene.cameras.startFollow(player);//プレイヤー追従
+    scene.cameras.main.startFollow(player);//プレイヤー追従
+
     if(playerStatus.map_id === 1){
         scene.cameras.main.setZoom(1.5);//カメラを通常の1.5倍近づける
     }else if(playerStatus.map_id === 2){
         //必要に応じて変える
         scene.cameras.main.setZoom(1.0);
     }
+
     //ここに大きさ調整だったりプレイヤーがいる層の設定をする
 
     //カーソルキーの設定をPhaserを使ってやりやすくする
@@ -53,24 +57,24 @@ export function playercreate(scene,playerStatus){
     });
 }
 
-export function playerupdate(loader,config,playerStatus,friend1Status,friend2Status,friend3Status){
+export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
     isMoving = false;//最初は動いていないことにする
     if(cursors.up.isDown){
         //上入力処理
         isMoving=true;
-        player.setVelocityY(-160);
+        playerStatus.savepoint_y -= Math.ceil(playerStatus.speed / 10);
         player.anims.play('playerup', true);
     }else if(cursors.down.isDown){
         //下入力処理
         isMoving=true;
-        player.setVelocityY(160);
+        playerStatus.savepoint_y += Math.ceil(playerStatus.speed / 10);
         player.anims.play('playerdown', true);
     }//左右処理を別のif分で書くことで斜め移動を可能にしている
 
     if(cursors.left.isDown){
         //左入力処理
         isMoving=true;
-        player.setVelocityX(-160);
+        playerStatus.savepoint_x += Math.ceil(playerStatus.speed / 10);
         player.anims.play('playerleft', true);
     }else if(cursors.right.isDown){
         //右入力処理
@@ -84,7 +88,7 @@ export function playerupdate(loader,config,playerStatus,friend1Status,friend2Sta
         let encountnum = Math.floor(Math.random() * 100) + 1;
         if(encountnum <= battlerate){//2%の確率でバトル発生
             //バトル発生、configの後の引数はそのバトル相手が雑魚なのか中ボスなのかボスなのかを判定（１＝雑魚、２＝中ボス、３＝ボス）カスタムも可
-            battleStart(loader,config,1,gameStatus,friend1Status,friend2Status,friend3Status);
+            battleStart(scene,config,1,gameStatus,friend1Status,friend2Status,friend3Status);
         }
     }
     

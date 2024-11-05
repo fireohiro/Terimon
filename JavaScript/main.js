@@ -58,7 +58,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     playercreate(this,playerStatus);
 
     //pauseのcreate処理
-    createPause(this.load,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status);
+    createPause(this,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status);
 }
 //ゲームの更新処理
 function update(){
@@ -78,7 +78,7 @@ function update(){
         return;
     }
     //バトルでもポーズでもないときの処理↓
-    playerupdate(this,config,playerStatus,friend1Status,friend2Status,friend3Status);
+    playerupdate(this,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status);
 }
 function userData() {
     return fetch('get_playersession.php')
