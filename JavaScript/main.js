@@ -82,7 +82,7 @@ function update(){
         return;
     }
     //バトルでもポーズでもないときの処理↓
-    playerupdate(this,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status);
+    playerupdate(this,config,playerStatus,friend1Status,friend2Status,friend3Status);
 }
 function userData() {
     return fetch('get_playersession.php')
