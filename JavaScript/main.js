@@ -44,6 +44,7 @@ function preload(){
     mappreload(this.load);//map.jsのpreload処理を行う
     playerpreload(this.load);//player.jsのpreload処理を行う
     battlepreload(this.load);//battle.jsのpreload処理を行う
+    statuspreload(this.load);//status.jsのpreload処理を行う
 }
 
 //ゲームの作成処理
