@@ -52,6 +52,7 @@ function preload(){
     mappreload(this.load);//map.jsのpreload処理を行う
     playerpreload(this.load);//player.jsのpreload処理を行う
     battlepreload(this.load);//battle.jsのpreload処理を行う
+    statuspreload(this.load);//status.jsのpreload処理を行う
 }
 
 //ゲームの作成処理
@@ -67,7 +68,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     playercreate(this,playerStatus);
 
     //pauseのcreate処理
-    createPause(this,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status);
+    createPause(this.load,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status);
 }
 //ゲームの更新処理
 function update(){

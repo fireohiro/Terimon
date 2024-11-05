@@ -1,3 +1,4 @@
+let logoutContainer;
 export function logoutdisplay(gameStatus){
     gameStatus.logoutflg = !gameStatus.logoutflg;
     logoutContainer.setVisible(gameStatus.logoutflg);
@@ -11,7 +12,6 @@ export function logoutmessage(loader,config){
     // メニュー背景を作成し、左に少しスペースを開ける
     const logoutback = loader.add.rectangle(config.width * 0.3 + 10, 2, logoutWidth, logoutHeight, 0xFFFFFF, 0.8);
     logoutback.setStrokeStyle(2,0x000000); // 緑枠
-    logoutback.setRadius(10);
 
     //テキスト（ボタンを設定）の例
     const logouttext = loader.add.text(config.width * 0.3 + 10 + logoutWidth/2,logoutHeight / -2 - 50,'はい',{fontSize:'18px'});
@@ -36,7 +36,7 @@ export function logoutmessage(loader,config){
     backtext.setInteractive().on('pointerdown',()=>{
          logoutdisplay(gameStatus);
     });
-    logoutContainer.loader.add.container(0,0,[logoutback,sevetext,backtext]);
+    logoutContainer = loader.add.container(0,0,[logoutback,logouttext,backtext]);
     logoutContainer.setVisible(false);
     logoutContainer.setDepth(7);
 }
