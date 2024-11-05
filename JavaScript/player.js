@@ -13,7 +13,6 @@ export function playerpreload(loader){
 
 export function playercreate(scene,playerStatus){
     //プレイヤーをセーブ地に出現させる
-    console.log(scene);
     player = scene.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'playerimage');
     //カメラ調整,必要に応じて調整
     scene.cameras.main.startFollow(player);//プレイヤー追従
@@ -59,6 +58,7 @@ export function playercreate(scene,playerStatus){
 
 export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
     isMoving = false;//最初は動いていないことにする
+    console.log(cursors);
     if(cursors.up.isDown){
         //上入力処理
         isMoving=true;
