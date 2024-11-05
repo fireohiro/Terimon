@@ -5,7 +5,6 @@ const battlerate = 2;
 let player;
 let isMoving = false;//動いているのかの確認
 let map;
-let cursors;
 
 export function playerpreload(loader){
     loader.image('playerimage','assets/character/terimon1.png');
@@ -25,9 +24,6 @@ export function playercreate(scene,playerStatus){
     }
 
     //ここに大きさ調整だったりプレイヤーがいる層の設定をする
-
-    //カーソルキーの設定をPhaserを使ってやりやすくする
-    cursors = scene.input.keyboard.createCursorKeys();
 
     // プレイヤーのアニメーション
     scene.anims.create({
@@ -56,7 +52,7 @@ export function playercreate(scene,playerStatus){
     });
 }
 
-export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
+export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,cursors){
     isMoving = false;//最初は動いていないことにする
     console.log(cursors);
     if(cursors.up.isDown){
