@@ -10,6 +10,13 @@ const config = {
     type:Phaser.AUTO,//自動的に適切なレンダラー？を選択
     width:1500,//ゲームの横幅
     height:750,//ゲームの縦幅
+    physics: {
+        default: "arcade",
+        arcade: {
+          gravity: { y:0 },
+          debug: true
+        }
+      },
     scene:{//ゲームのシーン
         preload:preload,//プリロード関数
         create:create,//作成関数
@@ -25,6 +32,7 @@ const playerStatus = {};
 const friend1Status ={};
 const friend2Status ={};
 const friend3Status ={};
+let cursors;
 
 //手持ちモンスターの情報格納
 export async function loadFriends(){
@@ -50,6 +58,7 @@ function preload(){
 async function create(){//asyncとは、非同期処理を使えるようにする
     //プレイヤーステータスを持ってくてuserに入れる
     const user = await userData();//awaitはこの処理が終わってから次の処理に行くこと
+    cursors=this.input.keyboard.createCursorKeys();
     Object.assign(playerStatus, user);//セッションデータをオブジェクトに保存
     loadFriends();
     createMap(this,playerStatus);
@@ -78,7 +87,7 @@ function update(){
         return;
     }
     //バトルでもポーズでもないときの処理↓
-    playerupdate(this,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status);
+    playerupdate(this,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,cursors);
 }
 function userData() {
     return fetch('get_playersession.php')
