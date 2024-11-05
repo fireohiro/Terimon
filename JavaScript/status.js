@@ -1,3 +1,10 @@
+export function statuspreload(loader){
+    //味方画像
+    for(let i = 1; i <= friendStatuses.length;i++){
+        loader.image(`enemy${i}`,`assets/battleimg/Enemy${i}.png`);
+    }
+}
+
 let statusContainer;
 export function createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config) {
     const statusWidth = config.width * 0.60;
@@ -35,7 +42,7 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friend1Status,
     for(let i=1;i<friendStatuses.length;i++){
         if(friendStatuses[i] != null){
             const friendStatus = friendStatuses[`friend${i}Status`];
-            friendimage = scene.add.image(50, yOffset + i * 100, 'monsterSprite'+i); // モンスター画像
+            friendimage = scene.add.image(50, yOffset + i * 100, 'friendStatus'); // モンスター画像
             friendInfo = scene.add.text(statusWidth * 0.1, statusHeight * 0.1, 
                 `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
                 { fontSize: '18px', fill: '#000' });
