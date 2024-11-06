@@ -4,6 +4,7 @@ import {mappreload,createMap} from './map.js';
 import {createPause,updatepause} from './pause.js';
 import {playerpreload,playercreate,playerupdate} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
+import { createStatusScreen,statuspreload } from './status.js';
 
 //Phaserの設定
 const config = {
@@ -32,7 +33,6 @@ const playerStatus = {};
 const friend1Status ={};
 const friend2Status ={};
 const friend3Status ={};
-let createcompleteflg = false;
 
 function userData() {
     return fetch('get_playersession.php')
@@ -73,7 +73,8 @@ function preload(){
 //ゲームの作成処理
 function create(){//asyncとは、非同期処理を使えるようにする
     //プレイヤーステータスを持ってくてuserに入れる
-    const user = userData();//awaitはこの処理が終わってから次の処理に行くこと
+    const user = await userData();//awaitはこの処理が終わってから次の処理に行くこと
+    cursors=this.input.keyboard.createCursorKeys();
     Object.assign(playerStatus, user);//セッションデータをオブジェクトに保存
     loadFriends();
     createMap(this,playerStatus);
@@ -83,7 +84,8 @@ function create(){//asyncとは、非同期処理を使えるようにする
 
     //pauseのcreate処理
     createPause(this,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status);
-    createcompleteflg = true;
+
+    createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
 }
 //ゲームの更新処理
 function update(){
