@@ -73,8 +73,8 @@ function preload(){
 //ゲームの作成処理
 function create(){//asyncとは、非同期処理を使えるようにする
     //プレイヤーステータスを持ってくてuserに入れる
-    const user = await userData();//awaitはこの処理が終わってから次の処理に行くこと
-    cursors=this.input.keyboard.createCursorKeys();
+    const user = userData();//awaitはこの処理が終わってから次の処理に行くこと
+    
     Object.assign(playerStatus, user);//セッションデータをオブジェクトに保存
     loadFriends();
     createMap(this,playerStatus);
