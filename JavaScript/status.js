@@ -1,7 +1,7 @@
-export function statuspreload(loader){
-    //味方画像
-    for(let i = 1; i <= friendStatuses.length;i++){
-        loader.image(`enemy${i}`,`assets/battleimg/Enemy${i}.png`);
+export function statuspreload(loader) {
+    // 味方画像をプリロード
+    for (let i = 1; i <= 10; i++) {
+        loader.image(`enemy${i}`, `assets/battleimg/Enemy${i}.png`);
     }
 }
 
@@ -67,3 +67,32 @@ export function statusEvent(gameStatus){
     gameStatus.statusflg = !gameStatus.statusflg;
     statusContainer.setVisible(gameStatus.statusflg);
 }
+
+
+
+
+    // 味方キャラクターの情報を表示
+    const friendContainer = [];
+    let yOffset = 200;
+    for (let i = 0; i < friendStatuses.length; i++) {
+        const friendStatus = friendStatuses[i];
+        if (friendStatus != null) {
+            const friendId = friendStatus.friend_id; // friend_idに基づいて画像キーを決定
+            const friendImage = scene.add.image(100, yOffset + i * 100, `enemy${friendId}`); // モンスター画像
+            
+            // 各味方の情報テキストを作成
+            const friendInfo = scene.add.text(
+                statusWidth * 0.1, yOffset + i * 100, 
+                `味方 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp} MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
+                { fontSize: '18px', fill: '#000' }
+            );
+
+            const friendAttributes = scene.add.text(
+                statusWidth * 0.1, yOffset + i * 100 + 40,
+                `こうげき: ${friendStatus.pow} まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed} 運: ${friendStatus.luck}`,
+                { fontSize: '16px', fill: '#000' }
+            );
+
+            friendContainer.push(friendImage, friendInfo, friendAttributes);
+        }
+    }
