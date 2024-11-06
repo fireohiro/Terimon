@@ -15,8 +15,8 @@ export function createPause(scene,gameStatus,playerStatus,config,friend1Status,f
     // createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
 }
 
-function pauseStart(scene,gamestatus){
-    gamestatus.pauseflg = !gameStatus.pauseflg;
+function pauseStart(scene,gameStatus){
+    gameStatus.pauseflg = !gameStatus.pauseflg;
     menuContainer.setVisible(gameStatus.pauseflg);//メニューの表示切替
 
     //ポーズ中の物理処理の停止と再稼働
@@ -183,4 +183,14 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
     menuContainer = scene.add.container(0,-500,[menuBackground,itemtext,geartext,statustext,savetext,logouttext,Moneybar,moneytext]);
     menuContainer.setVisible(false);//初期状態は非表示
     menuContainer.setDepth(7);//一意晩上に表示されるようにする
+}
+
+export function updatepause(scene,config){
+    //メニューの位置をカメラに追従させる
+    const cameraCenterX = scene.cameras.main.scrollX + scene.cameras.main.width / 2;
+    const cameraCenterY = scene.cameras.main.scrollY + scene.cameras.main.height / 2;
+
+    //メニューをカメラ中心に配置し、少し左にずらす
+    menuContainer.setPosition(cameraCenterX - config.width * 0.15,cameraCenterY-130);
+    //ポーズ中はupdate内の処理をすべて行わない
 }

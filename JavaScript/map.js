@@ -122,4 +122,7 @@ function displayMap(scene){
         const layerName = `layer${i}`;//レイヤー名をそろえる
         map.createLayer(layerName,addTilesets,0,0);
     }
+    // マップの境界を設定
+    scene.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    scene.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 }

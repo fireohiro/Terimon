@@ -56,9 +56,12 @@ export function playercreate(scene,playerStatus){
     });
 }
 
+export function dataMap(mapdata){
+    map = mapdata;
+}
+
 export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
     isMoving = false;//最初は動いていないことにする
-    console.log(cursors);
     if(cursors.up.isDown){
         //上入力処理
         isMoving=true;
@@ -121,8 +124,4 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
             playerStatus.map_id = 4;
         }
     }
-}
-
-export function dataMap(mapdata){
-    map = mapdata;
 }
