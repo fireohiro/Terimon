@@ -5,6 +5,7 @@ const battlerate = 2;
 let player;
 let isMoving = false;//動いているのかの確認
 let map;
+let cursors;
 
 export function playerpreload(loader){
     loader.image('playerimage','assets/character/terimon1.png');
@@ -22,6 +23,8 @@ export function playercreate(scene,playerStatus){
         //必要に応じて変える
         scene.cameras.main.setZoom(1.0);
     }
+
+    cursors = scene.input.keyboard.createCursorKeys();
 
     //ここに大きさ調整だったりプレイヤーがいる層の設定をする
 
