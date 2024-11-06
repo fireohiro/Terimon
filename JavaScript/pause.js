@@ -47,19 +47,19 @@ function pauseStart(scene,gameStatus){
 
 async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status){
     //メニューのサイズを設定
-    const menuWidth = config.width * 0.20;
-    const menuHeight = config.height * 0.70;
+    const menuWidth = config.width * 0.15;
+    const menuHeight = config.height * 0.50;
 
     // メニュー背景を作成し、左に少しスペースを開ける
-    const menuBackground = scene.add.rectangle(menuWidth * -0.5, 2, menuWidth, menuHeight, 0x93C572, 0.8);
-    menuBackground.setStrokeStyle(4, 0xFFFDD0); // 緑枠
+    const menuBackground = scene.add.rectangle(menuWidth * 0.1, config.height * 0.08, menuWidth, menuHeight, 0xFFFFFF, 0.8);
+    menuBackground.setStrokeStyle(4, 0x000000); // 緑枠
 
     //テキスト（ボタンを設定）の例
-    const itemtext = scene.add.text(menuWidth*-0.5/2,-100,'アイテム',{fontSize:'18px'});
-    const geartext = scene.add.text(menuWidth*-0.5/2,-75,'装備',{fontSize:'18px'});
-    const statustext = scene.add.text(menuWidth*-0.5/2,-50,'ステータス',{fontSize:'18px'});
-    const savetext = scene.add.text(menuWidth*-0.5/2,-25,'セーブ',{fontSize:'18px'});
-    const logouttext = scene.add.text(menuWidth*-0.5/2,0,'タイトルへ戻る',{fontSize:'18px'});
+    const itemtext = scene.add.text(menuWidth*-0.5/2+15,menuHeight / -6 - 30,'アイテム',{fontSize:'32px',fill:'#000'});
+    const geartext = scene.add.text(menuWidth*-0.5/2+40,menuHeight / -6 + 40,'装備',{fontSize:'32px',fill:'#000'});
+    const statustext = scene.add.text(menuWidth*-0.5/2,menuHeight / -6 + 110,'ステータス',{fontSize:'32px',fill:'#000'});
+    const savetext = scene.add.text(menuWidth*-0.5/2+20,menuHeight / -6 + 180,'セーブ',{fontSize:'32px',fill:'#000'});
+    const logouttext = scene.add.text(menuWidth*-0.5/2+15,menuHeight / -6 + 250,'タイトル',{fontSize:'32px',fill:'#000'});
 
     //クリックイベント
     itemtext.setInteractive().on('pointerdown',()=>{
@@ -166,21 +166,21 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
 
     //所持金欄の大きさ設定
     const goldBarHeight = menuHeight*0.25
-    const Moneybar = scene.add.rectangle(menuWidth*-0.5,menuHeight / 2 + goldBarHeight / 2+52,menuWidth,goldBarHeight,0x93C572,0.8);
-    Moneybar.setStrokeStyle(4,0xFFFDD0);
+    const Moneybar = scene.add.rectangle(menuWidth * 0.1,menuHeight / 2 + goldBarHeight / 2+100,menuWidth,goldBarHeight,0xFFFFFF,0.8);
+    Moneybar.setStrokeStyle(4,0x000000);
 
     //所持金のテキスト
     const moneytext = scene.add.text(
         //文字の設定兼表示内容
-        Moneybar.x-Moneybar.displayWidth/2,
-        Moneybar.y-Moneybar.displayHeight/2,//表示位置ｘとｙ
+        Moneybar.x-Moneybar.displayWidth/2+35,
+        Moneybar.y-Moneybar.displayHeight/2+20,//表示位置ｘとｙ
         //表示文字と文字の設定
-        `所持金\n${playerStatus.money}`,
-        {fontSize:'18px',fill:'#fff'}
+        `　所持金\n${playerStatus.money}`,
+        {fontSize:'26px',fill:'#000'}
     );
 
     //メニュー要素をコンテナにまとめる
-    menuContainer = scene.add.container(0,-500,[menuBackground,itemtext,geartext,statustext,savetext,logouttext,Moneybar,moneytext]);
+    menuContainer = scene.add.container(0,0,[menuBackground,itemtext,geartext,statustext,savetext,logouttext,Moneybar,moneytext]);
     menuContainer.setVisible(false);//初期状態は非表示
     menuContainer.setDepth(7);//一意晩上に表示されるようにする
 }
@@ -191,6 +191,6 @@ export function updatepause(scene,config){
     const cameraCenterY = scene.cameras.main.scrollY + scene.cameras.main.height / 2;
 
     //メニューをカメラ中心に配置し、少し左にずらす
-    menuContainer.setPosition(cameraCenterX - config.width * 0.15,cameraCenterY-130);
+    menuContainer.setPosition(cameraCenterX - cameraCenterX / 5 * 4,cameraCenterY - cameraCenterY / 5 * 3);
     //ポーズ中はupdate内の処理をすべて行わない
 }
