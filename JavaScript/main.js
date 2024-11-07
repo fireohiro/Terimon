@@ -33,6 +33,8 @@ const playerStatus = {};
 const friend1Status ={};
 const friend2Status ={};
 const friend3Status ={};
+let createok = false;
+
 function userData() {
     return fetch('get_playersession.php')
         .then(response => {
@@ -40,10 +42,6 @@ function userData() {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
-        })
-        .catch(error => {
-            console.error('Error fetching session data:', error);
-            return null;
         });
 }
 
@@ -70,12 +68,13 @@ function preload(){
 }
 
 //ゲームの作成処理
-function create(){//asyncとは、非同期処理を使えるようにする
+async function create(){//asyncとは、非同期処理を使えるようにする
     //プレイヤーステータスを持ってくてuserに入れる
-    const user = userData();//awaitはこの処理が終わってから次の処理に行くこと
-
+    const user = await userData();//awaitはこの処理が終わってから次の処理に行くこと
+    console.log(user);
     Object.assign(playerStatus, user);//セッションデータをオブジェクトに保存
-    loadFriends();
+    console.log(playerStatus);
+    await loadFriends();
     createMap(this,playerStatus);
 
     //プレイヤーを最後にいた地に表示
@@ -86,9 +85,13 @@ function create(){//asyncとは、非同期処理を使えるようにする
 
     // createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
     
+    createok = true;
 }
 //ゲームの更新処理
 function update(){
+    if(!createok){
+        return;
+    }
     if(gameStatus.battleflg){
         //バトル中はバトル処理だけをして、その他を実行しない
         battleupdate(this,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config);

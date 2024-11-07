@@ -229,7 +229,6 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
     const Moneybar = scene.add.rectangle(menuWidth * 0.1-10,menuHeight / 2 + goldBarHeight / 2+100,menuWidth,goldBarHeight,0xFFFFFF,0.8);
     Moneybar.setStrokeStyle(4,0x000000);
 
-    console.log(playerStatus);
     //所持金のテキスト
     const moneytext = scene.add.text(
         //文字の設定兼表示内容
