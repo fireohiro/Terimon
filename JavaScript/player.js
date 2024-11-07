@@ -18,8 +18,23 @@ export function playercreate(scene,playerStatus){
     scene.cameras.main.startFollow(player);//プレイヤー追従
 
     if(playerStatus.map_id === 1){
-        scene.cameras.main.setZoom(1.5);//カメラを通常の1.5倍近づける
+        scene.cameras.main.setZoom(1.0);//カメラを通常の1.5倍近づける
     }else if(playerStatus.map_id === 2){
+        //必要に応じて変える
+        scene.cameras.main.setZoom(1.0);
+    }else if(playerStatus.map_id === 3){
+        //必要に応じて変える
+        scene.cameras.main.setZoom(1.0);
+    }else if(playerStatus.map_id === 4){
+        //必要に応じて変える
+        scene.cameras.main.setZoom(1.0);
+    }else if(playerStatus.map_id === 5){
+        //必要に応じて変える
+        scene.cameras.main.setZoom(1.0);
+    }else if(playerStatus.map_id === 6){
+        //必要に応じて変える
+        scene.cameras.main.setZoom(1.0);
+    }else if(playerStatus.map_id === 7){
         //必要に応じて変える
         scene.cameras.main.setZoom(1.0);
     }

@@ -71,9 +71,7 @@ function preload(){
 async function create(){//asyncとは、非同期処理を使えるようにする
     //プレイヤーステータスを持ってくてuserに入れる
     const user = await userData();//awaitはこの処理が終わってから次の処理に行くこと
-    console.log(user);
     Object.assign(playerStatus, user);//セッションデータをオブジェクトに保存
-    console.log(playerStatus);
     await loadFriends();
     createMap(this,playerStatus);
 

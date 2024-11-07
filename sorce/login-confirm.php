@@ -24,6 +24,7 @@ if ($row = $sql->fetch()) {
         "luck" => $row["luck"],
         "money" => $row["money"],
         "gear_id" => $row["gear_id"],
+        "map_id" => $row["map_id"],
         "savepoint_x" => $row["savepoint_x"],
         "savepoint_y" => $row["savepoint_y"],
         "event_flg" => $row["event_flg"],

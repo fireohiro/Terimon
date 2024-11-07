@@ -27,11 +27,11 @@ export function mappreload(loader){
     }
     
     //ガチャ
-    loader.tilemapTiledJSON('gacha','assets/tilemaps/gacha.json');
+    loader.tilemapTiledJSON('gachaMap','assets/tilemaps/gacha.json');
     loader.image('gacha1','assets/tilesets/gacha1.png');
 
     //ダンジョン入り口
-    loader.tilemapTiledJSON('entry','assets/tilemaps/dungeon_entry.json');
+    loader.tilemapTiledJSON('entryMap','assets/tilemaps/dungeon_entry.json');
     for(let i = 1; i <= 2; i++){
         loader.image(`entry${i}`,`assets/tilesets/entry${i}`);
     }
@@ -60,67 +60,67 @@ function map_idHasChanged(playerStatus){
 export function createMap(scene,playerStatus){
     if(map){
         map.destroy();
-        tilesets = [];
     }
-    const map_id = playerStatus.map_id;
+    tilesets = [];
+    layersu = 0;
+    let map_id = playerStatus.map_id;
 
     //マップidごとに表示させる
     if(map_id === 1){
         mapData = 'houseMap';
+        map = scene.make.tilemap({key:'houseMap'});
         for(let i = 1; i <= 9; i++){
-            tilesets.push(`house${i}`);//タイルセット名を格納
-            layersu = 4;//レイヤーの数を格納
+            let tileset = map.addTilesetImage(`house${i}`, `house${i}`);
+            tilesets.push(tileset);
         }
+        layersu = 4;//レイヤーの数を格納
     }else if(map_id === 2){
-        mapData = 'homeMap';
-        tilesets.push('home1');
+        map = scene.make.tilemap({key:'homeMap'});
+        let tileset = map.addTilesetImage('home1', 'home1');
+        tilesets.push(tileset);
         layersu = 3;
     }else if(map_id === 3){
-        mapData = 'grassMap';
+        map = scene.make.tilemap({key:'grassMap'});
         for(let i = 1; i <= 2; i++){
-            tilesets.push(`grass${i}`)
+            let tileset = map.addTilesetImage(`grass${i}`, `grass${i}`);
+            tilesets.push(tileset);
         }
         layersu = 2;
     }else if(map_id === 4){
-        mapData = 'townMap';
+        map = scene.make.tilemap({key:'townMap'});
         for(let i = 1; i <= 15; i++){
-            tilesets.push(`town${i}`)
+            let tileset = map.addTilesetImage(`town${i}`, `town${i}`);
+            tilesets.push(tileset);
         }
         layersu = 4;
     }else if(map_id === 5){
-        mapData = 'gachaMap';
+        map = scene.make.tilemap({key:'gachaMap'});
         for(let i = 1; i <= 1; i++){
-            tilesets.push(`gacha${i}`)
+            let tileset = map.addTilesetImage(`gacha${i}`, `gacha${i}`);
+            tilesets.push(tileset);
         }
         layersu = 2;
     }else if(map_id === 6){
-        mapData = 'entryMap';
+        map = scene.make.tilemap({key:'entryMap'});
         for(let i = 1; i <= 2; i++){
-            tilesets.push(`entry${i}`)
+            let tileset = map.addTilesetImage(`entry${i}`, `entry${i}`);
+            tilesets.push(tileset);
         }
+        layersu = 2;
     }else if(map_id === 7){
-        mapData = 'dungeonMap';
+        map = scene.make.tilemap({key:'dungeonMap'});
         for(let i = 1; i <= 7; i++){
-            tilesets.push(`rock${i}`)
+            let tileset = map.addTilesetImage(`rock${i}`, `rock${i}`);
+            tilesets.push(tileset);
         }
         layersu = 3;
     }
-
-    //読み込んだマップ情報をdisplayMapに送る
-    displayMap(scene);//ここは固定
-}
-
-function displayMap(scene){
-    //タイルマップを作成
-    map = scene.make.tilemap({key:mapData});
+    //マップの情報をplayer.jsに送る
     dataMap(map);
-    
-    //タイルセットを追加
-    const addTilesets = tilesets.map(tileset => map.addTilesetImage(tileset,tileset));
 
     for(let i = 1; i <= layersu; i++){
         const layerName = `layer${i}`;//レイヤー名をそろえる
-        map.createLayer(layerName,addTilesets,0,0);
+        map.createLayer(layerName,tilesets,0,0);
     }
     // マップの境界を設定
     scene.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);

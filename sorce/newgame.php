@@ -22,8 +22,8 @@
         echo "Error: 該当する職業が見つかりません。";
     }
 
-    $sql = $pdo->prepare('UPDATE account SET level = ? ,experience = ?, hp = ?, hp_nokori = ?, mp = ?, mp_nokori = ?, pow = ?, def = ?, speed = ?, luck = ?, money = default, gear_id = default, map_id = default, savepoint_x = default, savepoint_y = default ,event_flg = default');
-    $sql->execute([1, 0, $hp, $hp, $mp, $mp, $pow, $def, $speed, $luck]);
+    $sql = $pdo->prepare('UPDATE account SET level = ? ,experience = ?, hp = ?, hp_nokori = ?, mp = ?, mp_nokori = ?, pow = ?, def = ?, speed = ?, luck = ?, money = default, gear_id = default, map_id = default, savepoint_x = default, savepoint_y = default ,event_flg = default where account_id = ?');
+    $sql->execute([1, 0, $hp, $hp, $mp, $mp, $pow, $def, $speed, $luck,$id]);
 
     $_SESSION['user'] = [];
     
@@ -43,8 +43,9 @@
         "luck" => $luck,
         "money" => 0,
         "gear_id" => 0,
-        "savepoint_x" => 1,
-        "savepoint_y" => 1,
+        "map_id" => 1,
+        "savepoint_x" => 288,
+        "savepoint_y" => 320,
         "event_flg" => 1,
         "pass" => 0,
     ];
