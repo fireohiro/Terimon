@@ -2,6 +2,7 @@
 import {saveEvent,saveGame} from './save.js';
 import{logoutmessage,logoutdisplay} from './logout.js';
 
+let kasoru = null;
 let menuContainer;
 export function createPause(scene,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status){
     scene.input.keyboard.on('keydown',(event) => {
@@ -47,11 +48,11 @@ function pauseStart(scene,gameStatus){
 
 async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status){
     //メニューのサイズを設定
-    const menuWidth = config.width * 0.15;
+    const menuWidth = config.width * 0.15+10;
     const menuHeight = config.height * 0.50;
 
     // メニュー背景を作成し、左に少しスペースを開ける
-    const menuBackground = scene.add.rectangle(menuWidth * 0.1, config.height * 0.08, menuWidth, menuHeight, 0xFFFFFF, 0.8);
+    const menuBackground = scene.add.rectangle(menuWidth * 0.1-10, config.height * 0.08, menuWidth, menuHeight, 0xFFFFFF, 0.8);
     menuBackground.setStrokeStyle(4, 0x000000); // 緑枠
 
     //テキスト（ボタンを設定）の例
@@ -63,13 +64,6 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
 
     //クリックイベント
     itemtext.setInteractive().on('pointerdown',()=>{
-        //アイテム使用用のプログラムの関数を呼び出す
-        createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config); 
-    });
-    // マウスがテキストに乗ったときの動作、2つ以上の枠が出ないように、一旦全部のflgをオフにする
-
-    //アイテム
-    itemtext.on('pointerover', () => {
         if(gameStatus.gearflg === true){
             //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
         }
@@ -84,6 +78,19 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
         if(gameStatus.logoutflg === true){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
             logoutdisplay(gameStatus);
+        }
+    });
+    itemtext.setInteractive().on('pointerover', () => {
+        if(!kasoru){
+            kasoru = scene.add.text(menuWidth*0.5/2+15,menuHeight / 6-5,'▶',{fontSize:'32px',fill:'#FFF'});
+        }
+    });
+    // カーソルがアイテムテキストから外れたときの処理
+    itemtext.setInteractive().on('pointerout', () => {
+        // kasoruが存在していれば非表示にし、破棄
+        if (kasoru) {
+            kasoru.destroy();
+            kasoru = null;  // 破棄後は再度nullに設定
         }
     });
     //装備
@@ -105,7 +112,19 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
             logoutdisplay(gameStatus);
         }
     });
-    //
+    geartext.setInteractive().on('pointerover', () => {
+        if(!kasoru){
+            kasoru = scene.add.text(menuWidth*0.5/2+40,menuHeight / 6 + 65,'▶',{fontSize:'32px',fill:'#FFF'});
+        }
+    });
+    // カーソルがアイテムテキストから外れたときの処理
+    geartext.setInteractive().on('pointerout', () => {
+        // kasoruが存在していれば非表示にし、破棄
+        if (kasoru) {
+            kasoru.destroy();
+            kasoru = null;  // 破棄後は再度nullに設定
+        }
+    });
     statustext.setInteractive().on('pointerdown',()=>{
         //ステータス表示用のプログラムの関数を呼び出す
         if(gameStatus.itemflg === true){
@@ -123,6 +142,19 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
             logoutdisplay(gameStatus);
         }
         // statusEvent(gameStatus);
+    });
+    statustext.setInteractive().on('pointerover', () => {
+        if(!kasoru){
+            kasoru = scene.add.text(menuWidth*0.5/2,menuHeight / 6 + 135,'▶',{fontSize:'32px',fill:'#FFF'});
+        }
+    });
+    // カーソルがアイテムテキストから外れたときの処理
+    statustext.setInteractive().on('pointerout', () => {
+        // kasoruが存在していれば非表示にし、破棄
+        if (kasoru) {
+            kasoru.destroy();
+            kasoru = null;  // 破棄後は再度nullに設定
+        }
     });
     //セーブ
     savetext.setInteractive().on('pointerdown',()=>{
@@ -142,6 +174,19 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
         }
         //セーブの表示と非表示
         saveEvent(gameStatus);
+    });
+    savetext.setInteractive().on('pointerover', () => {
+        if(!kasoru){
+            kasoru = scene.add.text(menuWidth*0.5/2+20,menuHeight / 6 + 205,'▶',{fontSize:'32px',fill:'#FFF'});
+        }
+    });
+    // カーソルがアイテムテキストから外れたときの処理
+    savetext.setInteractive().on('pointerout', () => {
+        // kasoruが存在していれば非表示にし、破棄
+        if (kasoru) {
+            kasoru.destroy();
+            kasoru = null;  // 破棄後は再度nullに設定
+        }
     });
     //ログアウト
     logouttext.setInteractive().on('pointerdown',()=>{
@@ -163,17 +208,31 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
         //ログアウトウィンドウ表示
         logoutdisplay(gameStatus);
     });
+    logouttext.setInteractive().on('pointerover', () => {
+        if(!kasoru){
+            kasoru = scene.add.text(menuWidth*0.5/2+15,menuHeight / 6 + 275,'▶',{fontSize:'32px',fill:'#FFF'});
+        }
+    });
+    // カーソルがアイテムテキストから外れたときの処理
+    logouttext.setInteractive().on('pointerout', () => {
+        // kasoruが存在していれば非表示にし、破棄
+        if (kasoru) {
+            kasoru.destroy();
+            kasoru = null;  // 破棄後は再度nullに設定
+        }
+    });
 
     //所持金欄の大きさ設定
-    const goldBarHeight = menuHeight*0.25
-    const Moneybar = scene.add.rectangle(menuWidth * 0.1,menuHeight / 2 + goldBarHeight / 2+100,menuWidth,goldBarHeight,0xFFFFFF,0.8);
+    const goldBarHeight = menuHeight*0.50
+    const Moneybar = scene.add.rectangle(menuWidth * 0.1-10,menuHeight / 2 + goldBarHeight / 2+100,menuWidth,goldBarHeight,0xFFFFFF,0.8);
     Moneybar.setStrokeStyle(4,0x000000);
 
+    console.log(playerStatus);
     //所持金のテキスト
     const moneytext = scene.add.text(
         //文字の設定兼表示内容
         Moneybar.x-Moneybar.displayWidth/2+35,
-        Moneybar.y-Moneybar.displayHeight/2+20,//表示位置ｘとｙ
+        Moneybar.y-Moneybar.displayHeight/2+45,//表示位置ｘとｙ
         //表示文字と文字の設定
         `　所持金\n${playerStatus.money}`,
         {fontSize:'26px',fill:'#000'}
