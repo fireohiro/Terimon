@@ -1,34 +1,120 @@
 <?php
-    session_start();
-    require 'db-connect.php';
-    if($_SERVER['REQUEST_METHOD'] === 'POST'){
-        //JSONデータを受け取って取り出す
-        $inputData = file_get_contents('php:input');
-        //JSON形式のデータをPHPの連想配列として変数に入れる
-        $data = json_decode($inputData,true);
+require 'db-connect.php';
+$pdo = new PDO($connect, USER, PASS);
 
-        //データを取り出す
-        $player = $data['playerStatus'];
-        $friends = [
-            $data['friend1Status'],
-            $data['friend2Status'],
-            $data['friend3Status'],
-        ];
+// Content-TypeをJSONとして返す
+header('Content-Type: application/json');
+
+// POSTデータを受け取る
+$inputData = file_get_contents('php://input');
+
+// JSONデコード
+$data = json_decode($inputData, true);
+    // アカウントデータの更新
+    $sql = $pdo->prepare('UPDATE account SET 
+        level = ?, experience = ?, hp = ?, hp_nokori = ?, mp = ?, mp_nokori =?, 
+        pow = ?, def = ?, speed = ?, luck = ?, money = ?, gear_id = ?, 
+        map_id = ?, savepoint_x = ?, savepoint_y = ?, eventflg = ? 
+        WHERE account_id = ?');
+    
+    $sql->execute([
+        $data['playerStatus']['level'],
+        $data['playerStatus']['experience'],
+        $data['playerStatus']['hp'],
+        $data['playerStatus']['hp_nokori'],
+        $data['playerStatus']['mp'],
+        $data['playerStatus']['mp_nokori'],
+        $data['playerStatus']['pow'],
+        $data['playerStatus']['def'],
+        $data['playerStatus']['speed'],
+        $data['playerStatus']['luck'],
+        $data['playerStatus']['money'],
+        $data['playerStatus']['gear_id'],
+        $data['playerStatus']['map_id'],
+        $data['playerStatus']['savepoint_x'],
+        $data['playerStatus']['savepoint_y'],
+        $data['playerStatus']['eventflg'],
+        $data['playerStatus']['account_id']
+    ]);
+
+    // 仲間のデータを更新（friend1Status）
+    if (isset($data['friend1Status'])) {
+        $sql = $pdo->prepare('UPDATE friends SET 
+            level = ?, experience = ?, hp = ?, hp_nokori = ?, mp = ?, mp_nokori =?,
+            pow = ?, def = ?, speed = ?, luck = ?, buff_time = ?, waza_id1 = ?, 
+            waza_id2 = ?, waza_id3 = ?, waza_id4 = ? WHERE friend_id = ?');
         
-        $pdo = new PDO($connect,USER,PASS);
-        $sql = $pdo->prepare('update account set level = ? , experience = ?,hp = ?,hp_nokori = ?,mp = ?,mp_nokori = ?,pow = ?,def = ?,speed = ?,luck = ?,money = ?,gear_id = ?,map_id = ?,savepoint_x = ?,savepoint_y = ?,eventflg = ? where account_id = ?');
-        $sql->execute([$player['level'],$player['experience'],$player['hp'],$player['hp_nokori'],$player['mp'],$player['mp_nokori'],$player['pow'],$player['def'],$player['speed'],$player['luck'],$player['money'],$player['gear_id'],$player['map_id'],$player['savepoint_x'],$player['savepoint_y'],$player['eventflg'],$player['account_id']]);
+        $sql->execute([
+            $data['friend1Status']['level'],
+            $data['friend1Status']['experience'],
+            $data['friend1Status']['hp'],
+            $data['friend1Status']['hp_nokori'],
+            $data['friend1Status']['mp'],
+            $data['friend1Status']['mp_nokori'],
+            $data['friend1Status']['pow'],
+            $data['friend1Status']['def'],
+            $data['friend1Status']['speed'],
+            $data['friend1Status']['luck'],
+            $data['friend1Status']['buff_time'],
+            $data['friend1Status']['waza_id1'],
+            $data['friend1Status']['waza_id2'],
+            $data['friend1Status']['waza_id3'],
+            $data['friend1Status']['waza_id4'],
+            $data['friend1Status']['friend_id']
+        ]);
+    }
 
-        //連れている仲間モンスターの更新
-        foreach($friends as $friend){
-            //friend_idが存在する場合のみ更新を実施
-            if(isset($frined['friend_id'])){
-                //テーブル更新処理
-                $sql = $pdo->prepare('update friends set level = ?,experience = ?,hp = ?,hp_nokori=?,mp=?,mp_nokori=?,pow=?,def=?,speed=?,luck=?,buff_time=?,waza_id1=?,waza_id2=?,waza_id3=?,waza_id4=? where friend_id=?');
-                $sql->execute([$friend['level'],$friend['experience'],$friend['hp'],$friend['hp_nokori'],$friend['mp'],$friend['mp_nokori'],$friend['pow'],$friend['def'],$friend['speed'],$friend['luck'],$friend['buff_time'],$friend['waza_id1'],$friend['waza_id2'],$friend['waza_id3'],$friend['waza_id4'],$friend['friend_id']]);
-            }
-        }
+    // 友達2のデータ更新（friend2Status）
+    if (isset($data['friend2Status'])) {
+        $sql = $pdo->prepare('UPDATE friends SET 
+            level = ?, experience = ?, hp = ?, hp_nokori = ?, mp = ?, mp_nokori =?,
+            pow = ?, def = ?, speed = ?, luck = ?, buff_time = ?, waza_id1 = ?, 
+            waza_id2 = ?, waza_id3 = ?, waza_id4 = ? WHERE friend_id = ?');
+        
+        $sql->execute([
+            $data['friend2Status']['level'],
+            $data['friend2Status']['experience'],
+            $data['friend2Status']['hp'],
+            $data['friend2Status']['hp_nokori'],
+            $data['friend2Status']['mp'],
+            $data['friend2Status']['mp_nokori'],
+            $data['friend2Status']['pow'],
+            $data['friend2Status']['def'],
+            $data['friend2Status']['speed'],
+            $data['friend2Status']['luck'],
+            $data['friend2Status']['buff_time'],
+            $data['friend2Status']['waza_id1'],
+            $data['friend2Status']['waza_id2'],
+            $data['friend2Status']['waza_id3'],
+            $data['friend2Status']['waza_id4'],
+            $data['friend2Status']['friend_id']
+        ]);
+    }
 
-        echo json_encode(['success' => true]);//成功メッセージをJSON形式で返す
+    // 友達3のデータ更新（friend3Status）
+    if (isset($data['friend3Status'])) {
+        $sql = $pdo->prepare('UPDATE friends SET 
+            level = ?, experience = ?, hp = ?, hp_nokori = ?, mp = ?, mp_nokori =?,
+            pow = ?, def = ?, speed = ?, luck = ?, buff_time = ?, waza_id1 = ?, 
+            waza_id2 = ?, waza_id3 = ?, waza_id4 = ? WHERE friend_id = ?');
+        
+        $sql->execute([
+            $data['friend3Status']['level'],
+            $data['friend3Status']['experience'],
+            $data['friend3Status']['hp'],
+            $data['friend3Status']['hp_nokori'],
+            $data['friend3Status']['mp'],
+            $data['friend3Status']['mp_nokori'],
+            $data['friend3Status']['pow'],
+            $data['friend3Status']['def'],
+            $data['friend3Status']['speed'],
+            $data['friend3Status']['luck'],
+            $data['friend3Status']['buff_time'],
+            $data['friend3Status']['waza_id1'],
+            $data['friend3Status']['waza_id2'],
+            $data['friend3Status']['waza_id3'],
+            $data['friend3Status']['waza_id4'],
+            $data['friend3Status']['friend_id']
+        ]);
     }
 ?>

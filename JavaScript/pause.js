@@ -11,7 +11,7 @@ export function createPause(scene,gameStatus,playerStatus,config,friend1Status,f
         }
     });
     saveGame(scene,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
-    logoutmessage(scene,config);
+    logoutmessage(scene,config,gameStatus);
     menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
     createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
 }
@@ -53,7 +53,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
 
     // メニュー背景を作成し、左に少しスペースを開ける
     const menuBackground = scene.add.rectangle(menuWidth * 0.1-10, config.height * 0.08, menuWidth, menuHeight, 0xFFFFFF, 0.8);
-    menuBackground.setStrokeStyle(4, 0x000000); // 緑枠
+    menuBackground.setStrokeStyle(4, 0x4169e1); // 緑枠
 
     //テキスト（ボタンを設定）の例
     const itemtext = scene.add.text(menuWidth*-0.5/2+15,menuHeight / -6 - 30,'アイテム',{fontSize:'32px',fill:'#000'});
@@ -82,7 +82,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
     });
     itemtext.setInteractive().on('pointerover', () => {
         if(!kasoru){
-            kasoru = scene.add.text(menuWidth*0.5/2+15,menuHeight / 6-5,'▶',{fontSize:'32px',fill:'#FFF'});
+            kasoru = scene.add.text(menuWidth*0.5/2+15,menuHeight / 6-5,'▶',{fontSize:'32px',fill:'#000'});
             kasoru.setDepth(8);
         }
     });
@@ -115,7 +115,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
     });
     geartext.setInteractive().on('pointerover', () => {
         if(!kasoru){
-            kasoru = scene.add.text(menuWidth*0.5/2+40,menuHeight / 6 + 65,'▶',{fontSize:'32px',fill:'#FFF'});
+            kasoru = scene.add.text(menuWidth*0.5/2+40,menuHeight / 6 + 65,'▶',{fontSize:'32px',fill:'#000'});
             kasoru.setDepth(8);
         }
     });
@@ -147,7 +147,8 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
     });
     statustext.setInteractive().on('pointerover', () => {
         if(!kasoru){
-            kasoru = scene.add.text(menuWidth*0.5/2,menuHeight / 6 + 135,'▶',{fontSize:'32px',fill:'#FFF'});
+            kasoru = scene.add.text(menuWidth*0.5/2,menuHeight / 6 + 135,'▶',{fontSize:'32px',fill:'#000'});
+            kasoru.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
@@ -179,7 +180,8 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
     });
     savetext.setInteractive().on('pointerover', () => {
         if(!kasoru){
-            kasoru = scene.add.text(menuWidth*0.5/2+20,menuHeight / 6 + 205,'▶',{fontSize:'32px',fill:'#FFF'});
+            kasoru = scene.add.text(menuWidth*0.5/2+20,menuHeight / 6 + 205,'▶',{fontSize:'32px',fill:'#000'});
+            kasoru.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
@@ -212,7 +214,8 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
     });
     logouttext.setInteractive().on('pointerover', () => {
         if(!kasoru){
-            kasoru = scene.add.text(menuWidth*0.5/2+15,menuHeight / 6 + 275,'▶',{fontSize:'32px',fill:'#FFF'});
+            kasoru = scene.add.text(menuWidth*0.5/2+15,menuHeight / 6 + 275,'▶',{fontSize:'32px',fill:'#000'});
+            kasoru.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
@@ -227,7 +230,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
     //所持金欄の大きさ設定
     const goldBarHeight = menuHeight*0.50
     const Moneybar = scene.add.rectangle(menuWidth * 0.1-10,menuHeight / 2 + goldBarHeight / 2+100,menuWidth,goldBarHeight,0xFFFFFF,0.8);
-    Moneybar.setStrokeStyle(4,0x000000);
+    Moneybar.setStrokeStyle(4,0x4169e1);
 
     //所持金のテキスト
     const moneytext = scene.add.text(
