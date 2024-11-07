@@ -81,7 +81,7 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
     }else if(cursors.right.isDown){
         //右入力処理
         isMoving=true;
-        player.setVelocityX(160);
+        playerStatus.savepoint_x -= Math.ceil(playerStatus.speed / 10);
         player.anims.play('playerright', true);
     }
     //移動していたらエンカウント処理を行う（最速1フレームに１回）
