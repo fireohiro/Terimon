@@ -83,6 +83,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
     itemtext.setInteractive().on('pointerover', () => {
         if(!kasoru){
             kasoru = scene.add.text(menuWidth*0.5/2+15,menuHeight / 6-5,'▶',{fontSize:'32px',fill:'#FFF'});
+            kasoru.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
@@ -115,6 +116,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
     geartext.setInteractive().on('pointerover', () => {
         if(!kasoru){
             kasoru = scene.add.text(menuWidth*0.5/2+40,menuHeight / 6 + 65,'▶',{fontSize:'32px',fill:'#FFF'});
+            kasoru.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
