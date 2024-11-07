@@ -1,4 +1,4 @@
-// import {createStatusScreen} from './status.js';
+import {createStatusScreen,statusEvent} from './status.js';
 import {saveEvent,saveGame} from './save.js';
 import{logoutmessage,logoutdisplay} from './logout.js';
 
@@ -13,7 +13,7 @@ export function createPause(scene,gameStatus,playerStatus,config,friend1Status,f
     saveGame(scene,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
     logoutmessage(scene,config);
     menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
-    // createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
+    createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
 }
 
 function pauseStart(scene,gameStatus){
@@ -33,7 +33,7 @@ function pauseStart(scene,gameStatus){
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            // statusEvent(gameStatus);
+            statusEvent(gameStatus);
         }
         if(gameStatus.saveflg === true){
             //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -69,7 +69,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            // statusEvent(gameStatus);
+            statusEvent(gameStatus);
         }
         if(gameStatus.saveflg === true){
             //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -101,7 +101,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            // statusEvent(gameStatus);
+            statusEvent(gameStatus);
         }
         if(gameStatus.saveflg === true){
             //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -141,7 +141,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
             logoutdisplay(gameStatus);
         }
-        // statusEvent(gameStatus);
+        statusEvent(gameStatus);
     });
     statustext.setInteractive().on('pointerover', () => {
         if(!kasoru){
@@ -166,7 +166,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            // statusEvent(gameStatus);
+            statusEvent(gameStatus);
         }
         if(gameStatus.logoutflg === true){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -199,7 +199,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            // statusEvent(gameStatus);
+            statusEvent(gameStatus);
         }
         if(gameStatus.saveflg === true){
             //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
