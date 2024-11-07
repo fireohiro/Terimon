@@ -15,11 +15,11 @@ export async function saveGame(scene,playerStatus,config,gameStatus,friend1Statu
     saveback.setOrigin(0,0);
 
     //テキスト（ボタンを設定）の例
-    const savesetumei = scene.add.text(config.width * 0.2,saveHeight / 4,'本当にセーブしますか？',{fontSize:'64px',fill:'#000'});
+    const savesetumei = scene.add.text(config.width * 0.3+70,saveHeight / 4,'本当にセーブしますか？',{fontSize:'64px',fill:'#000'});
     savesetumei.setOrigin(0,0);
     const savetext = scene.add.text(config.width * 0.5+100,saveHeight / 2,'はい',{fontSize:'64px',fill:'#000'});
     savetext.setOrigin(0,0);
-    const backtext = scene.add.text(config.width * 0.5 + 100,saveHeight / 2+50,'いいえ',{fontSize:'64px',fill:'#000'});
+    const backtext = scene.add.text(config.width * 0.5 + 100,saveHeight / 2+80,'いいえ',{fontSize:'64px',fill:'#000'});
     backtext.setOrigin(0,0);
     //クリックイベント
     savetext.setInteractive().on('pointerdown',async()=>{
