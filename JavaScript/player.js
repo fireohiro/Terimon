@@ -108,19 +108,19 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
         // キャラクターが最後に向いていた方向に応じた待機フレームを設定
         switch (player.anims.currentAnim.key) {
             case 'playerup':
-                player.setTexture('terimon', upFrame); // 'upFrame' は上向き待機のフレーム番号
+                player.setTexture('playerImage', 9); 
                 break;
             case 'playerdown':
-                player.setTexture('terimon', downFrame); // 'downFrame' は下向き待機のフレーム番号
+                player.setTexture('playerImage', 0); 
                 break;
             case 'playerleft':
-                player.setTexture('terimon', leftFrame); // 'leftFrame' は左向き待機のフレーム番号
+                player.setTexture('playerImage', 3); 
                 break;
             case 'playerright':
-                player.setTexture('terimon', rightFrame); // 'rightFrame' は右向き待機のフレーム番号
+                player.setTexture('playerImage', 6); 
                 break;
             default:
-                player.setTexture('terimon', downFrame); // デフォルトで下向きの待機フレームを使用
+                player.setTexture('playerImage', 0); 
         }
     }
 
