@@ -46,13 +46,13 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friend1Status,
     const friendStatuses = [friend1Status,friend2Status,friend3Status];
     if(gameStatus.temotisu != 0){
         for(let i=1;i<friendStatuses.length;i++){
-            // const friendStatus = friendStatuses[`friend${i}Status`];
+            let friendStatus = friendStatuses[`friend${i}Status`];
             // friendimage = scene.add.image(50, yOffset + i * 100, 'friendStatus'); // モンスター画像
             friendInfo = scene.add.text(config.width * 0.2 + 10, statusHeight * 0.3, 
-                `勇者 Lv.${friendStatuses.level}\nHP: ${friendStatuses.hp_nokori} / ${friendStatuses.hp}MP: ${friendStatuses.mp_nokori} / ${friendStatuses.mp}`,
+                `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
                 { fontSize: '18px', fill: '#000' });
             friendattributes = scene.add.text(config.width * 0.2 + 10, statusHeight * 0.4,
-                `こうげき: ${friendStatuses.pow}まもり: ${friendStatuses.def}\nすばやさ: ${friendStatuses.speed}運: ${friendStatuses.luck}`,
+                `こうげき: ${friendStatus.pow}まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}運: ${friendStatus.luck}`,
                 { fontSize: '16px', fill: '#000' });
         }
     }
