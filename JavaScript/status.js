@@ -1,9 +1,10 @@
-// export function statuspreload(loader) {
-//     // 味方画像をプリロード
-//     for (let i = 1; i <= 10; i++) {
-//         loader.image(`enemy${i}`, `assets/battleimg/Enemy${i}.png`);
-//     }
-// }
+export function statuspreload(loader) {
+    loader.spritesheet('player','assets/character/terimon1.png', { frameWidth: 100, frameHeight: 100 })
+    // 味方画像をプリロード
+    // for (let i = 1; i <= 10; i++) {
+    //     loader.image(`enemy${i}`, `assets/battleimg/Enemy${i}.png`);
+    // }
+}
 
 let statusContainer;
 export function statusEvent(gameStatus){
@@ -12,25 +13,28 @@ export function statusEvent(gameStatus){
 }
 
 export function createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config) {
-    const statusWidth = config.width * 0.60;
-    const statusHeight = config.height * 0.95;
+    const statusWidth = config.width * 0.6;
+    const statusHeight = config.height * 0.8;
 
     // ステータス画面の背景
-    const statusBackground = scene.add.rectangle(config.width * 0.5 + 10, 2, statusWidth, statusHeight, 0xFFFFE0, 0.8);
-    statusBackground.setStrokeStyle(4, 0x000000);
+    const statusBackground = scene.add.rectangle(config.width * 0.2 + 10, 20, statusWidth, statusHeight, 0xFFFFFF, 0.8);
+    statusBackground.setStrokeStyle(4, 0x4169e1);
+    statusBackground.setOrigin(0,0);
+
+    const playerImage = scene.add.sprite(config.width * 0.25, statusHeight * 0.2,'player');
 
     // プレイヤーのステータス情報を表示
     const playerInfo = scene.add.text(
-        config.width * 0.2 + 10, statusHeight * 0.1, 
+        config.width * 0.3 + 20, statusHeight * 0.1, 
         `勇者 Lv.${playerStatus.level}\nHP: ${playerStatus.hp_nokori} / ${playerStatus.hp}　　　MP: ${playerStatus.mp_nokori} / ${playerStatus.mp}`,
-        { fontSize: '18px', fill: '#000' }
+        { fontSize: '32px', fill: '#000' }
     );
 
     // ステータス属性の表示
     const attributes = scene.add.text(
-        config.width * 0.2 + 10, statusHeight * 0.2,
-        `こうげき: ${playerStatus.pow}まもり: ${playerStatus.def}\nすばやさ: ${playerStatus.speed}運: ${playerStatus.luck}`,
-        { fontSize: '16px', fill: '#000' }
+        config.width * 0.3 + 20, statusHeight * 0.2,
+        `こうげき: ${playerStatus.pow}　　　まもり: ${playerStatus.def}\nすばやさ: ${playerStatus.speed}　　　運: ${playerStatus.luck}`,
+        { fontSize: '32px', fill: '#000' }
     );
     // const line = scene.add.lineStyle(2, 0xFFFFE0);
     // line.beginPath();
@@ -48,15 +52,15 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friend1Status,
         for(let i=1;i<friendStatuses.length;i++){
             let friendStatus = friendStatuses[`friend${i}Status`];
             // friendimage = scene.add.image(50, yOffset + i * 100, 'friendStatus'); // モンスター画像
-            friendInfo = scene.add.text(config.width * 0.2 + 10, statusHeight * 0.3, 
-                `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
+            friendInfo = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.3, 
+                `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}　　　MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
                 { fontSize: '18px', fill: '#000' });
-            friendattributes = scene.add.text(config.width * 0.2 + 10, statusHeight * 0.4,
-                `こうげき: ${friendStatus.pow}まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}運: ${friendStatus.luck}`,
+            friendattributes = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.4,
+                `こうげき: ${friendStatus.pow}　　　まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}　　　運: ${friendStatus.luck}`,
                 { fontSize: '16px', fill: '#000' });
         }
     }
-    statusContainer=scene.add.container(0,0,[statusBackground,playerInfo,attributes]);//,friendimage,friendInfo,friendattributes
+    statusContainer=scene.add.container(0,0,[statusBackground,playerImage,playerInfo,attributes]);//,friendimage,friendInfo,friendattributes
     statusContainer.setVisible(false);
     statusContainer.setDepth(7);
     // const monsters = playerStatus.monsters; // モンスターリスト
