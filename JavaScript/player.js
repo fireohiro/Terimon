@@ -6,6 +6,7 @@ let player;
 let isMoving = false;//動いているのかの確認
 let map;
 let cursors;
+let lastDirection = 'down';
 
 export function playerpreload(loader){
     loader.spritesheet('playerImage','assets/character/terimon1.png', { frameWidth: 32, frameHeight: 32 });
@@ -106,7 +107,7 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
         player.anims.stop();  // 現在のアニメーションを停止
 
         // キャラクターが最後に向いていた方向に応じた待機フレームを設定
-        switch (player.anims.currentAnim.key) {
+        switch (player.anims.getCurrentKey()) {
             case 'playerup':
                 player.setTexture('playerImage', 9); 
                 break;
