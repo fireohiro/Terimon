@@ -4,7 +4,7 @@ import {mappreload,createMap} from './map.js';
 import {createPause,updatepause} from './pause.js';
 import {playerpreload,playercreate,playerupdate} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
-// import { createStatusScreen,statuspreload } from './status.js';
+import {statuspreload} from './status.js';
 
 //Phaserの設定
 const config = {
@@ -63,7 +63,7 @@ function preload(){
     mappreload(this.load);//map.jsのpreload処理を行う
     playerpreload(this.load);//player.jsのpreload処理を行う
     battlepreload(this.load);//battle.jsのpreload処理を行う
-    // statuspreload(this.load);
+    statuspreload(this.load);
     //status.jsのpreload処理を行う
 }
 
@@ -81,8 +81,6 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     //pauseのcreate処理
     createPause(this,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status);
 
-    // createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
-    
     createok = true;
 }
 //ゲームの更新処理
