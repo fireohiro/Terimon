@@ -107,7 +107,7 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
         player.anims.stop();  // 現在のアニメーションを停止
 
         // キャラクターが最後に向いていた方向に応じた待機フレームを設定
-        switch (player.anims.getCurrentKey()) {
+        switch (player.anims.getName()) {
             case 'playerup':
                 player.setTexture('playerImage', 9); 
                 break;
