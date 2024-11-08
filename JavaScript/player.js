@@ -8,7 +8,7 @@ let map;
 let cursors;
 
 export function playerpreload(loader){
-    loader.image('playerimage','assets/character/terimon1.png');
+    loader.spritesheet('playerImage','assets/character/terimon1.png', { frameWidth: 32, frameHeight: 32 });
 }
 
 export function playercreate(scene,playerStatus){
@@ -46,25 +46,25 @@ export function playercreate(scene,playerStatus){
     // プレイヤーのアニメーション
     scene.anims.create({
         key: 'playerdown',
-        frames: scene.anims.generateFrameNumbers('player', { start: 0, end: 2 }),
+        frames: scene.anims.generateFrameNumbers('playerImage', { start: 0, end: 2 }),
         frameRate: 10,
         repeat: -1
     });
     scene.anims.create({
         key: 'playerleft',
-        frames: scene.anims.generateFrameNumbers('player', { start: 3, end: 5 }),
+        frames: scene.anims.generateFrameNumbers('playerImage', { start: 3, end: 5 }),
         frameRate: 10,
         repeat: -1
     });
     scene.anims.create({
         key: 'playerright',
-        frames: scene.anims.generateFrameNumbers('player', { start: 6, end: 8 }),
+        frames: scene.anims.generateFrameNumbers('playerImage', { start: 6, end: 8 }),
         frameRate: 10,
         repeat: -1
     });
     scene.anims.create({
         key: 'playerup',
-        frames: scene.anims.generateFrameNumbers('player', { start: 9, end: 11 }),
+        frames: scene.anims.generateFrameNumbers('playerImage', { start: 9, end: 11 }),
         frameRate: 10,
         repeat: -1
     });
