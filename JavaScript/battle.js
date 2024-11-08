@@ -255,7 +255,7 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
 
                         let textY = frameY - frameHeight + 20;
                         itemList.forEach((item,index)=>{
-                            const itemtext=scene.add.text(frameX + 10,textY,`${item.waza_name}　　　分類:${item.bunrui}　　　説明：${item.setumei}`,{fontSize:'16px',fill:'#ffffff'});
+                            const itemtext=scene.add.text(frameX + 10,textY,`${item.item_name}　　　分類:${item.bunrui}　　　説明：${item.setumei}`,{fontSize:'16px',fill:'#ffffff'});
                             itemtext.setInteractive().on('pointerdown',()=>{
                                 itemRole(item);
                             });
