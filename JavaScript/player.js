@@ -86,7 +86,8 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
         isMoving=true;
         playerStatus.savepoint_y += Math.ceil(playerStatus.speed / 10);
         player.anims.play('playerdown', true);
-    }//左右処理を別のif分で書くことで斜め移動を可能にしている
+    }
+    //左右処理を別のif分で書くことで斜め移動を可能にしている
 
     if(cursors.left.isDown){
         //左入力処理
@@ -99,6 +100,30 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
         playerStatus.savepoint_x -= Math.ceil(playerStatus.speed / 10);
         player.anims.play('playerright', true);
     }
+
+    // 動いていない場合に待機アニメーションを再生
+    if (!isMoving) {
+        player.anims.stop();  // 現在のアニメーションを停止
+
+        // キャラクターが最後に向いていた方向に応じた待機フレームを設定
+        switch (player.anims.currentAnim.key) {
+            case 'playerup':
+                player.setTexture('terimon', upFrame); // 'upFrame' は上向き待機のフレーム番号
+                break;
+            case 'playerdown':
+                player.setTexture('terimon', downFrame); // 'downFrame' は下向き待機のフレーム番号
+                break;
+            case 'playerleft':
+                player.setTexture('terimon', leftFrame); // 'leftFrame' は左向き待機のフレーム番号
+                break;
+            case 'playerright':
+                player.setTexture('terimon', rightFrame); // 'rightFrame' は右向き待機のフレーム番号
+                break;
+            default:
+                player.setTexture('terimon', downFrame); // デフォルトで下向きの待機フレームを使用
+        }
+    }
+
     //移動していたらエンカウント処理を行う（最速1フレームに１回）
     if(isMoving){
         //エンカウント処理
@@ -108,6 +133,7 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
             battleStart(scene,config,1,gameStatus,friend1Status,friend2Status,friend3Status);
         }
     }
+    
     
     //map情報をもとにプレイヤーがマップの外に行かないように調整する
     const mapWidth = map.widthInPixels;
