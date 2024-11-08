@@ -47,7 +47,7 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friend1Status,
     let friendimage;
     let friendInfo;
     let friendattributes;
-    const friendStatuses = [friend1Status,friend2Status,friend3Status];
+    let friendStatuses = [friend1Status,friend2Status,friend3Status];
     if(gameStatus.temotisu != 0){
         for(let i=1;i<friendStatuses.length;i++){
             let friendStatus = friendStatuses[`friend${i}Status`];
