@@ -43,9 +43,9 @@ export function mappreload(loader){
     }
 }
 //マップが切り替わったかを確認
-export function checkAndCreateMap(playerStatus){
+export function checkAndCreateMap(scene,playerStatus,gameStatus){
     if(map_idHasChanged(playerStatus)){
-        createMap(playerStatus);
+        createMap(scene,playerStatus,gameStatus);
     }
 }
 
@@ -57,13 +57,19 @@ function map_idHasChanged(playerStatus){
     return false;
 }
 
-export function createMap(scene,playerStatus){
+export function createMap(scene,playerStatus,gameStatus){
     if(map){
         map.destroy();
     }
     tilesets = [];
     layersu = 0;
     let map_id = playerStatus.map_id;
+
+    if(map_id === 3 || map_id === 6 || map_id === 7){
+        gameStatus.encountflg = true;
+    }else{
+        gameStatus.encountflg = false;
+    }
 
     //マップidごとに表示させる
     if(map_id === 1){
@@ -114,6 +120,28 @@ export function createMap(scene,playerStatus){
             tilesets.push(tileset);
         }
         layersu = 3;
+    }
+    //カメラのズーム倍率を変える＆レイヤーの変更
+    if(playerStatus.map_id === 1){
+        scene.cameras.main.setZoom(1.0);//カメラを通常の1.5倍近づける
+    }else if(playerStatus.map_id === 2){
+        //必要に応じて変える
+        scene.cameras.main.setZoom(1.0);
+    }else if(playerStatus.map_id === 3){
+        //必要に応じて変える
+        scene.cameras.main.setZoom(1.0);
+    }else if(playerStatus.map_id === 4){
+        //必要に応じて変える
+        scene.cameras.main.setZoom(1.0);
+    }else if(playerStatus.map_id === 5){
+        //必要に応じて変える
+        scene.cameras.main.setZoom(1.0);
+    }else if(playerStatus.map_id === 6){
+        //必要に応じて変える
+        scene.cameras.main.setZoom(1.0);
+    }else if(playerStatus.map_id === 7){
+        //必要に応じて変える
+        scene.cameras.main.setZoom(1.0);
     }
     //マップの情報をplayer.jsに送る
     dataMap(map);

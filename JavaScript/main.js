@@ -73,7 +73,13 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     const user = await userData();//awaitはこの処理が終わってから次の処理に行くこと
     Object.assign(playerStatus, user);//セッションデータをオブジェクトに保存
     await loadFriends();
-    createMap(this,playerStatus);
+    createMap(this,playerStatus,gameStatus);
+
+    if(playerStatus.map_id === 3 || playerStatus.map_id === 6 || playerStatus.map_id === 7){
+        gameStatus.encountflg = true;
+    }else{
+        gameStatus.encountflg = false;
+    }
 
     //プレイヤーを最後にいた地に表示
     playercreate(this,playerStatus);
@@ -98,5 +104,5 @@ function update(){
         return;
     }
     //バトルでもポーズでもないときの処理↓
-    playerupdate(this,config,playerStatus,friend1Status,friend2Status,friend3Status);
+    playerupdate(this,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status);
 }
