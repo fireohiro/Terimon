@@ -84,34 +84,19 @@
         {
          "draworder":"topdown",
          "id":7,
-         "name":"Transitions",
+         "name":"out",
          "objects":[
                 {
-                 "height":40.7171775592828,
-                 "id":3,
+                 "height":0,
+                 "id":2,
                  "name":"",
-                 "properties":[
-                        {
-                         "name":"targetMap",
-                         "type":"string",
-                         "value":"2"
-                        }, 
-                        {
-                         "name":"targetX",
-                         "type":"string",
-                         "value":"912"
-                        }, 
-                        {
-                         "name":"targetY",
-                         "type":"string",
-                         "value":"306"
-                        }],
+                 "point":true,
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":57.3742047426257,
-                 "x":177.674956622325,
-                 "y":484.904569115095
+                 "width":0,
+                 "x":207.190856918625,
+                 "y":499.141609849414
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -120,7 +105,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":4,
+ "nextobjectid":3,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

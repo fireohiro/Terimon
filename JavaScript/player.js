@@ -126,14 +126,14 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
     }
 
     //移動していたらエンカウント処理を行う（最速1フレームに１回）
-    if(isMoving){
-        //エンカウント処理
-        let encountnum = Math.floor(Math.random() * 100) + 1;
-        if(encountnum <= battlerate){//2%の確率でバトル発生
-            //バトル発生、configの後の引数はそのバトル相手が雑魚なのか中ボスなのかボスなのかを判定（１＝雑魚、２＝中ボス、３＝ボス）カスタムも可
-            battleStart(scene,config,1,gameStatus,friend1Status,friend2Status,friend3Status);
-        }
-    }
+    // if(isMoving){
+    //     //エンカウント処理
+    //     let encountnum = Math.floor(Math.random() * 100) + 1;
+    //     if(encountnum <= battlerate){//2%の確率でバトル発生
+    //         //バトル発生、configの後の引数はそのバトル相手が雑魚なのか中ボスなのかボスなのかを判定（１＝雑魚、２＝中ボス、３＝ボス）カスタムも可
+    //         battleStart(scene,config,1,gameStatus,friend1Status,friend2Status,friend3Status);
+    //     }
+    // }
     
     
     //map情報をもとにプレイヤーがマップの外に行かないように調整する

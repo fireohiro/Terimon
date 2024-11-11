@@ -1,9 +1,19 @@
-<!doctype html>
+<?php session_start(); ?>
+<?
+// ログインしているか確認
+if (!isset($_SESSION['user'])) {
+    // 未ログインの場合、ログインページにリダイレクト
+    header('Location: login.php');
+    exit();
+}
+?>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>テリモン</title>
+    <link rel="icon" href="src/image/favicon.ico">
     <style>
         /* ゲームの表示場所のCSS */
         html,
