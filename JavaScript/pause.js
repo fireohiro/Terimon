@@ -4,6 +4,7 @@ import{logoutmessage,logoutdisplay} from './logout.js';
 
 let kasoru = null;
 let menuContainer;
+let friends;
 export function createPause(scene,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status,itemList){
     friends = [friend1Status,friend2Status,friend3Status].slice(0,gameStatus.temoti);
     scene.input.keyboard.on('keydown',(event) => {
