@@ -14,7 +14,7 @@ export function createPause(scene,gameStatus,playerStatus,config,friend1Status,f
     saveGame(scene,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
     logoutmessage(scene,config,gameStatus);
     menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
-    createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
+    createStatusScreen(scene,gameStatus, playerStatus,friends,config);
 }
 
 function pauseStart(scene,gameStatus){

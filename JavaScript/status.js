@@ -12,7 +12,7 @@ export function statusEvent(gameStatus){
     statusContainer.setVisible(gameStatus.statusflg);
 }
 
-export function createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config) {
+export function createStatusScreen(scene,gameStatus, playerStatus,friends, config) {
     const statusWidth = config.width * 0.6;
     const statusHeight = config.height * 0.8;
 
@@ -47,19 +47,16 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friend1Status,
     let friendimage;
     let friendInfo;
     let friendattributes;
-    let friendStatuses = [friend1Status,friend2Status,friend3Status];
-    console.log(friendStatuses);
     if(gameStatus.temotisu != 0){
-        for(let i=0;i<friendStatuses.length;i++){
-            let friendStatus = friendStatuses[`friend${i}Status`];
+        friends.array.forEach(friendStatus => {
             // friendimage = scene.add.image(50, yOffset + i * 100, 'friendStatus'); // モンスター画像
             friendInfo = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.3, 
-                `勇者 Lv.${friend1Status.level}\nHP: ${friend1Status.hp_nokori} / ${friend1Status.hp}　　　MP: ${friend1Status.mp_nokori} / ${friend1Status.mp}`,
+                `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}　　　MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
                 { fontSize: '32px', fill: '#000' });
             friendattributes = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.4,
-                `こうげき: ${friend1Status.pow}　　　まもり: ${friend1Status.def}\nすばやさ: ${friend1Status.speed}　　　運: ${friend1Status.luck}`,
+                `こうげき: ${friendStatus.pow}　　　まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}　　　運: ${friendStatus.luck}`,
                 { fontSize: '32px', fill: '#000' });
-        }
+        });
     }
     statusContainer=scene.add.container(0,0,[statusBackground,playerImage,playerInfo,attributes,friendInfo,friendattributes]);//,friendimage
     statusContainer.setVisible(false);
@@ -72,29 +69,3 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friend1Status,
     // }
 
 }
-
-    // 味方キャラクターの情報を表示
-    // const friendContainer = [];
-    // let yOffset = 200;
-    // for (let i = 0; i < friendStatuses.length; i++) {
-    //     const friendStatus = friendStatuses[i];
-    //     if (friendStatus != null) {
-    //         const friendId = friendStatus.friend_id; // friend_idに基づいて画像キーを決定
-    //         const friendImage = scene.add.image(100, yOffset + i * 100, `enemy${friendId}`); // モンスター画像
-            
-    //         // 各味方の情報テキストを作成
-    //         const friendInfo = scene.add.text(
-    //             statusWidth * 0.1, yOffset + i * 100, 
-    //             `味方 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp} MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
-    //             { fontSize: '18px', fill: '#000' }
-    //         );
-
-    //         const friendAttributes = scene.add.text(
-    //             statusWidth * 0.1, yOffset + i * 100 + 40,
-    //             `こうげき: ${friendStatus.pow} まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed} 運: ${friendStatus.luck}`,
-    //             { fontSize: '16px', fill: '#000' }
-    //         );
-
-    //         friendContainer.push(friendImage, friendInfo, friendAttributes);
-    //     }
-    // }
