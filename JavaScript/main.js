@@ -33,6 +33,7 @@ const playerStatus = {};
 const friend1Status ={};
 const friend2Status ={};
 const friend3Status ={};
+let itemList=[];
 let createok = false;
 
 function userData() {
@@ -58,6 +59,14 @@ export async function loadFriends(){
     gameStatus.temotisu = friends.length;
 }
 
+export async function fetchItems(){
+    const itemres = await fetch(`get_item.php`);
+    const items = await itemres.json();
+    items.forEach(item=>{
+        itemList.push(item);
+    });
+}
+
 //アセット（画像、音声など）の読み鋳込み
 function preload(){
     mappreload(this.load);//map.jsのpreload処理を行う
@@ -73,6 +82,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     const user = await userData();//awaitはこの処理が終わってから次の処理に行くこと
     Object.assign(playerStatus, user);//セッションデータをオブジェクトに保存
     await loadFriends();
+    await fetchItems();
     createMap(this,playerStatus,gameStatus);
 
     if(playerStatus.map_id === 3 || playerStatus.map_id === 6 || playerStatus.map_id === 7){
@@ -85,7 +95,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     playercreate(this,playerStatus);
 
     //pauseのcreate処理
-    createPause(this,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status);
+    createPause(this,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status,itemList);
 
     createok = true;
 }
@@ -96,7 +106,7 @@ function update(){
     }
     if(gameStatus.battleflg){
         //バトル中はバトル処理だけをして、その他を実行しない
-        battleupdate(this,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config);
+        battleupdate(this,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config,itemList);
         return;
     }
     if(gameStatus.pauseflg){
@@ -105,4 +115,12 @@ function update(){
     }
     //バトルでもポーズでもないときの処理↓
     playerupdate(this,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status);
+}
+
+export function itemUse(item_id){
+    itemList.forEach(item=>{
+        if(item.item_id === item_id){
+            item -= 1;
+        }
+    });
 }

@@ -4,7 +4,7 @@ import{logoutmessage,logoutdisplay} from './logout.js';
 
 let kasoru = null;
 let menuContainer;
-export function createPause(scene,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status){
+export function createPause(scene,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status,itemList){
     scene.input.keyboard.on('keydown',(event) => {
         if(event.key === 'Escape'){
             pauseStart(scene,gameStatus);

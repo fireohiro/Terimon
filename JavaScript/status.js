@@ -48,8 +48,9 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friend1Status,
     let friendInfo;
     let friendattributes;
     let friendStatuses = [friend1Status,friend2Status,friend3Status];
+    console.log(friendStatuses);
     if(gameStatus.temotisu != 0){
-        for(let i=1;i<friendStatuses.length;i++){
+        for(let i=0;i<friendStatuses.length;i++){
             let friendStatus = friendStatuses[`friend${i}Status`];
             // friendimage = scene.add.image(50, yOffset + i * 100, 'friendStatus'); // モンスター画像
             friendInfo = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.3, 

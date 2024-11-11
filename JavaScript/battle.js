@@ -19,7 +19,7 @@ export function battlepreload(loader){
     loader.image('battleback','assets/battleimg/vsback.png');
 }
 
-export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config){
+export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config,itemList){
     enemyes = [enemy1,enemy2,enemy3];
     friends = [friend1Status,friend2Status,friend3Status].slice(0,gameStatus.temoti);
     const displayData = gameStatus.playerfight ? [playerStatus]:friends;
