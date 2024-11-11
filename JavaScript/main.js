@@ -59,12 +59,24 @@ export async function loadFriends(){
     gameStatus.temotisu = friends.length;
 }
 
-export async function fetchItems(){
-    const itemres = await fetch(`get_item.php`);
-    const items = await itemres.json();
-    items.forEach(item=>{
-        itemList.push(item);
-    });
+export async function fetchItems() {
+    try {
+        const response = await fetch('get_item.php');
+        
+        // レスポンスが成功かどうか確認
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+
+        const text = await response.text();  // レスポンスをテキストとして取得
+        console.log(text);  // レスポンスの内容を表示
+
+        const data = JSON.parse(text);  // JSONとしてパース
+        itemList = data.items;  // itemsをitemListに代入
+        console.log(itemList);  // itemListの内容を表示
+    } catch (error) {
+        console.error('Error fetching items:', error);
+    }
 }
 
 //アセット（画像、音声など）の読み鋳込み
