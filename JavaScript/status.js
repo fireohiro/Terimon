@@ -36,11 +36,6 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
         `こうげき: ${playerStatus.pow}　　　まもり: ${playerStatus.def}\nすばやさ: ${playerStatus.speed}　　　運: ${playerStatus.luck}`,
         { fontSize: '32px', fill: '#000' }
     );
-    // const line = scene.add.lineStyle(2, 0xFFFFE0);
-    // line.beginPath();
-    // line.moveTo(statusWidth, statusHeight*0.5);   // 始点の座標 (x1, y1)
-    // line.lineTo(statusWidth+200, statusHeight*0.5);  // 終点の座標 (x2, y2)
-    // line.strokePath();
 
     // モンスター情報（例として追加）
     let yOffset = 150;
@@ -52,7 +47,7 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
             // friendimage = scene.add.image(50, yOffset + i * 100, 'friendStatus'); // モンスター画像
             friendInfo = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.3, 
                 `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}　　　MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
-                { fontSize: '32px', fill: '#000' });
+                { fontSize: '32px', fill: '#000' });//このままだと味方のステータスが同じところに出る
             friendattributes = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.4,
                 `こうげき: ${friendStatus.pow}　　　まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}　　　運: ${friendStatus.luck}`,
                 { fontSize: '32px', fill: '#000' });
