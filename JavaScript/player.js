@@ -7,6 +7,8 @@ let isMoving = false;//動いているのかの確認
 let map;
 let cursors;
 let lastDirection = 'down';
+let step = 0;
+const StepToEncounter = 80;//バトル発生するまでの必要歩数
 
 export function playerpreload(loader){
     loader.spritesheet('playerImage','assets/character/terimon1.png', { frameWidth: 32, frameHeight: 32 });
@@ -17,28 +19,6 @@ export function playercreate(scene,playerStatus){
     player = scene.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'playerimage');
     //カメラ調整,必要に応じて調整
     scene.cameras.main.startFollow(player);//プレイヤー追従
-
-    if(playerStatus.map_id === 1){
-        scene.cameras.main.setZoom(1.0);//カメラを通常の1.5倍近づける
-    }else if(playerStatus.map_id === 2){
-        //必要に応じて変える
-        scene.cameras.main.setZoom(1.0);
-    }else if(playerStatus.map_id === 3){
-        //必要に応じて変える
-        scene.cameras.main.setZoom(1.0);
-    }else if(playerStatus.map_id === 4){
-        //必要に応じて変える
-        scene.cameras.main.setZoom(1.0);
-    }else if(playerStatus.map_id === 5){
-        //必要に応じて変える
-        scene.cameras.main.setZoom(1.0);
-    }else if(playerStatus.map_id === 6){
-        //必要に応じて変える
-        scene.cameras.main.setZoom(1.0);
-    }else if(playerStatus.map_id === 7){
-        //必要に応じて変える
-        scene.cameras.main.setZoom(1.0);
-    }
 
     cursors = scene.input.keyboard.createCursorKeys();
 
@@ -93,14 +73,16 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
     if(cursors.left.isDown){
         //左入力処理
         isMoving=true;
-        playerStatus.savepoint_x += Math.ceil(playerStatus.speed / 10);
+        playerStatus.savepoint_x -= Math.ceil(playerStatus.speed / 10);
         player.anims.play('playerleft', true);
     }else if(cursors.right.isDown){
         //右入力処理
         isMoving=true;
-        playerStatus.savepoint_x -= Math.ceil(playerStatus.speed / 10);
+        playerStatus.savepoint_x += Math.ceil(playerStatus.speed / 10);
         player.anims.play('playerright', true);
     }
+    // 更新された座標を player スプライトに適用
+    player.setPosition(playerStatus.savepoint_x, playerStatus.savepoint_y);
 
     // 動いていない場合に待機アニメーションを再生
     if (!isMoving) {
@@ -124,16 +106,22 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
                 player.setTexture('playerImage', 0); 
         }
     }
-
-    //移動していたらエンカウント処理を行う（最速1フレームに１回）
-    // if(isMoving){
-    //     //エンカウント処理
-    //     let encountnum = Math.floor(Math.random() * 100) + 1;
-    //     if(encountnum <= battlerate){//2%の確率でバトル発生
-    //         //バトル発生、configの後の引数はそのバトル相手が雑魚なのか中ボスなのかボスなのかを判定（１＝雑魚、２＝中ボス、３＝ボス）カスタムも可
-    //         battleStart(scene,config,1,gameStatus,friend1Status,friend2Status,friend3Status);
-    //     }
-    // }
+    //移動していたらエンカウント処理を行う
+    if(gameStatus.encountflg){
+        if(isMoving){
+            step++;
+            if(step >= StepToEncounter){
+                //エンカウント処理
+                let encountnum = Math.floor(Math.random() * 100) + 1;
+                if(encountnum <= battlerate){//2%の確率でバトル発生
+                    //バトル発生、configの後の引数はそのバトル相手が雑魚なのか中ボスなのかボスなのかを判定（１＝雑魚、２＝中ボス、３＝ボス）カスタムも可
+                    battleStart(scene,config,1,gameStatus,friend1Status,friend2Status,friend3Status);
+                }
+            }
+        }else{
+            step = 0;
+        }
+    }
     
     
     //map情報をもとにプレイヤーがマップの外に行かないように調整する
@@ -155,7 +143,7 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
         if((200 <= playerStatus.savepoint_x && playerStatus.savepoint_x <= 230 ) && ( 500 <= playerStatus.savepoint_y && playerStatus.savepoint_y <= 530)){
             playerStatus.map_id = 2;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(playerStatus);
+            checkAndCreateMap(scene,playerStatus,gameStatus);
             player.setPosition(915, 285);
         }else if(playerStatus.savepoint_x >= mapWidth - 32 && playerStatus.savepoint_y <= 64 && playerStatus.savepoint_y >= 0){//処理内容を簡単に書くと、今いるポイントがX座標が端or端に近い場所であるかつY座標が一定の高さ以上一定の高さ未満であるときにマップの変更を行いますというもの
             playerStatus.map_id = 3;

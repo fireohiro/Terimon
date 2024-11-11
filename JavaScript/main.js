@@ -4,7 +4,7 @@ import {mappreload,createMap} from './map.js';
 import {createPause,updatepause} from './pause.js';
 import {playerpreload,playercreate,playerupdate} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
-// import { createStatusScreen,statuspreload } from './status.js';
+import {statuspreload} from './status.js';
 
 //Phaserの設定
 const config = {
@@ -28,7 +28,7 @@ const config = {
 //ゲームのインスタンスを作成
 const game = new Phaser.Game(config);
 //ポーズのbooleanをオブジェクトで管理することで、他プログラムで中身を同期できる
-const gameStatus = {pauseflg:false,battleflg:false,temotisu:0,playerfight:true,itemflg:false,gearflg:false,statusflg:false,saveflg:false,logoutflg:false};
+const gameStatus = {pauseflg:false,battleflg:false,temotisu:0,playerfight:true,itemflg:false,gearflg:false,statusflg:false,saveflg:false,logoutflg:false,encountflg:false};
 const playerStatus = {};
 const friend1Status ={};
 const friend2Status ={};
@@ -63,7 +63,7 @@ function preload(){
     mappreload(this.load);//map.jsのpreload処理を行う
     playerpreload(this.load);//player.jsのpreload処理を行う
     battlepreload(this.load);//battle.jsのpreload処理を行う
-    // statuspreload(this.load);
+    statuspreload(this.load);
     //status.jsのpreload処理を行う
 }
 
@@ -73,7 +73,13 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     const user = await userData();//awaitはこの処理が終わってから次の処理に行くこと
     Object.assign(playerStatus, user);//セッションデータをオブジェクトに保存
     await loadFriends();
-    createMap(this,playerStatus);
+    createMap(this,playerStatus,gameStatus);
+
+    if(playerStatus.map_id === 3 || playerStatus.map_id === 6 || playerStatus.map_id === 7){
+        gameStatus.encountflg = true;
+    }else{
+        gameStatus.encountflg = false;
+    }
 
     //プレイヤーを最後にいた地に表示
     playercreate(this,playerStatus);
@@ -81,8 +87,6 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     //pauseのcreate処理
     createPause(this,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status);
 
-    // createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
-    
     createok = true;
 }
 //ゲームの更新処理
@@ -100,5 +104,5 @@ function update(){
         return;
     }
     //バトルでもポーズでもないときの処理↓
-    playerupdate(this,config,playerStatus,friend1Status,friend2Status,friend3Status);
+    playerupdate(this,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status);
 }

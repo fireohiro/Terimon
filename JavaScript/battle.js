@@ -12,8 +12,8 @@ let dieflg = false;
 
 export function battlepreload(loader){
     //敵画像
-    for(let i = 1; i <= 10;i++){
-        loader.image(`enemy${i}`,`assets/battleimg/Enemy${i}.png`);
+    for(let i = 1; i <= 21;i++){
+        loader.image(`monster${i}`,`assets/monster/monster${i}.png`);
     }
     //戦闘背景の読み込み
     loader.image('battleback','assets/battleimg/vsback.png');
@@ -255,7 +255,7 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
 
                         let textY = frameY - frameHeight + 20;
                         itemList.forEach((item,index)=>{
-                            const itemtext=scene.add.text(frameX + 10,textY,`${item.waza_name}　　　分類:${item.bunrui}　　　説明：${item.setumei}`,{fontSize:'16px',fill:'#ffffff'});
+                            const itemtext=scene.add.text(frameX + 10,textY,`${item.item_name}　　　分類:${item.bunrui}　　　説明：${item.setumei}`,{fontSize:'16px',fill:'#ffffff'});
                             itemtext.setInteractive().on('pointerdown',()=>{
                                 itemRole(item);
                             });
@@ -525,7 +525,8 @@ export async function battleStart(scene,config,bunrui,gameStatus,friend1Status,f
     Object.assign(enemy2,enemies[1]);
     Object.assign(enemy3,enemies[2]);
 
-    const battleback = scene.add.image(640,480,'battleback');//左上端っこに背景画像表示※後でカメラの座標をオブジェクトに入れてそれを持ってくる
+    const battleback = scene.add.image(0,0,'battleback');//左上端っこに背景画像表示※後でカメラの座標をオブジェクトに入れてそれを持ってくる
+    battleback.setOrigin(0,0);
     battleback.setDisplaySize(1280,960);//画像のサイズを画面のサイズに合わせる
     battleback.setDepth(0);
 
