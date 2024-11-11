@@ -43,7 +43,7 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
     let friendInfo;
     let friendattributes;
     if(gameStatus.temotisu != 0){
-        friends.array.forEach(friendStatus => {
+        friends.forEach(friendStatus => {
             // friendimage = scene.add.image(50, yOffset + i * 100, 'friendStatus'); // モンスター画像
             friendInfo = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.3, 
                 `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}　　　MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,

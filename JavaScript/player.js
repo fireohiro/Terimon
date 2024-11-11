@@ -49,6 +49,22 @@ export function playercreate(scene,playerStatus){
         frameRate: 10,
         repeat: -1
     });
+    //プレイヤーの表示レイヤーの設定
+    if(playerStatus.map_id === 1){
+        player.setDepth(2);
+    }else if(playerStatus.map_id === 2){
+        player.setDepth(1);
+    }else if(playerStatus.map_id === 3){
+        player.setDepth(1);
+    }else if(playerStatus.map_id === 4){
+        player.setDepth(2);
+    }else if(playerStatus.map_id === 5){
+        player.setDepth(1);
+    }else if(playerStatus.map_id === 6){
+        player.setDepth(1);
+    }else if(playerStatus.map_id === 7){
+        player.setDepth(3);
+    }
 }
 
 export function dataMap(mapdata){

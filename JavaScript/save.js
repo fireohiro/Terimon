@@ -5,7 +5,7 @@ export function saveEvent(gameStatus){
     saveContainer.setVisible(gameStatus.saveflg);
 }
 
-export async function saveGame(scene,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status){
+export async function saveGame(scene,playerStatus,config,gameStatus,friends,itemList,gearList){
     //メニューのサイズを設定
     const saveWidth = config.width * 0.6;
     const saveHeight = config.height * 0.85;
@@ -24,40 +24,58 @@ export async function saveGame(scene,playerStatus,config,gameStatus,friend1Statu
     backtext.setOrigin(0,0);
     //クリックイベント
     savetext.setInteractive().on('pointerdown',async()=>{
-        //保存データ準備
-        let saveData={};
-        if(gameStatus.temotisu === 0){
-            saveData = {
-                playerStatus
-            };
-        }else if(gameStatus.temotisu === 1){
-            saveData ={
-                playerStatus,
-                friend1Status,
-            };
-        }else if(gameStatus.temotisu === 2){
-            saveData = {
-                playerStatus,
-                friend1Status,
-                friend2Status,
-            };
-        }else{
-            saveData = {
-                playerStatus,
-                friend1Status,
-                friend2Status,
-                friend3Status,
-            };
-        }
-         //fetch関数を使ってデータをsave.phpに送信
-        const response = await fetch('save.php',{
+        //fetch関数を使ってデータをsave_player.phpに送信
+        const response = await fetch('save_player.php',{
             method:'POST',//HTTPのPOSTメソッドを使用
             headers:{
                 'Content-Type':'application/json',//送信データがJSON形式であることを宣言
             },
-            body:JSON.stringify(saveData),//saveDataオブジェクトをJSON形式の文字列に変換し、送信
+            body:JSON.stringify(playerStatus),//saveDataオブジェクトをJSON形式の文字列に変換し、送信
         });
-        alert('セーブが完了しました！');
+        if(!response.ok){
+            throw new Error(`HTTP error! Status:${response.status}`);
+        }
+        const result = await response.json();
+        //モンスターの更新
+        const payload = {friends:friends};
+        const monsterres = await fetch('save_monster.php',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(payload)
+        });
+        if(!monsterres.ok){
+            throw new Error(`HTTP error! Status:${monsterres.status}`);
+        }
+        const monres = await monsterres.json();
+        console.log('Monster data saved:',monres);
+        const itemload =  {itemList:itemList};
+        const itemres = await fetch('save_item.php',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(itemload)
+        });
+        if(!itemres.ok){
+            throw new Error(`HTTP error! Status:${itemres.status}`);
+        }
+        const iteres = await itemres.json();
+        console.log('Item data saved:',iteres);
+        const gearload =  {gearList:gearList};
+        const gearres = await fetch('save_gear.php',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(gearload)
+        });
+        if(!itemres.ok){
+            throw new Error(`HTTP error! Status:${gearres.status}`);
+        }
+        const geares = await gearres.json();
+        console.log('Item data saved:',geares);
     });
     savetext.setInteractive().on('pointerover', () => {
         if(!kasoru){
