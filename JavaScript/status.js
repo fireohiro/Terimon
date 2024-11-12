@@ -22,7 +22,6 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
     statusBackground.setOrigin(0,0);
 
     const playerImage = scene.add.sprite(config.width * 0.25, statusHeight * 0.2,'player');
-    const friendImage = scene.add.sprite(config.width * 0.25, statusHeight * 0.2,'monster'+friendStatus.monster_id);
 
     // プレイヤーのステータス情報を表示
     const playerInfo = scene.add.text(
@@ -40,14 +39,15 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
 
     // モンスター情報（例として追加）
     let yOffset = 150;
-    let friendimage;
     let friendInfo;
     let friendattributes;
+    let friendImage;
     const friendElements = [];
-
     if(gameStatus.temotisu != 0){
-        friends.forEach((friendStatus,index) => {
+        friends.forEach((friendStatus,index,friendimage) => {
             console.log(friendStatus);
+            friendimage += 1;
+            friendImage = scene.add.sprite(config.width * 0.25, statusHeight * (0.2 * friendimage),'monster'+friendStatus.monster_id);
             // friendimage = scene.add.image(50, yOffset + i * 100, 'friendStatus'); // モンスター画像
             friendInfo = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.315 + index * statusHeight * 0.25, 
                 `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}　　　MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
@@ -55,7 +55,7 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
             friendattributes = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.415 + index * statusHeight * 0.25,
                 `こうげき: ${friendStatus.pow}　　　まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}　　　運: ${friendStatus.luck}`,
                 { fontSize: '30px', fill: '#000' });
-            friendElements.push(friendInfo, friendattributes);
+            friendElements.push(friendInfo, friendattributes, friendImage);
         });
     }
     statusContainer=scene.add.container(0,0,[statusBackground,playerImage,playerInfo,attributes,...friendElements]);//,friendimage
