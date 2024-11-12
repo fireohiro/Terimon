@@ -1,9 +1,9 @@
 export function statuspreload(loader) {
     loader.spritesheet('player','assets/character/terimon1.png', { frameWidth: 100, frameHeight: 100 })
     // 味方画像をプリロード
-    // for (let i = 1; i <= 10; i++) {
-    //     loader.image(`enemy${i}`, `assets/battleimg/Enemy${i}.png`);
-    // }
+    for (let i = 1; i <= 10; i++) {
+        loader.image(`friend${i}`, `assets/battleimg/Enemy${i}.png`);
+    }
 }
 
 let statusContainer;
@@ -27,14 +27,14 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
     const playerInfo = scene.add.text(
         config.width * 0.3 + 20, statusHeight * 0.1, 
         `勇者 Lv.${playerStatus.level}\nHP: ${playerStatus.hp_nokori} / ${playerStatus.hp}　　　MP: ${playerStatus.mp_nokori} / ${playerStatus.mp}`,
-        { fontSize: '32px', fill: '#000' }
+        { fontSize: '30px', fill: '#000' }
     );
 
     // ステータス属性の表示
     const attributes = scene.add.text(
         config.width * 0.3 + 20, statusHeight * 0.2,
         `こうげき: ${playerStatus.pow}　　　まもり: ${playerStatus.def}\nすばやさ: ${playerStatus.speed}　　　運: ${playerStatus.luck}`,
-        { fontSize: '32px', fill: '#000' }
+        { fontSize: '30px', fill: '#000' }
     );
 
     // モンスター情報（例として追加）
@@ -42,15 +42,18 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
     let friendimage;
     let friendInfo;
     let friendattributes;
+    const friendElements = [];
+
     if(gameStatus.temotisu != 0){
         friends.forEach((friendStatus,index) => {
+            console.log(friendStatus);
             // friendimage = scene.add.image(50, yOffset + i * 100, 'friendStatus'); // モンスター画像
-            friendInfo = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.3 + index * statusHeight * 0.25, 
+            friendInfo = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.315 + index * statusHeight * 0.25, 
                 `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}　　　MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
-                { fontSize: '32px', fill: '#000' });
-            friendattributes = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.4 + index * statusHeight * 0.25,
+                { fontSize: '30px', fill: '#000' });
+            friendattributes = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.415 + index * statusHeight * 0.25,
                 `こうげき: ${friendStatus.pow}　　　まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}　　　運: ${friendStatus.luck}`,
-                { fontSize: '32px', fill: '#000' });
+                { fontSize: '30px', fill: '#000' });
             friendElements.push(friendInfo, friendattributes);
         });
     }
