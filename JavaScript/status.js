@@ -1,9 +1,9 @@
 export function statuspreload(loader) {
     loader.spritesheet('player','assets/character/terimon1.png', { frameWidth: 100, frameHeight: 100 })
     // 味方画像をプリロード
-    // for (let i = 1; i <= 10; i++) {
-    //     loader.image(`enemy${i}`, `assets/battleimg/Enemy${i}.png`);
-    // }
+    for (let i = 1; i <= 21; i++) {
+        loader.image(`monster${i}`, `assets/monster/monster${i}.png`);
+    }
 }
 
 let statusContainer;
@@ -22,6 +22,7 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
     statusBackground.setOrigin(0,0);
 
     const playerImage = scene.add.sprite(config.width * 0.25, statusHeight * 0.2,'player');
+    const friendImage = scene.add.sprite(config.width * 0.25, statusHeight * 0.2,'monster'+friendStatus.monster_id);
 
     // プレイヤーのステータス情報を表示
     const playerInfo = scene.add.text(
