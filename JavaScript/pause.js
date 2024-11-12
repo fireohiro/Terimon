@@ -246,13 +246,16 @@ async function menuBar(scene,playerStatus,config,gameStatus){
     menuContainer = scene.add.container(0,0,[menuBackground,itemtext,geartext,statustext,savetext,logouttext,Moneybar,moneytext]);
     menuContainer.setVisible(false);//初期状態は非表示
     menuContainer.setDepth(7);//一意晩上に表示されるようにする
+    menuContainer.setScrollFactor(0);
 }
 
 export function updatepause(scene){
-    //メニューの位置をカメラに追従させる
+    // //メニューの位置をカメラに追従させる
     const camera = scene.cameras.main;
     const cameraCenterX = camera.worldView.x + camera.worldView.width / 2;
     const cameraCenterY = camera.worldView.y + camera.worldView.height / 2;
+    console.log(cameraCenterX);
+    console.log(cameraCenterY);
 
     //メニューをカメラ中心に配置し、少し左にずらす
     menuContainer.setPosition(cameraCenterX / 5,cameraCenterY - cameraCenterY / 5 * 3);
