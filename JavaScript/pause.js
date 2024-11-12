@@ -1,19 +1,21 @@
 import {createStatusScreen,statusEvent} from './status.js';
 import {saveEvent,saveGame} from './save.js';
 import{logoutmessage,logoutdisplay} from './logout.js';
+import{itemEvent,useItem} from './item.js';
 
 let kasoru = null;
 let menuContainer;
 export function createPause(scene,gameStatus,playerStatus,config,friends,itemList,gearList){
     scene.input.keyboard.on('keydown',(event) => {
         if(event.key === 'Escape'){
-            pauseStart(scene,gameStatus);
+            pauseStart(loader,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
         }
     });
     saveGame(scene,playerStatus,config,gameStatus,friends,itemList,gearList);
     logoutmessage(scene,config,gameStatus);
     menuBar(scene,playerStatus,config,gameStatus);
     createStatusScreen(scene,gameStatus, playerStatus,friends,config);
+    useItem(loader,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
 }
 
 function pauseStart(scene,gameStatus){
@@ -78,6 +80,10 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         if(gameStatus.logoutflg === true){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
             logoutdisplay(gameStatus);
+        }
+        if(gameStatus.itemflg === true){
+            //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            itemEvent(gameStatus);
         }
     });
     itemtext.setInteractive().on('pointerover', () => {
