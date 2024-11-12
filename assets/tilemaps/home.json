@@ -52,19 +52,61 @@
         {
          "draworder":"topdown",
          "id":6,
-         "name":"house",
+         "name":"Transitions",
          "objects":[
                 {
-                 "height":0,
-                 "id":10,
+                 "height":69.582406721028,
+                 "id":11,
                  "name":"",
-                 "point":true,
+                 "properties":[
+                        {
+                         "name":"targetMap",
+                         "type":"string",
+                         "value":"3"
+                        }, 
+                        {
+                         "name":"targetX",
+                         "type":"string",
+                         "value":"1"
+                        }, 
+                        {
+                         "name":"targetY",
+                         "type":"string",
+                         "value":"1"
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":0,
-                 "x":910.896960711638,
-                 "y":274.534222881147
+                 "width":34.1586360266865,
+                 "x":894.450210032123,
+                 "y":191.035334815913
+                }, 
+                {
+                 "height":255.557202866321,
+                 "id":12,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"targetMap",
+                         "type":"string",
+                         "value":"1"
+                        }, 
+                        {
+                         "name":"targetX",
+                         "type":"string",
+                         "value":"1"
+                        }, 
+                        {
+                         "name":"targetY",
+                         "type":"string",
+                         "value":"2"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":31.6283666913763,
+                 "x":2.66453525910038e-15,
+                 "y":509.849271064987
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -101,7 +143,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":11,
+ "nextobjectid":13,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",
