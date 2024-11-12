@@ -51,10 +51,10 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
             friendattributes = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.4 + index * statusHeight * 0.25,
                 `こうげき: ${friendStatus.pow}　　　まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}　　　運: ${friendStatus.luck}`,
                 { fontSize: '32px', fill: '#000' });
-            statusContainer=scene.add.container(0,0,[friendInfo,friendattributes]);
+            friendElements.push(friendInfo, friendattributes);
         });
     }
-    statusContainer=scene.add.container(0,0,[statusBackground,playerImage,playerInfo,attributes,friendInfo,friendattributes]);//,friendimage
+    statusContainer=scene.add.container(0,0,[statusBackground,playerImage,playerInfo,attributes,...friendElements]);//,friendimage
     statusContainer.setVisible(false);
     statusContainer.setDepth(7);
     // const monsters = playerStatus.monsters; // モンスターリスト
