@@ -8,7 +8,7 @@ let menuContainer;
 export function createPause(scene,gameStatus,playerStatus,config,friends,itemList,gearList){
     scene.input.keyboard.on('keydown',(event) => {
         if(event.key === 'Escape'){
-            pauseStart(loader,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
+            pauseStart(scene,gameStatus);
         }
     });
     saveGame(scene,playerStatus,config,gameStatus,friends,itemList,gearList);
@@ -81,6 +81,9 @@ async function menuBar(scene,playerStatus,config,gameStatus){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
             logoutdisplay(gameStatus);
         }
+        //このif文は「アイテム」以外のウィンドウが表示されている場合、他の「装備」や「セーブ」などのウィンドウを閉じるために読んでいるので、
+        //itemEvent関数はif文を使わずにgameStatus.itemflgがtrueでもfalseでも呼び出してOK
+        //68行目の.setInteracriev()の前にあるのが、geartextなら、gearEventの呼び出しだけif文をつけない
         if(gameStatus.itemflg === true){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
             itemEvent(gameStatus);
