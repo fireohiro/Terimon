@@ -4,17 +4,16 @@ import{logoutmessage,logoutdisplay} from './logout.js';
 
 let kasoru = null;
 let menuContainer;
-export function createPause(scene,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status,itemList){
-    friends = [friend1Status,friend2Status,friend3Status].slice(0,gameStatus.temoti);
+export function createPause(scene,gameStatus,playerStatus,config,friends,itemList,gearList){
     scene.input.keyboard.on('keydown',(event) => {
         if(event.key === 'Escape'){
             pauseStart(scene,gameStatus);
         }
     });
-    saveGame(scene,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
+    saveGame(scene,playerStatus,config,gameStatus,friends,itemList,gearList);
     logoutmessage(scene,config,gameStatus);
-    menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
-    createStatusScreen(scene,gameStatus, playerStatus,friend1Status,friend2Status,friend3Status, config);
+    menuBar(scene,playerStatus,config,gameStatus);
+    createStatusScreen(scene,gameStatus, playerStatus,friends,config);
 }
 
 function pauseStart(scene,gameStatus){
@@ -47,7 +46,7 @@ function pauseStart(scene,gameStatus){
     }
 }
 
-async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status){
+async function menuBar(scene,playerStatus,config,gameStatus){
     //メニューのサイズを設定
     const menuWidth = config.width * 0.15+10;
     const menuHeight = config.height * 0.50;
@@ -249,12 +248,12 @@ async function menuBar(scene,playerStatus,config,gameStatus,friend1Status,friend
     menuContainer.setDepth(7);//一意晩上に表示されるようにする
 }
 
-export function updatepause(scene,config){
+export function updatepause(scene){
     //メニューの位置をカメラに追従させる
-    const cameraCenterX = scene.cameras.main.scrollX + scene.cameras.main.width / 2;
-    const cameraCenterY = scene.cameras.main.scrollY + scene.cameras.main.height / 2;
+    const camera = scene.cameras.main;
+    const cameraCenterX = camera.worldView.x + camera.worldView.width / 2;
+    const cameraCenterY = camera.worldView.y + camera.worldView.height / 2;
 
     //メニューをカメラ中心に配置し、少し左にずらす
-    menuContainer.setPosition(cameraCenterX - cameraCenterX / 5 * 4,cameraCenterY - cameraCenterY / 5 * 3);
-    //ポーズ中はupdate内の処理をすべて行わない
+    menuContainer.setPosition(cameraCenterX / 5,cameraCenterY - cameraCenterY / 5 * 3);
 }

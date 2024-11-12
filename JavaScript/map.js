@@ -121,34 +121,54 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 3;
     }
+    //マップの情報をplayer.jsに送る
+    dataMap(map);
+    let layer = [];
+    for(let i = 1; i <= layersu; i++){
+        const layerName = `layer${i}`;//レイヤー名をそろえる
+        layer.push(map.createLayer(layerName,tilesets,0,0));
+    }
     //カメラのズーム倍率を変える＆レイヤーの変更
     if(playerStatus.map_id === 1){
         scene.cameras.main.setZoom(1.0);//カメラを通常の1.5倍近づける
+        layer[0].setDepth(0);
+        layer[1].setDepth(1);
+        layer[2].setDepth(3);
+        layer[3].setDepth(4);
     }else if(playerStatus.map_id === 2){
         //必要に応じて変える
         scene.cameras.main.setZoom(1.0);
+        layer[0].setDepth(0);
+        layer[1].setDepth(2);
+        layer[2].setDepth(3);
     }else if(playerStatus.map_id === 3){
         //必要に応じて変える
         scene.cameras.main.setZoom(1.0);
+        layer[0].setDepth(0);
+        layer[1].setDepth(2);
     }else if(playerStatus.map_id === 4){
         //必要に応じて変える
         scene.cameras.main.setZoom(1.0);
+        layer[0].setDepth(0);
+        layer[1].setDepth(1);
+        layer[2].setDepth(3);
+        layer[3].setDepth(4);
     }else if(playerStatus.map_id === 5){
         //必要に応じて変える
         scene.cameras.main.setZoom(1.0);
+        layer[0].setDepth(0);
+        layer[1].setDepth(2);
     }else if(playerStatus.map_id === 6){
         //必要に応じて変える
         scene.cameras.main.setZoom(1.0);
+        layer[0].setDepth(0);
+        layer[1].setDepth(2);
     }else if(playerStatus.map_id === 7){
         //必要に応じて変える
         scene.cameras.main.setZoom(1.0);
-    }
-    //マップの情報をplayer.jsに送る
-    dataMap(map);
-
-    for(let i = 1; i <= layersu; i++){
-        const layerName = `layer${i}`;//レイヤー名をそろえる
-        map.createLayer(layerName,tilesets,0,0);
+        layer[0].setDepth(0);
+        layer[1].setDepth(1);
+        layer[2].setDepth(2);
     }
     // マップの境界を設定
     scene.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);

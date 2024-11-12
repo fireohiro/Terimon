@@ -5,6 +5,9 @@ import {createPause,updatepause} from './pause.js';
 import {playerpreload,playercreate,playerupdate} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
 import {statuspreload} from './status.js';
+// import {updateStatus} from './status.js';
+// import {saveUpdate} from './save.js';
+// import{logoutupdate} from './logout.js';
 
 //Phaserの設定
 const config = {
@@ -34,7 +37,9 @@ const friend1Status ={};
 const friend2Status ={};
 const friend3Status ={};
 let itemList=[];
+let gearList=[];
 let createok = false;
+let statuses=[];
 
 function userData() {
     return fetch('get_playersession.php')
@@ -50,30 +55,62 @@ function userData() {
 export async function loadFriends(){
     const response = await fetch('get_temoti.php');
     const friends = await response.json();
+    if(friends.length === 1){
+        statuses = [friend1Status];
+    }else if(friends.length === 2){
+        statuses = [friend1Status,friend2Status];
+    }else if(friends.length === 3){
+        statuses = [friend1Status,friend2Status,friend3Status];
+    }
     //最大三体のオブジェクトに割り当て
-    const statuses = [friend1Status,friend2Status,friend3Status];
-    friends.slice(0,3).forEach((friend,index)=>{
+    friends.forEach((friend,index)=>{
         Object.assign(statuses[index],friend);
     });
     //gameStatus.temotisuに取得したモンスターの数を格納
     gameStatus.temotisu = friends.length;
 }
 
-export async function fetchItems(){
-    const itemres = await fetch(`get_item.php`);
-    const items = await itemres.json();
-    items.forEach(item=>{
-        itemList.push(item);
-    });
+export async function fetchItems() {
+    try {
+        const response = await fetch('get_item.php');
+        
+        // レスポンスが成功かどうか確認
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+
+        const text = await response.text();  // レスポンスをテキストとして取得
+
+        const data = JSON.parse(text);  // JSONとしてパース
+        itemList = data.items;  // itemsをitemListに代入
+    } catch (error) {
+        console.error('Error fetching items:', error);
+    }
 }
+
+export async function fetchGear() {
+    try {
+        const response = await fetch('get_gear.php');
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+
+        // レスポンスをテキストとしてログに出力してみる
+        const text = await response.text();
+        const data = JSON.parse(text);
+        gearList = data.gears;
+    } catch (error) {
+        console.error('Error fetching gears:', error);
+    }
+}
+   
 
 //アセット（画像、音声など）の読み鋳込み
 function preload(){
     mappreload(this.load);//map.jsのpreload処理を行う
     playerpreload(this.load);//player.jsのpreload処理を行う
     battlepreload(this.load);//battle.jsのpreload処理を行う
-    statuspreload(this.load);
-    //status.jsのpreload処理を行う
+    statuspreload(this.load);//status.jsのpreload処理を行う
 }
 
 //ゲームの作成処理
@@ -83,6 +120,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     Object.assign(playerStatus, user);//セッションデータをオブジェクトに保存
     await loadFriends();
     await fetchItems();
+    await fetchGear();
     createMap(this,playerStatus,gameStatus);
 
     if(playerStatus.map_id === 3 || playerStatus.map_id === 6 || playerStatus.map_id === 7){
@@ -95,7 +133,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     playercreate(this,playerStatus);
 
     //pauseのcreate処理
-    createPause(this,gameStatus,playerStatus,config,friend1Status,friend2Status,friend3Status,itemList);
+    createPause(this,gameStatus,playerStatus,config,statuses,itemList,gearList);
 
     createok = true;
 }
@@ -110,17 +148,43 @@ function update(){
         return;
     }
     if(gameStatus.pauseflg){
-        updatepause(this,config);
+        updatepause(this);
         return;
     }
+    //アイテム位置調整
+    //装備位置調整
+    // //ステータス位置調整
+    // if(gameStatus.statusflg){
+    //     updateStatus(this);
+    // }
+    //セーブ位置調整
+    // if(gameStatus.saveflg){
+    //     saveUpdate(this);
+    // }
+    //ログアウト位置調整
+    // if(gameStatus.logoutflg){
+    //     logoutupdate(this);
+    // }
     //バトルでもポーズでもないときの処理↓
-    playerupdate(this,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status);
+    playerupdate(this,config,gameStatus,playerStatus,statuses);
 }
 
 export function itemUse(item_id){
     itemList.forEach(item=>{
         if(item.item_id === item_id){
-            item -= 1;
+            item.su--;
         }
     });
+}
+
+export function itemGet(item_id){
+    itemList.forEach(item=>{
+        if(item.item_id === item_id){
+            item.su++;
+        }
+    })
+}
+
+export function gearGet(get_gear){
+    gearList.push(get_gear);
 }
