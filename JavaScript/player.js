@@ -160,6 +160,12 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
         playerStatus.savepoint_y = mapHeight;
     }
 
+     // マップ切り替えのトリガーをチェック
+    //  const transition = checkTransition(player);
+    //  if (transition) {
+    //      changeMap(scene,playerStatus,gameStatus,transition);
+    //  }
+
     //それぞれのマップごとにマップが切り替わるポイントを指定
     if(playerStatus.map_id === 1){
         if((200*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= 230*gameStatus.scale ) && ( 500*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= 530*gameStatus.scale)){
