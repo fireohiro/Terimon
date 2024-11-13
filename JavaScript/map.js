@@ -4,6 +4,8 @@ let mapData;
 let tilesets = [];
 let layersu;
 let previousMapId = null;
+let transitionLayer;
+let transitionTriggers;
 
 export function mappreload(loader){
     //主人公の家内
@@ -43,18 +45,25 @@ export function mappreload(loader){
     }
 }
 //マップが切り替わったかを確認
-export function checkAndCreateMap(scene,playerStatus,gameStatus){
-    if(map_idHasChanged(playerStatus)){
-        createMap(scene,playerStatus,gameStatus);
-    }
-}
+// export function checkAndCreateMap(scene,playerStatus,gameStatus){
+//     if(map_idHasChanged(playerStatus)){
+//         createMap(scene,playerStatus,gameStatus);
+//     }
+// }
 
-function map_idHasChanged(playerStatus){
-    if(previousMapId !== playerStatus.map_id){
-        previousMapId = playerStatus.map_id;
-        return true;
-    }
-    return false;
+// function map_idHasChanged(playerStatus){
+//     if(previousMapId !== playerStatus.map_id){
+//         previousMapId = playerStatus.map_id;
+//         return true;
+//     }
+//     return false;
+// }
+
+export function changeMap(scene,playerStatus,gameStatus,transition){
+    playerStatus.map_id=transition.targetMap;
+    playerStatus.savepoint_x=transition.targetX;
+    playerStatus.savepoint_y=transition.targetY;
+    createMap(scene,playerStatus,gameStatus);
 }
 
 export function createMap(scene,playerStatus,gameStatus){
@@ -121,6 +130,21 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 3;
     }
+
+    // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
+    transitionLayer = map.getObjectLayer('Transitions');
+
+    // トリガーをマップのオブジェクトレイヤーから設定
+    transitionTriggers = transitionLayer.objects.map(obj => ({
+    x: obj.x,
+    y: obj.y,
+    width: obj.width,
+    height: obj.height,
+    targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
+    targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
+    targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
+    }));
+
     //マップの情報をplayer.jsに送る
     dataMap(map);
     let layer = [];
@@ -175,28 +199,15 @@ export function createMap(scene,playerStatus,gameStatus){
     scene.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
 }
 
-// トリガーエリアを設定（マップオブジェクトレイヤーを利用）
-export function setTransitionTriggers() {
-    this.transitionTriggers = this.tilemap.getObjectLayer('Transitions').objects.map(obj => ({
-      x: obj.x,
-      y: obj.y,
-      width: obj.width,
-      height: obj.height,
-      targetMap: obj.properties.find(prop => prop.name === 'targetMap').value,
-      targetX: obj.properties.find(prop => prop.name === 'targetX').value,
-      targetY: obj.properties.find(prop => prop.name === 'targetY').value
-    }));
-  }
-  
   // プレイヤーがトリガーに触れているかをチェック
-export function checkTransition(player) {
-    for (const trigger of this.transitionTriggers) {
+  export function checkTransition(player) {
+    for (const trigger of transitionTriggers) {
       if (
-        player.x >= trigger.x && player.x <= trigger.x + trigger.width &&
-        player.y >= trigger.y && player.y <= trigger.y + trigger.height
+      player.x >= trigger.x && player.x <= trigger.x + trigger.width &&
+      player.y >= trigger.y && player.y <= trigger.y + trigger.height
       ) {
         return trigger; // 移動対象のトリガー情報を返す
       }
     }
     return null;
-}
+  }
