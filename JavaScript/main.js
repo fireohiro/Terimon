@@ -6,7 +6,7 @@ import {playerpreload,playerupdate} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
 import {statuspreload} from './status.js';
 // import {updateStatus} from './status.js';
-// import {saveUpdate} from './save.js';
+import {saveUpdate} from './save.js';
 // import{logoutupdate} from './logout.js';
 
 //Phaserの設定
@@ -159,9 +159,9 @@ function update(){
     //     updateStatus(this);
     // }
     //セーブ位置調整
-    // if(gameStatus.saveflg){
-    //     saveUpdate(this);
-    // }
+    if(gameStatus.saveflg){
+        saveUpdate(this);
+    }
     //ログアウト位置調整
     // if(gameStatus.logoutflg){
     //     logoutupdate(this);

@@ -1,5 +1,6 @@
 let saveContainer;
-let kasoru;
+let savetra = null;
+let backtra = null;
 export function saveEvent(gameStatus){
     gameStatus.saveflg = !gameStatus.saveflg;
     saveContainer.setVisible(gameStatus.saveflg);
@@ -78,37 +79,50 @@ export async function saveGame(scene,playerStatus,config,gameStatus,friends,item
         console.log('Item data saved:',geares);
     });
     savetext.setInteractive().on('pointerover', () => {
-        if(!kasoru){
-            kasoru = scene.add.text(config.width * 0.5,saveHeight / 2,'▶',{fontSize:'64px',fill:'#000'});
-            kasoru.setDepth(8);
+        if(!savetra){
+            savetra = scene.add.text(config.width * 0.5,saveHeight / 2,'▶',{fontSize:'64px',fill:'#000'});
+            savetra.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
     savetext.setInteractive().on('pointerout', () => {
-        // kasoruが存在していれば非表示にし、破棄
-        if (kasoru) {
-            kasoru.destroy();
-            kasoru = null;  // 破棄後は再度nullに設定
+        // savetraが存在していれば非表示にし、破棄
+        if (savetra) {
+            savetra.destroy();
+            savetra = null;  // 破棄後は再度nullに設定
         }
     });
     backtext.setInteractive().on('pointerdown',()=>{
          saveEvent(gameStatus);
     });
     backtext.setInteractive().on('pointerover', () => {
-        if(!kasoru){
-            kasoru = scene.add.text(config.width * 0.5,saveHeight / 2+80,'▶',{fontSize:'64px',fill:'#000'});
-            kasoru.setDepth(8);
+        if(!backtra){
+            backtra = scene.add.text(config.width * 0.5,saveHeight / 2+80,'▶',{fontSize:'64px',fill:'#000'});
+            backtra.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
     backtext.setInteractive().on('pointerout', () => {
-        // kasoruが存在していれば非表示にし、破棄
-        if (kasoru) {
-            kasoru.destroy();
-            kasoru = null;  // 破棄後は再度nullに設定
+        // backtraが存在していれば非表示にし、破棄
+        if (backtra) {
+            backtra.destroy();
+            backtra = null;  // 破棄後は再度nullに設定
         }
     });
     saveContainer = scene.add.container(0,0,[saveback,savesetumei,savetext,backtext]);
     saveContainer.setVisible(false);
     saveContainer.setDepth(7);
+}
+
+export function saveUpdate(scene){
+    const camera = scene.cameras.main;
+    let saveX = (camera.worldView.x + camera.worldView.width) / 2;
+    let saveY = (camera.worldView.y + camera.worldView.height) / 2;
+    saveContainer.setPosition(saveX,saveY);
+    if(savetra){
+        savetra.setPosition(saveX,saveY);
+    }
+    if(backtra){
+        backtra.setPosition(saveX,saveY);
+    }
 }
