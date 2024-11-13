@@ -26,7 +26,7 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
     // プレイヤーのステータス情報を表示
     const playerInfo = scene.add.text(
         config.width * 0.3 + 20, statusHeight * 0.1, 
-        `勇者 Lv.${playerStatus.level}\nHP: ${playerStatus.hp_nokori} / ${playerStatus.hp}　　　MP: ${playerStatus.mp_nokori} / ${playerStatus.mp}`,
+        `${playerStatus.account_name} Lv.${playerStatus.level}\nHP: ${playerStatus.hp_nokori} / ${playerStatus.hp}　　　MP: ${playerStatus.mp_nokori} / ${playerStatus.mp}`,
         { fontSize: '30px', fill: '#000' }
     );
 
@@ -44,13 +44,12 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
     let friendImage;
     const friendElements = [];
     if(gameStatus.temotisu != 0){
-        friends.forEach((friendStatus,index,friendimage) => {
+        friends.forEach((friendStatus,index) => {
             console.log(friendStatus);
-            friendimage += 1;
-            friendImage = scene.add.sprite(config.width * 0.25, statusHeight * (0.3 * friendimage),'monster'+friendStatus.monster_id);
-            // friendimage = scene.add.image(50, yOffset + i * 100, 'friendStatus'); // モンスター画像
+            friendImage = scene.add.sprite(config.width * 0.25, statusHeight * 0.4 + index * statusHeight * 0.25,'monster'+friendStatus.monster_id);
+            friendImage.setDisplaySize(100, 100);
             friendInfo = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.315 + index * statusHeight * 0.25, 
-                `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}　　　MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
+                `${friendStatus.monster_name} Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}　　　MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
                 { fontSize: '30px', fill: '#000' });
             friendattributes = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.415 + index * statusHeight * 0.25,
                 `こうげき: ${friendStatus.pow}　　　まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}　　　運: ${friendStatus.luck}`,
