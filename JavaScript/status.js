@@ -47,7 +47,7 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
         friends.forEach((friendStatus,index,friendimage) => {
             console.log(friendStatus);
             friendimage += 1;
-            friendImage = scene.add.sprite(config.width * 0.25, statusHeight * (0.2 * friendimage),'monster'+friendStatus.monster_id);
+            friendImage = scene.add.sprite(config.width * 0.25, statusHeight * (0.3 * friendimage),'monster'+friendStatus.monster_id);
             // friendimage = scene.add.image(50, yOffset + i * 100, 'friendStatus'); // モンスター画像
             friendInfo = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.315 + index * statusHeight * 0.25, 
                 `勇者 Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}　　　MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
