@@ -45,26 +45,26 @@ export function mappreload(loader){
     }
 }
 //マップが切り替わったかを確認
-// export function checkAndCreateMap(scene,playerStatus,gameStatus){
-//     if(map_idHasChanged(playerStatus)){
-//         createMap(scene,playerStatus,gameStatus);
-//     }
-// }
-
-// function map_idHasChanged(playerStatus){
-//     if(previousMapId !== playerStatus.map_id){
-//         previousMapId = playerStatus.map_id;
-//         return true;
-//     }
-//     return false;
-// }
-
-export function changeMap(scene,playerStatus,gameStatus,transition){
-    playerStatus.map_id=transition.targetMap;
-    playerStatus.savepoint_x=transition.targetX;
-    playerStatus.savepoint_y=transition.targetY;
-    createMap(scene,playerStatus,gameStatus);
+export function checkAndCreateMap(scene,playerStatus,gameStatus){
+    if(map_idHasChanged(playerStatus)){
+        createMap(scene,playerStatus,gameStatus);
+    }
 }
+
+function map_idHasChanged(playerStatus){
+    if(previousMapId !== playerStatus.map_id){
+        previousMapId = playerStatus.map_id;
+        return true;
+    }
+    return false;
+}
+
+// export function changeMap(scene,playerStatus,gameStatus,transition){
+//     playerStatus.map_id=transition.targetMap;
+//     playerStatus.savepoint_x=transition.targetX;
+//     playerStatus.savepoint_y=transition.targetY;
+//     createMap(scene,playerStatus,gameStatus);
+// }
 
 export function createMap(scene,playerStatus,gameStatus){
     if(map){
