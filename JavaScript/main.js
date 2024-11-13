@@ -41,8 +41,6 @@ let itemList=[];
 let gearList=[];
 let createok = false;
 let statuses=[];
-let menuBackground;
-let sin;
 
 function userData() {
     return fetch('get_playersession.php')
@@ -131,6 +129,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     await fetchItems();
     await fetchGear();
     createMap(this,playerStatus,gameStatus);
+    createPause(this,gameStatus,playerStatus,config,statuses,itemList,gearList);
 
     if(playerStatus.map_id === 3 || playerStatus.map_id === 6 || playerStatus.map_id === 7){
         gameStatus.encountflg = true;
@@ -153,7 +152,6 @@ function update(){
         updatepause(this);
         return;
     }
-    menuBackground.setPosition(centerx-480/5*3,centery);
     //アイテム位置調整
     //装備位置調整
     // //ステータス位置調整

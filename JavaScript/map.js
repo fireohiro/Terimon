@@ -82,7 +82,7 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 4;//レイヤーの数を格納
     }else if(map_id === 2){
-        gameStatus.scale=1.5;
+        gameStatus.scale=2.0;
         map = scene.make.tilemap({key:'homeMap'});
         let tileset = map.addTilesetImage('home1', 'home1');
         tilesets.push(tileset);

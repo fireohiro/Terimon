@@ -3,7 +3,11 @@ import {saveEvent,saveGame} from './save.js';
 import{logoutmessage,logoutdisplay} from './logout.js';
 import{itemEvent,useItem} from './item.js';
 
-let kasoru = null;
+let itemtra = null;
+let geartra = null;
+let stattra = null;
+let savetra = null;
+let logotra = null;
 let menuContainer;
 export function createPause(scene,gameStatus,playerStatus,config,friends,itemList,gearList){
     scene.input.keyboard.on('keydown',(event) => {
@@ -90,17 +94,17 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         }
     });
     itemtext.setInteractive().on('pointerover', () => {
-        if(!kasoru){
-            kasoru = scene.add.text(menuWidth*0.5/2+15,menuHeight / 6-5,'▶',{fontSize:'32px',fill:'#000'});
-            kasoru.setDepth(8);
+        if(!itemtra){
+            itemtra = scene.add.text(menuWidth*0.5/2+15,menuHeight / 6-5,'▶',{fontSize:'32px',fill:'#000'});
+            itemtra.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
     itemtext.setInteractive().on('pointerout', () => {
-        // kasoruが存在していれば非表示にし、破棄
-        if (kasoru) {
-            kasoru.destroy();
-            kasoru = null;  // 破棄後は再度nullに設定
+        // itemtraが存在していれば非表示にし、破棄
+        if (itemtra) {
+            itemtra.destroy();
+            itemtra = null;  // 破棄後は再度nullに設定
         }
     });
     //装備
@@ -123,17 +127,17 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         }
     });
     geartext.setInteractive().on('pointerover', () => {
-        if(!kasoru){
-            kasoru = scene.add.text(menuWidth*0.5/2+40,menuHeight / 6 + 65,'▶',{fontSize:'32px',fill:'#000'});
-            kasoru.setDepth(8);
+        if(!geartra){
+            geartra = scene.add.text(menuWidth*0.5/2+40,menuHeight / 6 + 65,'▶',{fontSize:'32px',fill:'#000'});
+            geartra.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
     geartext.setInteractive().on('pointerout', () => {
-        // kasoruが存在していれば非表示にし、破棄
-        if (kasoru) {
-            kasoru.destroy();
-            kasoru = null;  // 破棄後は再度nullに設定
+        // geartraが存在していれば非表示にし、破棄
+        if (geartra) {
+            geartra.destroy();
+            geartra = null;  // 破棄後は再度nullに設定
         }
     });
     statustext.setInteractive().on('pointerdown',()=>{
@@ -155,17 +159,17 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         statusEvent(gameStatus);
     });
     statustext.setInteractive().on('pointerover', () => {
-        if(!kasoru){
-            kasoru = scene.add.text(menuWidth*0.5/2,menuHeight / 6 + 135,'▶',{fontSize:'32px',fill:'#000'});
-            kasoru.setDepth(8);
+        if(!stattra){
+            stattra = scene.add.text(menuWidth*0.5/2,menuHeight / 6 + 135,'▶',{fontSize:'32px',fill:'#000'});
+            stattra.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
     statustext.setInteractive().on('pointerout', () => {
-        // kasoruが存在していれば非表示にし、破棄
-        if (kasoru) {
-            kasoru.destroy();
-            kasoru = null;  // 破棄後は再度nullに設定
+        // stattraが存在していれば非表示にし、破棄
+        if (stattra) {
+            stattra.destroy();
+            stattra = null;  // 破棄後は再度nullに設定
         }
     });
     //セーブ
@@ -188,17 +192,17 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         saveEvent(gameStatus);
     });
     savetext.setInteractive().on('pointerover', () => {
-        if(!kasoru){
-            kasoru = scene.add.text(menuWidth*0.5/2+20,menuHeight / 6 + 205,'▶',{fontSize:'32px',fill:'#000'});
-            kasoru.setDepth(8);
+        if(!savetra){
+            savetra = scene.add.text(menuWidth*0.5/2+20,menuHeight / 6 + 205,'▶',{fontSize:'32px',fill:'#000'});
+            savetra.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
     savetext.setInteractive().on('pointerout', () => {
-        // kasoruが存在していれば非表示にし、破棄
-        if (kasoru) {
-            kasoru.destroy();
-            kasoru = null;  // 破棄後は再度nullに設定
+        // savetraが存在していれば非表示にし、破棄
+        if (savetra) {
+            savetra.destroy();
+            savetra = null;  // 破棄後は再度nullに設定
         }
     });
     //ログアウト
@@ -222,17 +226,17 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         logoutdisplay(gameStatus);
     });
     logouttext.setInteractive().on('pointerover', () => {
-        if(!kasoru){
-            kasoru = scene.add.text(menuWidth*0.5/2+15,menuHeight / 6 + 275,'▶',{fontSize:'32px',fill:'#000'});
-            kasoru.setDepth(8);
+        if(!logotra){
+            logotra = scene.add.text(menuWidth*0.5/2+15,menuHeight / 6 + 275,'▶',{fontSize:'32px',fill:'#000'});
+            logotra.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
     logouttext.setInteractive().on('pointerout', () => {
-        // kasoruが存在していれば非表示にし、破棄
-        if (kasoru) {
-            kasoru.destroy();
-            kasoru = null;  // 破棄後は再度nullに設定
+        // logotraが存在していれば非表示にし、破棄
+        if (logotra) {
+            logotra.destroy();
+            logotra = null;  // 破棄後は再度nullに設定
         }
     });
 
@@ -268,4 +272,19 @@ export function updatepause(scene){
     menuY = camera.worldView.y + (cameraCenterY - camera.worldView.y) / 2.2;
     //メニューをカメラ中心に配置し、少し左にずらす
     menuContainer.setPosition(menuX,menuY);
+    if(itemtra){
+        itemtra.setPosition(menuX-95,menuY-95);
+    }
+    if(geartra){
+        geartra.setPosition(menuX-60,menuY-20);
+    }
+    if(stattra){
+        stattra.setPosition(menuX-110,menuY+100);
+    }
+    if(savetra){
+        savetra.setPosition(menuX,menuY);
+    }
+    if(logotra){
+        logotra.setPosition(menuX,menuY);
+    }
 }
