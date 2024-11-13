@@ -273,18 +273,18 @@ export function updatepause(scene){
     //メニューをカメラ中心に配置し、少し左にずらす
     menuContainer.setPosition(menuX,menuY);
     if(itemtra){
-        itemtra.setPosition(menuX-95,menuY-95);
+        itemtra.setPosition(menuX-85,menuY-95);
     }
     if(geartra){
         geartra.setPosition(menuX-60,menuY-20);
     }
     if(stattra){
-        stattra.setPosition(menuX-110,menuY+100);
+        stattra.setPosition(menuX-100,menuY+50);
     }
     if(savetra){
-        savetra.setPosition(menuX,menuY);
+        savetra.setPosition(menuX-73,menuY+120);
     }
     if(logotra){
-        logotra.setPosition(menuX,menuY);
+        logotra.setPosition(menuX-85,menuY+190);
     }
 }

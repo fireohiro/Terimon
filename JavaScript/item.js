@@ -46,6 +46,13 @@ export function itemRole(item, combatant, friends, scene, config) {
     }
 }
 
+//仮置き
+const summary1 = scene.add.text(config.width * 0.3+180,saveHeight / 4,'アイテム',{fontSize:'13px',fill:'#000'});
+summary1.setOrigin(0,0);
+
+const summary2 = scene.add.text(config.width * 0.3+180,saveHeight / 4,'個数',{fontSize:'13px',fill:'#000'});
+summary2.setOrigin(10,0);
+
 // アイテムメニューを表示する関数
 export function itemEvent(gameStatus) {
     gameStatus.itemflg = !gameStatus.itemflg;
@@ -87,6 +94,7 @@ function createItemButtons(scene, config, items, combatant, friends) {
         itemButton.setInteractive();
 
         itemButton.on('pointerdown', () => {
+            selectConsumer(item, combatant, friends, scene, config, playerStatus, [friend1Status, friend2Status, friend3Status]);
             itemRole(item, combatant, friends, scene, config); // 必要な引数を渡して itemRole を呼び出し
             itemUse(item);  // アイテムの数を減らす
         });

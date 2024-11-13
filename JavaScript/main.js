@@ -6,8 +6,8 @@ import {playerpreload,playerupdate} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
 import {statuspreload} from './status.js';
 // import {updateStatus} from './status.js';
-// import {saveUpdate} from './save.js';
-// import{logoutupdate} from './logout.js';
+import {saveUpdate} from './save.js';
+import{logoutupdate} from './logout.js';
 
 //Phaserの設定
 const config = {
@@ -150,22 +150,22 @@ function update(){
     }
     if(gameStatus.pauseflg){
         updatepause(this);
+        //アイテム位置調整
+        //装備位置調整
+        // //ステータス位置調整
+        // if(gameStatus.statusflg){
+        //     updateStatus(this);
+        // }
+        //セーブ位置調整
+        if(gameStatus.saveflg){
+            saveUpdate(this);
+        }
+        //ログアウト位置調整
+        if(gameStatus.logoutflg){
+            logoutupdate(this);
+        }
         return;
     }
-    //アイテム位置調整
-    //装備位置調整
-    // //ステータス位置調整
-    // if(gameStatus.statusflg){
-    //     updateStatus(this);
-    // }
-    //セーブ位置調整
-    // if(gameStatus.saveflg){
-    //     saveUpdate(this);
-    // }
-    //ログアウト位置調整
-    // if(gameStatus.logoutflg){
-    //     logoutupdate(this);
-    // }
     //バトルでもポーズでもないときの処理↓
     playerupdate(this,config,gameStatus,playerStatus,statuses);
 }
