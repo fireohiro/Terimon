@@ -38,6 +38,12 @@
          "id":2,
          "name":"layer3",
          "opacity":1,
+         "properties":[
+                {
+                 "name":"collides",
+                 "type":"bool",
+                 "value":true
+                }],
          "type":"tilelayer",
          "visible":true,
          "width":25,
@@ -87,31 +93,31 @@
          "name":"Transitions",
          "objects":[
                 {
-                 "height":40.7171775592828,
+                 "height":27.7617119722382,
                  "id":3,
                  "name":"",
                  "properties":[
                         {
                          "name":"targetMap",
-                         "type":"string",
-                         "value":"2"
+                         "type":"int",
+                         "value":2
                         }, 
                         {
                          "name":"targetX",
-                         "type":"string",
-                         "value":"912"
+                         "type":"int",
+                         "value":912
                         }, 
                         {
                          "name":"targetY",
-                         "type":"string",
-                         "value":"306"
+                         "type":"int",
+                         "value":306
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":57.3742047426257,
                  "x":177.674956622325,
-                 "y":484.904569115095
+                 "y":497.86003470214
                 }],
          "opacity":1,
          "type":"objectgroup",

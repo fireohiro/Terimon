@@ -1,5 +1,5 @@
 import {battleStart} from './battle.js';
-import {checkAndCreateMap} from './map.js';
+import {checkAndCreateMap,checkTransition,changeMap} from './map.js';
 
 const battlerate = 2;
 let player;
@@ -160,19 +160,25 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
         playerStatus.savepoint_y = mapHeight;
     }
 
+     // マップ切り替えのトリガーをチェック
+     const transition = checkTransition(player);
+     if (transition) {
+         changeMap(scene,playerStatus,gameStatus,transition);
+     }
+
     //それぞれのマップごとにマップが切り替わるポイントを指定
-    if(playerStatus.map_id === 1){
-        if((200*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= 230*gameStatus.scale ) && ( 500*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= 530*gameStatus.scale)){
-            playerStatus.map_id = 2;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(915, 285);
-        }else if(playerStatus.savepoint_x >= mapWidth - 32 && playerStatus.savepoint_y <= 64 && playerStatus.savepoint_y >= 0){//処理内容を簡単に書くと、今いるポイントがX座標が端or端に近い場所であるかつY座標が一定の高さ以上一定の高さ未満であるときにマップの変更を行いますというもの
-            playerStatus.map_id = 3;
-        }
-    }else if(playerStatus.map_id === 2){
-        if(playerStatus.savepoint_x <= 10 && playerStatus.savepoint_y <= 500 && playerStatus.savepoint_y >= 450){
-            playerStatus.map_id = 4;
-        }
-    }
+    // if(playerStatus.map_id === 1){
+    //     if((200*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= 230*gameStatus.scale ) && ( 500*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= 530*gameStatus.scale)){
+    //         playerStatus.map_id = 2;//map_idと書いているが、どのidがどのマップを表しているかは未定
+    //         //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
+    //         checkAndCreateMap(scene,playerStatus,gameStatus);
+    //         player.setPosition(915, 285);
+    //     }else if(playerStatus.savepoint_x >= mapWidth - 32 && playerStatus.savepoint_y <= 64 && playerStatus.savepoint_y >= 0){//処理内容を簡単に書くと、今いるポイントがX座標が端or端に近い場所であるかつY座標が一定の高さ以上一定の高さ未満であるときにマップの変更を行いますというもの
+    //         playerStatus.map_id = 3;
+    //     }
+    // }else if(playerStatus.map_id === 2){
+    //     if(playerStatus.savepoint_x <= 10 && playerStatus.savepoint_y <= 500 && playerStatus.savepoint_y >= 450){
+    //         playerStatus.map_id = 4;
+    //     }
+    // }
 }
