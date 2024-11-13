@@ -14,9 +14,10 @@ export function playerpreload(loader){
     loader.spritesheet('playerImage','assets/character/terimon1.png', { frameWidth: 32, frameHeight: 32 });
 }
 
-export function playercreate(scene,playerStatus){
+export function playercreate(scene,playerStatus,gameStatus){
     //プレイヤーをセーブ地に出現させる
     player = scene.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'playerimage');
+    player.setScale(gameStatus.scale);
     //カメラ調整,必要に応じて調整
     scene.cameras.main.startFollow(player);//プレイヤー追従
 
@@ -67,8 +68,13 @@ export function playercreate(scene,playerStatus){
     }
 }
 
-export function dataMap(mapdata){
+export function dataMap(mapdata,scene,playerStatus,gameStatus){
     map = mapdata;
+    //playerにデータが入っていた場合、それを消す
+    if(player){
+        player.destroy();
+    }
+    playercreate(scene,playerStatus,gameStatus);
 }
 
 export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
@@ -141,8 +147,8 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
     
     
     //map情報をもとにプレイヤーがマップの外に行かないように調整する
-    const mapWidth = map.widthInPixels;
-    const mapHeight = map.heightInPixels;
+    const mapWidth = map.widthInPixels*gameStatus.scale;
+    const mapHeight = map.heightInPixels*gameStatus.scale;
     if(playerStatus.savepoint_x < 0){
         playerStatus.savepoint_x = 0;
     }else if(playerStatus.savepoint_x > mapWidth){
@@ -161,18 +167,18 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
      }
 
     //それぞれのマップごとにマップが切り替わるポイントを指定
-    // if(playerStatus.map_id === 1){
-    //     if((200 <= playerStatus.savepoint_x && playerStatus.savepoint_x <= 230 ) && ( 500 <= playerStatus.savepoint_y && playerStatus.savepoint_y <= 530)){
-    //         playerStatus.map_id = 2;//map_idと書いているが、どのidがどのマップを表しているかは未定
-    //         //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-    //         checkAndCreateMap(scene,playerStatus,gameStatus);
-    //         player.setPosition(915, 285);
-    //     }else if(playerStatus.savepoint_x >= mapWidth - 32 && playerStatus.savepoint_y <= 64 && playerStatus.savepoint_y >= 0){//処理内容を簡単に書くと、今いるポイントがX座標が端or端に近い場所であるかつY座標が一定の高さ以上一定の高さ未満であるときにマップの変更を行いますというもの
-    //         playerStatus.map_id = 3;
-    //     }
-    // }else if(playerStatus.map_id === 2){
-    //     if(playerStatus.savepoint_x <= 10 && playerStatus.savepoint_y <= 500 && playerStatus.savepoint_y >= 450){
-    //         playerStatus.map_id = 4;
-    //     }
-    // }
+    if(playerStatus.map_id === 1){
+        if((200*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= 230*gameStatus.scale ) && ( 500*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= 530*gameStatus.scale)){
+            playerStatus.map_id = 2;//map_idと書いているが、どのidがどのマップを表しているかは未定
+            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
+            checkAndCreateMap(scene,playerStatus,gameStatus);
+            player.setPosition(915, 285);
+        }else if(playerStatus.savepoint_x >= mapWidth - 32 && playerStatus.savepoint_y <= 64 && playerStatus.savepoint_y >= 0){//処理内容を簡単に書くと、今いるポイントがX座標が端or端に近い場所であるかつY座標が一定の高さ以上一定の高さ未満であるときにマップの変更を行いますというもの
+            playerStatus.map_id = 3;
+        }
+    }else if(playerStatus.map_id === 2){
+        if(playerStatus.savepoint_x <= 10 && playerStatus.savepoint_y <= 500 && playerStatus.savepoint_y >= 450){
+            playerStatus.map_id = 4;
+        }
+    }
 }

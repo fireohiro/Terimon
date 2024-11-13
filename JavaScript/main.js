@@ -2,7 +2,7 @@
 //import {メソッド名（複数ある場合は,~とする)}from 'クラス名';
 import {mappreload,createMap} from './map.js';
 import {createPause,updatepause} from './pause.js';
-import {playerpreload,playercreate,playerupdate} from './player.js';
+import {playerpreload,playerupdate} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
 import {statuspreload} from './status.js';
 // import {updateStatus} from './status.js';
@@ -25,13 +25,14 @@ const config = {
         preload:preload,//プリロード関数
         create:create,//作成関数
         update:update//更新関数    
-    }
+    },
+    antialias:false
 };
 
 //ゲームのインスタンスを作成
 const game = new Phaser.Game(config);
 //ポーズのbooleanをオブジェクトで管理することで、他プログラムで中身を同期できる
-const gameStatus = {pauseflg:false,battleflg:false,temotisu:0,playerfight:true,itemflg:false,gearflg:false,statusflg:false,saveflg:false,logoutflg:false,encountflg:false};
+const gameStatus = {pauseflg:false,battleflg:false,temotisu:0,playerfight:true,itemflg:false,gearflg:false,statusflg:false,saveflg:false,logoutflg:false,encountflg:false,scale:1};
 const playerStatus = {};
 const friend1Status ={};
 const friend2Status ={};
@@ -40,6 +41,8 @@ let itemList=[];
 let gearList=[];
 let createok = false;
 let statuses=[];
+let menuBackground;
+let sin;
 
 function userData() {
     return fetch('get_playersession.php')
@@ -61,11 +64,15 @@ export async function loadFriends(){
         statuses = [friend1Status,friend2Status];
     }else if(friends.length === 3){
         statuses = [friend1Status,friend2Status,friend3Status];
+    }else{
+        statuses = [];
     }
-    //最大三体のオブジェクトに割り当て
-    friends.forEach((friend,index)=>{
-        Object.assign(statuses[index],friend);
-    });
+    if(friends.length !== 0){
+        //最大三体のオブジェクトに割り当て
+        friends.forEach((friend,index)=>{
+            Object.assign(statuses[index],friend);
+        });
+    }
     //gameStatus.temotisuに取得したモンスターの数を格納
     gameStatus.temotisu = friends.length;
 }
@@ -82,7 +89,9 @@ export async function fetchItems() {
         const text = await response.text();  // レスポンスをテキストとして取得
 
         const data = JSON.parse(text);  // JSONとしてパース
-        itemList = data.items;  // itemsをitemListに代入
+        if(data !== null){
+            itemList = data.items;  // itemsをitemListに代入
+        }
     } catch (error) {
         console.error('Error fetching items:', error);
     }
@@ -128,13 +137,6 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     }else{
         gameStatus.encountflg = false;
     }
-
-    //プレイヤーを最後にいた地に表示
-    playercreate(this,playerStatus);
-
-    //pauseのcreate処理
-    createPause(this,gameStatus,playerStatus,config,statuses,itemList,gearList);
-
     createok = true;
 }
 //ゲームの更新処理
@@ -151,6 +153,7 @@ function update(){
         updatepause(this);
         return;
     }
+    menuBackground.setPosition(centerx-480/5*3,centery);
     //アイテム位置調整
     //装備位置調整
     // //ステータス位置調整

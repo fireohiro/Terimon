@@ -15,7 +15,7 @@ export function createPause(scene,gameStatus,playerStatus,config,friends,itemLis
     logoutmessage(scene,config,gameStatus);
     menuBar(scene,playerStatus,config,gameStatus);
     createStatusScreen(scene,gameStatus, playerStatus,friends,config);
-    useItem(loader,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
+    // useItem(loader,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
 }
 
 function pauseStart(scene,gameStatus){
@@ -255,17 +255,17 @@ async function menuBar(scene,playerStatus,config,gameStatus){
     menuContainer = scene.add.container(0,0,[menuBackground,itemtext,geartext,statustext,savetext,logouttext,Moneybar,moneytext]);
     menuContainer.setVisible(false);//初期状態は非表示
     menuContainer.setDepth(7);//一意晩上に表示されるようにする
-    menuContainer.setScrollFactor(0);
 }
 
 export function updatepause(scene){
     // //メニューの位置をカメラに追従させる
     const camera = scene.cameras.main;
+    let menuX;
+    let menuY;
     const cameraCenterX = camera.worldView.x + camera.worldView.width / 2;
     const cameraCenterY = camera.worldView.y + camera.worldView.height / 2;
-    console.log(cameraCenterX);
-    console.log(cameraCenterY);
-
+    menuX = camera.worldView.x + (cameraCenterX - camera.worldView.x) / 5;
+    menuY = camera.worldView.y + (cameraCenterY - camera.worldView.y) / 2.2;
     //メニューをカメラ中心に配置し、少し左にずらす
-    menuContainer.setPosition(cameraCenterX / 5,cameraCenterY - cameraCenterY / 5 * 3);
+    menuContainer.setPosition(menuX,menuY);
 }
