@@ -73,6 +73,7 @@ export function createMap(scene,playerStatus,gameStatus){
 
     //マップidごとに表示させる
     if(map_id === 1){
+        gameStatus.scale=1.5;
         mapData = 'houseMap';
         map = scene.make.tilemap({key:'houseMap'});
         for(let i = 1; i <= 9; i++){
@@ -81,11 +82,13 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 4;//レイヤーの数を格納
     }else if(map_id === 2){
+        gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'homeMap'});
         let tileset = map.addTilesetImage('home1', 'home1');
         tilesets.push(tileset);
         layersu = 3;
     }else if(map_id === 3){
+        mageStatus.scale=1.5;
         map = scene.make.tilemap({key:'grassMap'});
         for(let i = 1; i <= 2; i++){
             let tileset = map.addTilesetImage(`grass${i}`, `grass${i}`);
@@ -93,6 +96,7 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 2;
     }else if(map_id === 4){
+        mageStatus.scale=1.5;
         map = scene.make.tilemap({key:'townMap'});
         for(let i = 1; i <= 15; i++){
             let tileset = map.addTilesetImage(`town${i}`, `town${i}`);
@@ -100,6 +104,7 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 4;
     }else if(map_id === 5){
+        mageStatus.scale=1.5;
         map = scene.make.tilemap({key:'gachaMap'});
         for(let i = 1; i <= 1; i++){
             let tileset = map.addTilesetImage(`gacha${i}`, `gacha${i}`);
@@ -107,6 +112,7 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 2;
     }else if(map_id === 6){
+        mageStatus.scale=1.5;
         map = scene.make.tilemap({key:'entryMap'});
         for(let i = 1; i <= 2; i++){
             let tileset = map.addTilesetImage(`entry${i}`, `entry${i}`);
@@ -114,6 +120,7 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 2;
     }else if(map_id === 7){
+        mageStatus.scale=1.5;
         map = scene.make.tilemap({key:'dungeonMap'});
         for(let i = 1; i <= 7; i++){
             let tileset = map.addTilesetImage(`rock${i}`, `rock${i}`);
@@ -122,7 +129,7 @@ export function createMap(scene,playerStatus,gameStatus){
         layersu = 3;
     }
     //マップの情報をplayer.jsに送る
-    dataMap(map);
+    dataMap(map,scene,playerStatus,gameStatus);
     let layer = [];
     for(let i = 1; i <= layersu; i++){
         const layerName = `layer${i}`;//レイヤー名をそろえる
@@ -130,49 +137,57 @@ export function createMap(scene,playerStatus,gameStatus){
     }
     //カメラのズーム倍率を変える＆レイヤーの変更
     if(playerStatus.map_id === 1){
-        scene.cameras.main.setZoom(1.0);//カメラを通常の1.5倍近づける
+        layer[0].setScale(gameStatus.scale,gameStatus.scale);
+        layer[1].setScale(gameStatus.scale,gameStatus.scale);
+        layer[2].setScale(gameStatus.scale,gameStatus.scale);
+        layer[3].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(1);
         layer[2].setDepth(3);
         layer[3].setDepth(4);
     }else if(playerStatus.map_id === 2){
         //必要に応じて変える
-        scene.cameras.main.setZoom(1.0);
+        layer[0].setScale(gameStatus.scale,gameStatus.scale);
+        layer[1].setScale(gameStatus.scale,gameStatus.scale);
+        layer[2].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(2);
         layer[2].setDepth(3);
     }else if(playerStatus.map_id === 3){
-        //必要に応じて変える
-        scene.cameras.main.setZoom(1.0);
+        layer[0].setScale(gameStatus.scale,gameStatus.scale);
+        layer[1].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(2);
     }else if(playerStatus.map_id === 4){
-        //必要に応じて変える
-        scene.cameras.main.setZoom(1.0);
+        layer[0].setScale(gameStatus.scale,gameStatus.scale);
+        layer[1].setScale(gameStatus.scale,gameStatus.scale);
+        layer[2].setScale(gameStatus.scale,gameStatus.scale);
+        layer[3].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(1);
         layer[2].setDepth(3);
         layer[3].setDepth(4);
     }else if(playerStatus.map_id === 5){
-        //必要に応じて変える
-        scene.cameras.main.setZoom(1.0);
+        layer[0].setScale(gameStatus.scale,gameStatus.scale);
+        layer[1].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(2);
     }else if(playerStatus.map_id === 6){
-        //必要に応じて変える
-        scene.cameras.main.setZoom(1.0);
+        layer[0].setScale(gameStatus.scale,gameStatus.scale);
+        layer[1].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(2);
     }else if(playerStatus.map_id === 7){
-        //必要に応じて変える
-        scene.cameras.main.setZoom(1.0);
+        layer[0].setScale(gameStatus.scale,gameStatus.scale);
+        layer[1].setScale(gameStatus.scale,gameStatus.scale);
+        layer[2].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(1);
         layer[2].setDepth(2);
     }
     // マップの境界を設定
-    scene.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-    scene.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    scene.physics.world.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
+    scene.cameras.main.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
 }
 
 // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
