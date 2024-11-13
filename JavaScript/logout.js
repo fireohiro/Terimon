@@ -1,5 +1,6 @@
 let logoutContainer;
-let kasoru;
+let logotra = null;
+let backtra = null;
 export function logoutdisplay(gameStatus){
     gameStatus.logoutflg = !gameStatus.logoutflg;
     logoutContainer.setVisible(gameStatus.logoutflg);
@@ -40,37 +41,49 @@ export function logoutmessage(scene,config,gameStatus){
         window.location.href='sorce/login.php';
     });
     logouttext.setInteractive().on('pointerover', () => {
-        if(!kasoru){
-            kasoru = scene.add.text(config.width * 0.5,logoutHeight / 2+80,'▶',{fontSize:'64px',fill:'#000'});
-            kasoru.setDepth(8);
+        if(!logotra){
+            logotra = scene.add.text(config.width * 0.5,logoutHeight / 2+80,'▶',{fontSize:'64px',fill:'#000'});
+            logotra.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
     logouttext.setInteractive().on('pointerout', () => {
-        // kasoruが存在していれば非表示にし、破棄
-        if (kasoru) {
-            kasoru.destroy();
-            kasoru = null;  // 破棄後は再度nullに設定
+        // logotraが存在していれば非表示にし、破棄
+        if (logotra) {
+            logotra.destroy();
+            logotra = null;  // 破棄後は再度nullに設定
         }
     });
     backtext.setInteractive().on('pointerdown',()=>{
          logoutdisplay(gameStatus);
     });
     backtext.setInteractive().on('pointerover', () => {
-        if(!kasoru){
-            kasoru = scene.add.text(config.width * 0.5,logoutHeight / 2,'▶',{fontSize:'64px',fill:'#000'});
-            kasoru.setDepth(8);
+        if(!backtra){
+            backtra = scene.add.text(config.width * 0.5,logoutHeight / 2,'▶',{fontSize:'64px',fill:'#000'});
+            backtra.setDepth(8);
         }
     });
     // カーソルがアイテムテキストから外れたときの処理
     backtext.setInteractive().on('pointerout', () => {
-        // kasoruが存在していれば非表示にし、破棄
-        if (kasoru) {
-            kasoru.destroy();
-            kasoru = null;  // 破棄後は再度nullに設定
+        // backtraが存在していれば非表示にし、破棄
+        if (backtra) {
+            backtra.destroy();
+            backtra = null;  // 破棄後は再度nullに設定
         }
     });
     logoutContainer = scene.add.container(0,0,[logoutback,logoutsetumei,logouttext,backtext]);
     logoutContainer.setVisible(false);
     logoutContainer.setDepth(7);
+}
+export function logoutupdate(scene){
+    const camera = scene.cameras.main;
+    let logoX = camera.worldView.x + camera.worldView.width / 2;
+    let logoY = camera.worldView.y + camera.worldView.height / 2;
+    logoutContainer.setPosition(camera.worldView.x,camera.worldView.y);
+    if(backtra){
+        backtra.setPosition(logoX,logoY - 50);
+    }
+    if(logotra){
+        logotra.setPosition(logoX,logoY + 22);
+    }
 }

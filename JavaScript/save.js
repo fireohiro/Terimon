@@ -116,13 +116,13 @@ export async function saveGame(scene,playerStatus,config,gameStatus,friends,item
 
 export function saveUpdate(scene){
     const camera = scene.cameras.main;
-    let saveX = (camera.worldView.x + camera.worldView.width) / 2;
-    let saveY = (camera.worldView.y + camera.worldView.height) / 2;
-    saveContainer.setPosition(saveX,saveY);
+    let saveX = camera.worldView.x + camera.worldView.width / 2;
+    let saveY = camera.worldView.y + camera.worldView.height / 2;
+    saveContainer.setPosition(camera.worldView.x,camera.worldView.y);
     if(savetra){
-        savetra.setPosition(saveX,saveY);
+        savetra.setPosition(saveX,saveY - 50);
     }
     if(backtra){
-        backtra.setPosition(saveX,saveY);
+        backtra.setPosition(saveX,saveY + 22);
     }
 }
