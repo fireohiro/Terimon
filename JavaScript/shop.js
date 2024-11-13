@@ -68,7 +68,7 @@ class ShopScene extends Phaser.Scene {
         const items = this.cache.json.get('items');
         let yOffset = 150;
         items.forEach((item, index) => {
-            const itemText = this.add.text(150, yOffset, `${item.item_name} - ${item.naiyou}T`, { fontSize: '18px', color: '#000' });
+            const itemText = this.add.text(150, yOffset, `${item.price} - ${item.item_name}T`, { fontSize: '18px', color: '#000' });
             yOffset += 30;
 
             // クリック可能にし、クリックで詳細表示
