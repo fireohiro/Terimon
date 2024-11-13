@@ -59,12 +59,12 @@ function map_idHasChanged(playerStatus){
     return false;
 }
 
-// export function changeMap(scene,playerStatus,gameStatus,transition){
-//     playerStatus.map_id=transition.targetMap;
-//     playerStatus.savepoint_x=transition.targetX;
-//     playerStatus.savepoint_y=transition.targetY;
-//     createMap(scene,playerStatus,gameStatus);
-// }
+export function changeMap(scene,playerStatus,gameStatus,transition){
+    playerStatus.map_id=transition.targetMap;
+    playerStatus.savepoint_x=transition.targetX;
+    playerStatus.savepoint_y=transition.targetY;
+    createMap(scene,playerStatus,gameStatus);
+}
 
 export function createMap(scene,playerStatus,gameStatus){
     if(map){
