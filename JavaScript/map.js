@@ -43,6 +43,9 @@ export function mappreload(loader){
     for(let i = 1; i <= 7; i++){
         loader.image(`rock${i}`,`assets/tilesets/rock${i}.png`);
     }
+
+    //牧場
+    loader.tilemapTiledJSON('ranchMap','assets/tilemaps/ranch.json');
 }
 //マップが切り替わったかを確認
 export function checkAndCreateMap(scene,playerStatus,gameStatus){
@@ -136,6 +139,12 @@ export function createMap(scene,playerStatus,gameStatus){
             tilesets.push(tileset);
         }
         layersu = 3;
+    }else if(map_id === 8){
+        mageStatus.scale=1.5;
+        map = scene.make.tilemap({key:'ranchMap'});
+        let tileset = map.addTilesetImage('town2', 'town2');
+        tilesets.push(tileset);
+        layersu = 4;
     }
 
     // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
