@@ -147,19 +147,19 @@ export function createMap(scene,playerStatus,gameStatus){
         layersu = 4;
     }
 
-    // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
-    transitionLayer = map.getObjectLayer('Transitions');
+    // // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
+    // transitionLayer = map.getObjectLayer('Transitions');
 
-    // トリガーをマップのオブジェクトレイヤーから設定
-    transitionTriggers = transitionLayer.objects.map(obj => ({
-    x: obj.x,
-    y: obj.y,
-    width: obj.width,
-    height: obj.height,
-    targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
-    targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
-    targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
-    }));
+    // // トリガーをマップのオブジェクトレイヤーから設定
+    // transitionTriggers = transitionLayer.objects.map(obj => ({
+    // x: obj.x,
+    // y: obj.y,
+    // width: obj.width,
+    // height: obj.height,
+    // targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
+    // targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
+    // targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
+    // }));
 
     //マップの情報をplayer.jsに送る
     dataMap(map,scene,playerStatus,gameStatus);
