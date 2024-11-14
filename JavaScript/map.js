@@ -100,7 +100,7 @@ export function createMap(scene,playerStatus,gameStatus){
         tilesets.push(tileset);
         layersu = 3;
     }else if(map_id === 3){
-        mageStatus.scale=1.5;
+        gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'grassMap'});
         for(let i = 1; i <= 2; i++){
             let tileset = map.addTilesetImage(`grass${i}`, `grass${i}`);
@@ -108,7 +108,7 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 2;
     }else if(map_id === 4){
-        mageStatus.scale=1.5;
+        gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'townMap'});
         for(let i = 1; i <= 15; i++){
             let tileset = map.addTilesetImage(`town${i}`, `town${i}`);
@@ -116,7 +116,7 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 4;
     }else if(map_id === 5){
-        mageStatus.scale=1.5;
+        gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'gachaMap'});
         for(let i = 1; i <= 1; i++){
             let tileset = map.addTilesetImage(`gacha${i}`, `gacha${i}`);
@@ -124,7 +124,7 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 2;
     }else if(map_id === 6){
-        mageStatus.scale=1.5;
+        gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'entryMap'});
         for(let i = 1; i <= 2; i++){
             let tileset = map.addTilesetImage(`entry${i}`, `entry${i}`);
@@ -132,7 +132,7 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 2;
     }else if(map_id === 7){
-        mageStatus.scale=1.5;
+        gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'dungeonMap'});
         for(let i = 1; i <= 7; i++){
             let tileset = map.addTilesetImage(`rock${i}`, `rock${i}`);
@@ -140,7 +140,7 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 3;
     }else if(map_id === 8){
-        mageStatus.scale=1.5;
+        gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'ranchMap'});
         let tileset = map.addTilesetImage('town2', 'town2');
         tilesets.push(tileset);
