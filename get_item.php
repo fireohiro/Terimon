@@ -20,7 +20,7 @@ $items = $sql->fetchAll(PDO::FETCH_ASSOC);
 
 // アイテムが取得できなかった場合はエラーを返す
 if (!$items) {
-    echo json_encode(['error' => 'No items found']);
+    echo json_encode(['items' => null]);
     exit;
 }
 

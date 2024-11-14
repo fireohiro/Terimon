@@ -4,12 +4,12 @@
     $pdo=new PDO($connect,USER,PASS);
 
     $sql = $pdo->prepare('
-    SELECT f.*, m.monster_name , m.gazou AS name
-    FROM friends f
-    JOIN monster m ON f.monster_id = m.monster_id
-    WHERE f.account_id = ? 
-      AND f.friend_id IN (SELECT friend_id FROM temoti)
-');
+        SELECT f.*, m.monster_name , m.gazou AS name
+        FROM friends f
+        JOIN monster m ON f.monster_id = m.monster_id
+        WHERE f.account_id = ? 
+        AND f.friend_id IN (SELECT friend_id FROM temoti)
+    ');
     $sql->execute([$_SESSION['user']['account_id']]);
     $result = $sql->fetchAll();
 

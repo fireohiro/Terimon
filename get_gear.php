@@ -40,7 +40,7 @@ try {
 
     // アイテムが取得できなかった場合のエラーハンドリング
     if (!$gears) {
-        echo json_encode(['error' => 'No gears found']);
+        echo json_encode(['gears' => null]);
         exit;
     }
 
