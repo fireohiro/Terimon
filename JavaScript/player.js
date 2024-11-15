@@ -77,7 +77,7 @@ export function dataMap(mapdata,scene,playerStatus,gameStatus){
     playercreate(scene,playerStatus,gameStatus);
 }
 
-export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
+export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,itemList){
     isMoving = false;//最初は動いていないことにする
     if(cursors.up.isDown){
         //上入力処理
@@ -216,6 +216,10 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
             player.setPosition(20*gameStatus.scale, 480*gameStatus.scale);
+        }
+        if((623*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (623+34)*gameStatus.scale ) && ( 586*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (586+54)*gameStatus.scale)){
+            createShop(scene, playerStatus, itemList, config);
+            player.setPosition((621+19)*gameStatus.scale, (671+16)*gameStatus.scale);
         }
     // gacha
     }else if(playerStatus.map_id === 5){

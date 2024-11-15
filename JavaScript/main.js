@@ -170,7 +170,7 @@ function update(){
         return;
     }
     //バトルでもポーズでもないときの処理↓
-    playerupdate(this,config,gameStatus,playerStatus,statuses);
+    playerupdate(this,config,gameStatus,playerStatus,statuses,itemList);
 }
 
 export function itemUse(item_id){
