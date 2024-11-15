@@ -77,7 +77,7 @@ export function dataMap(mapdata,scene,playerStatus,gameStatus){
     playercreate(scene,playerStatus,gameStatus);
 }
 
-export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status){
+export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,itemList){
     isMoving = false;//最初は動いていないことにする
     if(cursors.up.isDown){
         //上入力処理
@@ -169,7 +169,8 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
     //それぞれのマップごとにマップが切り替わるポイントを指定
     // house
     if(playerStatus.map_id === 1){
-        if((177*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (177+57)*gameStatus.scale ) && ( 497*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (497+28)*gameStatus.scale)){
+        if((177*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (177+57)*gameStatus.scale ) 
+            && ( 497*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (497+28)*gameStatus.scale)){
             playerStatus.map_id = 2;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
@@ -177,13 +178,15 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
         }
     // home
     }else if(playerStatus.map_id === 2){
-        if((894*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (894+34)*gameStatus.scale ) && ( 194*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (194+65)*gameStatus.scale)){
+        if((894*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (894+34)*gameStatus.scale ) 
+            && ( 194*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (194+65)*gameStatus.scale)){
             playerStatus.map_id = 1;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
             player.setPosition(205*gameStatus.scale, 490*gameStatus.scale);
         }
-        if((0*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (0+17)*gameStatus.scale ) && ( 507*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (507+255)*gameStatus.scale)){
+        if((0*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (0+17)*gameStatus.scale ) 
+            && ( 507*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (507+255)*gameStatus.scale)){
             playerStatus.map_id = 3;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
@@ -191,13 +194,15 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
         }
     // grass
     }else if(playerStatus.map_id === 3){
-        if((781*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (781+17)*gameStatus.scale ) && ( 94*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (94+256)*gameStatus.scale)){
+        if((781*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (781+17)*gameStatus.scale ) 
+            && ( 94*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (94+256)*gameStatus.scale)){
             playerStatus.map_id = 2;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
             player.setPosition(20*gameStatus.scale, 635*gameStatus.scale);
         }
-        if((0*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (0+17)*gameStatus.scale ) && ( 545*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (545+157)*gameStatus.scale)){
+        if((0*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (0+17)*gameStatus.scale ) 
+            && ( 545*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (545+157)*gameStatus.scale)){
             playerStatus.map_id = 6;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
@@ -205,15 +210,21 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
         }
     // town
     }else if(playerStatus.map_id === 4){
-        if((1260*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (1260+17)*gameStatus.scale ) && ( 540*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (540+292)*gameStatus.scale)){
+        if((1260*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (1260+17)*gameStatus.scale ) 
+            && ( 540*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (540+292)*gameStatus.scale)){
             playerStatus.map_id = 6;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
             player.setPosition(20*gameStatus.scale, 480*gameStatus.scale);
         }
+        if((623*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (623+34)*gameStatus.scale ) && ( 586*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (586+54)*gameStatus.scale)){
+            createShop(scene, playerStatus, itemList, config);
+            player.setPosition((621+19)*gameStatus.scale, (671+16)*gameStatus.scale);
+        }
     // gacha
     }else if(playerStatus.map_id === 5){
-        if((0*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (0+800)*gameStatus.scale ) && ( 780*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (780+17)*gameStatus.scale)){
+        if((0*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (0+800)*gameStatus.scale ) 
+            && ( 780*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (780+17)*gameStatus.scale)){
             playerStatus.map_id = 6;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
@@ -222,35 +233,40 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
     // entry
     }else if(playerStatus.map_id === 6){
         // 右
-        if((941*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (941+17)*gameStatus.scale ) && ( 351*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (351+289)*gameStatus.scale)){
+        if((941*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (941+17)*gameStatus.scale ) 
+            && ( 351*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (351+289)*gameStatus.scale)){
             playerStatus.map_id = 3;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
             player.setPosition(20*gameStatus.scale, 623*gameStatus.scale);
         }
         // 上
-        if((317*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (317+289)*gameStatus.scale ) && ( 0*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (0+17)*gameStatus.scale)){
+        if((317*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (317+289)*gameStatus.scale ) 
+            && ( 0*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (0+17)*gameStatus.scale)){
             playerStatus.map_id = 5;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
             player.setPosition(775*gameStatus.scale, 400*gameStatus.scale);
         }
         // 左
-        if((0*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (0+17)*gameStatus.scale ) && ( 319*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (319+320)*gameStatus.scale)){
+        if((0*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (0+17)*gameStatus.scale ) 
+            && ( 319*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (319+320)*gameStatus.scale)){
             playerStatus.map_id = 4;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
             player.setPosition(1250*gameStatus.scale, 642*gameStatus.scale);
         }
         // 下
-        if((288*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (288+320)*gameStatus.scale ) && ( 941*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (941+17)*gameStatus.scale)){
+        if((288*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (288+320)*gameStatus.scale ) 
+            && ( 941*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (941+17)*gameStatus.scale)){
             playerStatus.map_id = 8;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
             player.setPosition(174*gameStatus.scale, 52*gameStatus.scale);
         }
         // 階段
-        if((192*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (192+32)*gameStatus.scale ) && ( 157*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (157+32)*gameStatus.scale)){
+        if((192*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (192+32)*gameStatus.scale ) 
+            && ( 157*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (157+32)*gameStatus.scale)){
             playerStatus.map_id = 7;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
@@ -258,7 +274,8 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
         }
     // dungeon
     }else if(playerStatus.map_id === 7){
-        if((601*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (601+74)*gameStatus.scale ) && ( 925*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (925+32)*gameStatus.scale)){
+        if((601*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (601+74)*gameStatus.scale ) 
+            && ( 925*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (925+32)*gameStatus.scale)){
             playerStatus.map_id = 6;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
@@ -266,8 +283,9 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
         }
     // ranch
     }else if(playerStatus.map_id === 8){
-        if((0*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (0+800)*gameStatus.scale ) && ( 0*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (0+17)*gameStatus.scale)){
-            playerStatus.map_id = 8;//map_idと書いているが、どのidがどのマップを表しているかは未定
+        if((0*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (0+800)*gameStatus.scale ) 
+            && ( 0*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (0+17)*gameStatus.scale)){
+            playerStatus.map_id = 6;//map_idと書いているが、どのidがどのマップを表しているかは未定
             //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
             checkAndCreateMap(scene,playerStatus,gameStatus);
             player.setPosition(448*gameStatus.scale, 935*gameStatus.scale);
