@@ -1,15 +1,17 @@
 //ここはインポートする際に１回だけ通るらしい
-const enemy1 = {};
-const enemy2 = {};
-const enemy3 = {};
-const friendImages = [];
-const enemyes = [];
-const friends = [];
-let actX;
-let actY;
-let magicList;
+let friendImages = [];
+let enemyImages = [];
+let enemys = [];
+let back;
+let magicList = [];
 let dieflg = false;
-
+let enemies = [];
+let speedcheck = [];
+let changeflg = true;
+let statusContainer;
+let actionContainer;
+let statusDisplay;
+let canact = true;
 export function battlepreload(loader){
     //敵画像
     for(let i = 1; i <= 21;i++){
@@ -19,129 +21,223 @@ export function battlepreload(loader){
     loader.image('battleback','assets/battleimg/vsback.png');
 }
 
-export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config,itemList){
-    enemyes = [enemy1,enemy2,enemy3];
-    friends = [friend1Status,friend2Status,friend3Status].slice(0,gameStatus.temoti);
-    const displayData = gameStatus.playerfight ? [playerStatus]:friends;
-    displayStatus(displayData);
-    let combatants;
-    //プレイヤー以外が戦っているときに、全モンスターが倒れたら、強制的にプレイヤーが戦うように前線に出す
-    if(!gameStatus.playerfight){
-        if(gameStatus.temotisu === 1){
-            if(friend1Status.hp_nokori === 0){
-                gameStatus.playerfight = true;
-            }
-        }else if(gameStatus.temotisu === 2){
-            if(friend1Status.hp_nokori === 0 && friend2Status.hp_nokori === 0){
-                gameStatus.playerfight = true;
-            }
-        }else if(gameStatus.temotisu === 3){
-            if(friend1Status.hp_nokori === 0 && friend2Status.hp_nokori === 0 && friend3Status.hp_nokori === 0){
-                gameStatus.playerfight = true;
-            }
-        }
+export async function battleupdate(scene,config,gameStatus,playerStatus,friends){
+    if(statusContainer){
+        statusContainer.destroy();
     }
-    //勝利条件チェック
-    const allEnemiesDefeated = enemyes.every(enemy => enemy.hp_nokori <= 0);
-    if(allEnemiesDefeated){
-        battleEnd(true);
+    if(statusDisplay){
+        statusDisplay.destroy();
     }
-    //敗北条件チェック
-    if(playerStatus.hp_nokori <= 0){
-        battleEnd(false);
-    }
-    //ターン計算
-    if(gameStatus.playerfight){
-        //playerfightがtrueであればプレイヤーと敵のスピードを比較
-        combatants = [playerStatus,...enemyes];
-    }else{
-        //playerfightがfalseであれば味方と敵のスピードを比較（temotiの数だけ味方を追加
-        combatants = [...friends,...enemyes];
-    }
-    //スピード順にソート
-    combatants.sort((a,b) => b.speed - a.speed);
-    //combatants配列から行動を選択
-    for(const combatant of combatants){
-        if(combatant.type === 'enemy'){
-            if(combatant.hp_nokori >= 1){
-                //敵であればenemyaction関数を呼び出す
-                enemyaction(combatant,gameStatus);//作成済み
-            }
-        }else{
-            if(combatant.hp_nokori >= 1){
-                //味方の場合はselectact関数を呼び出す
-                //friend1~3Statusオブジェクトにはtypeデータがないのでundefindでプレイヤーと味方はこっちに入る
-                selectact(combatant);
-            }
-        }
-    }
+    const camera = scene.cameras.main;
     //味方ステータス表示
-    function displayStatus(displayData){
-        const statusWidth = config.width * 0.9;
-        const statusHeight = config.height * 0.3;
-        let startX = 10;
-        const startY = 10;
+    const statusWidth = config.width * 0.9;
+    const statusHeight = config.height * 0.3;
+    let startX = (camera.worldView.width - camera.worldView.x) / 20 + camera.worldView.x;
+    const startY = (camera.worldView.height - camera.worldView.y) / 20 + camera.worldView.y - 30;
 
-        const statusBox = scene.add.rectangle(startX,startY,statusWidth,statusHeight,0xFFFFFF);
-        statusBox.setStrokeStyle(2,0x000000);
-        statusBox.setRadius(10);
-        statusBox.setOrigin(0,0);
-
-        let textX = startX + 10;
-        const textY = startY + 10;
-        displayData.forEach((data,index)=>{
+    const statusBox = scene.add.rectangle(startX,startY,statusWidth,statusHeight,0xFFFFFF);
+    statusBox.setStrokeStyle(2,0x000000);
+    statusBox.setOrigin(0,0);
+    let textX = startX - 150;
+    const textY = startY - 5;
+    statusContainer = scene.add.container(0,0,[statusBox]);
+    if(gameStatus.playerfight){
+        const statusText = `
+            　　LV:${playerStatus.level}\n
+            　${playerStatus.account_name}\n
+            HP:${playerStatus.hp_nokori} ／ ${playerStatus.hp}\n
+            MP:${playerStatus.mp_nokori} ／ ${playerStatus.mp}
+        `;
+        statusDisplay = scene.add.text(textX,textY,statusText,{
+            fontSize:'28px',
+            fill:'#000000',
+            wordWrap:{width:statusWidth - 20}
+        });
+        statusDisplay.setOrigin(0,0);
+        statusContainer.add(statusDisplay);
+    }else{
+        friends.forEach(friend=>{
             const statusText = `
-                Lv:${data.level}\n
-                ${data.name}\n
-                HP:${data.hp_nokori} ／ ${data.hp}\n
-                MP:${data.mp_nokori} ／ ${data.mp}
+                　　Lv:${friend.level}\n
+                　${friend.monster_name}\n
+                HP:${friend.hp_nokori} ／ ${friend.hp}\n
+                MP:${friend.mp_nokori} ／ ${friend.mp}
             `;
-
-            const statusDisplay = scene.add.text(textX,textY,statusText,{
-                fontSize:'16px',
+            statusDisplay = scene.add.text(textX,textY,statusText,{
+                fontSize:'28px',
                 fill:'#000000',
                 wordWrap:{width:statusWidth - 20}
             });
             statusDisplay.setOrigin(0,0);
-            textX += statusWidth / displayData.length;
+            statusContainer.add(statusDisplay);
+            textX += statusWidth / gameStatus.temotisu;
         });
-        statusBox.setSize(statusWidth,statusHeight);
     }
+    statusContainer.setDepth(12);
+}
 
-    function enemyaction(combatant){
+//バトルスタート
+export async function battleStart(scene,config,bunrui,gameStatus,friends,playerStatus,itemList){
+    canact = false;
+    friends.forEach(friend=>{
+        if(friend.hp_nokori > 0){
+            gameStatus.playerfight = false;
+        }
+    });
+    enemys = [];
+    enemyImages = [];
+    const enemy1 = {};
+    const enemy2 = {};
+    const enemy3 = {};
+    const camera = scene.cameras.main;
+    gameStatus.battleflg = true;
+    let res;
+    if(bunrui === 1){
+        res = await fetch('get_zako.php');
+        enemies = await res.json();
+    }else if(bunrui === 2){
+        res = await fetch('tyuboss.php');
+        enemies = await res.json();
+    }else if(bunrui === 3){
+        res = await fetch('boss.php');
+        enemies = await res.json();
+    }
+    Object.assign(enemy1,enemies[0]);
+    Object.assign(enemy2,enemies[1]);
+    Object.assign(enemy3,enemies[2]);
+
+
+    back = scene.add.image(scene.cameras.main.worldView.x,scene.cameras.main.worldView.y,'battleback');//左上端っこに背景画像表示※後でカメラの座標をオブジェクトに入れてそれを持ってくる
+    back.setOrigin(0,0);
+    back.setDisplaySize(config.width,config.height);//画像のサイズを画面のサイズに合わせる
+    back.setDepth(10);
+
+    //モンスターを中央に並べて表示
+    enemys = [enemy1,enemy2,enemy3];
+    const x = (camera.worldView.width - camera.worldView.x ) / 11;
+    const y = (camera.worldView.height - camera.worldView.y) / 2 + camera.worldView.y - 20;
+    let s = 3;
+    enemys.forEach(enemy=>{
+        const monsterImage = scene.add.image(x * s +camera.worldView.x,y,`monster${enemy.id}`);//モンスター画像
+        monsterImage.setDisplaySize(225,225);
+        monsterImage.setDepth(11);//背景の上に
+        enemyImages.push(monsterImage);
+        s+=3;
+    });
+
+    //敵の名前と～が現れた！を表示
+    const message = `${enemy1.name}と${enemy2.name}と${enemy3.name}が現れた！`;
+    await displaymessage(scene,config,message);
+
+    battleturn(scene,config,gameStatus,playerStatus,friends,itemList);
+}
+
+async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList){
+    if(!canact){
+        return;
+    }
+    const camera = scene.cameras.main;
+    dieflg = false;
+    magicList = [];
+    changeflg = true;
+    //プレイヤー以外が戦っているときに、全モンスターが倒れたら、強制的にプレイヤーが戦うように前線に出す
+    friends.forEach(friend=>{
+        if(friend.hp_nokori !== 0){
+            changeflg = false;
+        }
+    });
+    if(changeflg){
+        gameStatus.playerfight = true;
+    }else{
+        gameStatus.playerfight = false;
+    }
+    //ターン計算
+    speedcheck = [];
+    if(gameStatus.playerfight){
+        //playerfightがtrueであればプレイヤーと敵のスピードを比較
+        speedcheck.push(playerStatus);
+        enemys.forEach(enemy=>{
+            if(enemy.hp_nokori > 0){
+                speedcheck.push(enemy);
+            }
+        });
+    }else{
+        //playerfightがfalseであれば味方と敵のスピードを比較（temotiの数だけ味方を追加
+        friends.forEach(friend=>{
+            if(friend.hp_nokori > 0){
+                speedcheck.push(friend);
+            }
+        });
+        enemys.forEach(enemy=>{
+            if(enemy.hp_nokori > 0){
+                speedcheck.push(enemy);
+            }
+        });
+    }
+    //スピード順にソート
+    speedcheck.sort((a,b) => b.speed - a.speed);
+    //combatants配列から行動を選択
+    for(const combatant of speedcheck){
+        if(combatant.type === 'enemy'){
+            //敵であればenemyaction関数を呼び出す
+            await enemyaction(combatant,gameStatus);//作成済み
+        }else{
+            //味方の場合はselectact関数を呼び出す
+            //味方オブジェクトにはtypeデータがないのでundefindで味方はこっちに入る
+            await selectact(combatant);
+        }
+    }
+    async function enemyaction(combatant){
+        await displaymessage(scene,config,`${combatant.name}の攻撃！`);
         if(gameStatus.playerfight){
             const damage = combatant.pow / 1.5 - (playerStatus.def / 2);
             playerStatus.hp_nokori -= damage;
-            displaymessage(scene,config,`${playerStatus.account_name}本体に${damage}のダメージ！！`);
-            if(playerStatus.hp_nokori <= 0){
-                playerStatus.hp_nokori = 0;
-                battleEnd(false);
-            }
+            await displaymessage(scene,config,`${playerStatus.account_name}本体に${damage}のダメージ！！`);
         }else{
-            let i = 0;
-            const member = [friend1Status,friend2Status,friend3Status].slice(0,gameStatus.temoti);
-            member.forEach(friend => {
-                const damage = combatant.pow / 1.5 - (friend.def / 2);
+            for (let i = 0; i < friends.length; i++) {
+                const friend = friends[i];
+                let damage = Math.ceil(combatant.pow / 1.5 - (friend.def / 2));
+                if(damage <= 0){
+                    damage = 1;
+                }
                 friend.hp_nokori -= damage;
-                displaymessage(scene,config,`${friend.name}に${damage}ダメージ！`);
-                if(friend.hp_nokori <= 0){
+                await displaymessage(scene, config, `${friend.monster_name}に${damage}ダメージ！`);
+                
+                if (friend.hp_nokori <= 0) {
                     friend.hp_nokori = 0;
-                    displaymessage(scene,config,`${friend.name}は倒れた！`);
+                    await displaymessage(scene, config, `${friend.monster_name}は倒れた！`);
                     friendImages[i].setVisible(false);
                 }
-                i++;
-            });
+            }
         }
     }
     async function selectact(combatant){
+        if(actionContainer){
+            actionContainer.destroy();
+        }
         const actWidth = config.width * 0.2;
         const actHeight = config.height * 0.4;
-        actX = config.width * 0.05;
-        actY = config.height * 0.5;//表示座標を一番下から少し上にする
+        const actX = config.width * 0.05;
+        const actY = config.height * 0.5;//表示座標を一番下から少し上にする
         const actions = gameStatus.playerfight ? ["こうげき","どうぐ","まほう","やっぱ引く"]:["こうげき","どうぐ","まほう","俺が出る"];
-        const actionContainer = scene.add.container();
+        actionContainer = scene.add.container();
+        //モンスターが戦う場合、手持ちモンスターを右下に表示する処理
+        if(!gameStatus.playerfight){
+            let startX = (camera.worldView.width - camera.worldView.x) / 12;
+            const startY = camera.worldView.y + camera.worldView.height / 10 * 8 + camera.worldView.y;
+            let i = 9;
+            friends.forEach(friend=>{
+                gameStatus.playerfight = false;
+                const friendImage = scene.add.image(startX * i + camera.worldView.x,startY,`monster${friend.monster_id}`);
+                friendImage.setDisplaySize(125,125);
+                friendImage.setDepth(11);
+                friendImages.push(friendImage);
+                i++;
+            });
+        }
     
-        actions.forEach((action,index)=>{
+        let index = 0;
+        for(const action of actions){
             const offsetX = (index % 2) * (actWidth + 10);
             const offsetY = Math.floor(index/2)*(actHeight + 10);
             const boxX = actX + offsetX;
@@ -149,7 +245,6 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
     
             const actBox = scene.add.rectangle(boxX,boxY,actWidth,actHeight,0xFFFFFF);
             actBox.setStrokeStyle(2,0x000000);
-            actBox.setRadius(10);
             actBox.setOrigin(0,0);
     
             const actionText = scene.add.text(boxX + 10,boxY + 10,action,{
@@ -157,22 +252,26 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
                 fill:'#000000'
             });
             //クリック時に行動を選択して進める処理
-            actBox.setInteractive().on('pointerdown',()=>{
-                handleActionSelection(action,scene);
+            actBox.setInteractive().on('pointerdown',async()=>{
+                await handleActionSelection(action);
             });
             actionContainer.add([actBox,actionText]);
-        });
+            actionContainer.setDepth(12);
+            index++;
+        }
         //行動が選択されるまで待機する関数
-        function handleActionSelection(action){
+        async function handleActionSelection(action){
             //行動選択用の枠とテキストを削除
-            actionBoxes.forEach(box => box.destroy());
-            actionBoxes.map(box => box.text).forEach(text => text.destroy());
+            actionContainer.destroy();
+            friendImages.forEach(friendimg=>{
+                friendimg.destroy();
+            })
             switch(action){
                 case "こうげき":
                     //それぞれの敵に対してダメージ計算とHP減少を行う。会心も作成済み
-                    enemyes.forEach(enemy => {
+                    let i = 0;
+                    for(const enemy of enemys){
                         let damage;
-                        let i = 0;
                         if(enemy.hp_nokori > 0){
                             const randnum = Math.floor(Math.random() * 100) + 1;
                             if(combatant.luck >= randnum){
@@ -181,14 +280,14 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
                             }else{
                                 damage = Math.ceil(combatant.pow / 1.5 - (enemy.def / 2));
                             }
-                            attack(enemy,damage,i);
+                            await attack(enemy,damage,i);
                             i++;
                         }
-                    });
+                    }
                     break;
                 case "まほう":
                     if(playerStatus.playerfight){
-                        displaymessage(scene,config,`${playerStatus.account_name}は人間なので、まほうはつかえない！`);
+                        await displaymessage(scene,config,`${playerStatus.account_name}は人間なので、まほうはつかえない！`);
                     }else{
                         const wazaIds = [
                             combatant.waza_id1,
@@ -196,7 +295,7 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
                             combatant.waza_id3,
                             combatant.waza_id4
                         ];
-                        fetch('get_waza.php',{
+                        await fetch('get_waza.php',{
                             method:'POST',
                             headers:{
                                 'Content-Type':'application/json'
@@ -215,267 +314,271 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
 
                             const frame = scene.add.rectangle(frameX,frameY,frameWidth,frameHeight,0x000000);
                             frame.setStrokeStyle(2,0xffffff);
-                            frame.setRadius(10);
                             frame.setDepth(3);
 
                             let textY = frameY - frameHeight + 20;
-                            magicList.forEach((magic,index)=>{
+                            for(const magic of magicList){
                                 const wazatext=scene.add.text(frameX + 10,textY,`${magic.waza_name}　　　MP:${magic.shouhi_mp}　　　分類：${magic.naiyou}`,{fontSize:'16px',fill:'#ffffff'});
-                                wazatext.setInteractive().on('pointerdown',()=>{
-                                    magicRole(magic);
+                                wazatext.setInteractive().on('pointerdown',async()=>{
+                                    await magicRole(magic);
                                 });
                                 textY += 15;
-                            });
+                            }
                         })
                         
                     }
                     break;
-                case "どうぐ":
-                    fetch('get_item.php',{
-                        method:'POST',
-                        headers:{
-                            'Content-Type':'application/json'
-                        },
-                        body:JSON.stringify({account_id:playerStatus.account_id})
-                    })
-                    .then(response=>response.json())
-                    .then(data=>{
-                        itemList = data.items;
-
-                        //枠作成
-                        const frameWidth = config.width *0.4;
+                    case "どうぐ":
+                        // 枠作成
+                        const frameWidth = config.width * 0.4;
                         const frameHeight = config.height * 0.4;
                         const frameX = 60;
                         const frameY = 310;
-
-                        const frame = scene.add.rectangle(frameX,frameY,frameWidth,frameHeight,0x000000);
-                        frame.setStrokeStyle(2,0xffffff);
-                        frame.setRadius(10);
+                        const frame = scene.add.rectangle(frameX, frameY, frameWidth, frameHeight, 0x000000);
+                        frame.setStrokeStyle(2, 0xffffff);
                         frame.setDepth(3);
-
+                    
                         let textY = frameY - frameHeight + 20;
-                        itemList.forEach((item,index)=>{
-                            const itemtext=scene.add.text(frameX + 10,textY,`${item.item_name}　　　分類:${item.bunrui}　　　説明：${item.setumei}`,{fontSize:'16px',fill:'#ffffff'});
-                            itemtext.setInteractive().on('pointerdown',()=>{
-                                itemRole(item);
+                        for (const item of itemList) {
+                            const itemtext = scene.add.text(frameX + 10, textY, `${item.item_name}　　　分類:${item.bunrui}　　　説明：${item.setumei}`, { fontSize: '16px', fill: '#ffffff' });
+                    
+                            itemtext.setInteractive().on('pointerdown', async () => {
+                                await itemRole(item);
                             });
+                    
                             textY += 15;
-                        });
-                    })
-                    break;
+                        }
+                        break;
                 case "俺が出る":
                     gameStatus.playerfight = true;
-                    displaymessage(scene,config,`${playerStatus.account_name}が前に出た！`);
+                    await displaymessage(scene,config,`${playerStatus.account_name}が前に出た！`);
                     break;
                 case "やっぱ引く":
                     gameStatus.playerfight = false;
-                    displaymessage(scene,config,`${playerStatus.account_name}はやっぱり家に引きこもることを決めた！`);
+                    await displaymessage(scene,config,`${playerStatus.account_name}はやっぱり家に引きこもることを決めた！`);
                     break;
             }
         }
-        function magicRole(magic){
+        async function magicRole(magic){
             dieflg = false;
             let randnum;
             let randnum2;
             let i = 0;
             if(combatant.mp_nokori >= magic.shouhi_mp){
                 combatant.mp_nokori -= magic.shouhi_mp;
-                displaymessage(scene,config,`${combatant.name}は${magic.waza_name}を使った！`);
-                enemyes.forEach(enemy =>{
-                    //命中判定
-                    randnum = Math.floor(Math.random() * 100) + 1;
-                    if(randnum <= magic.hit_rate){
-                        //即死
-                        if(magic.naiyou === '即死'){
-                            randnum2 = Math.floor(Math.random() * 100) + 1;
-                            if(randnum2 >= enemy.luck){
+                await displaymessage(scene,config,`${combatant.name}は${magic.waza_name}を使った！`);
+                for (const enemy of enemys) {
+                    // 命中判定
+                    let randnum = Math.floor(Math.random() * 100) + 1;
+                    if (randnum <= magic.hit_rate) {
+                        // 即死
+                        if (magic.naiyou === '即死') {
+                            let randnum2 = Math.floor(Math.random() * 100) + 1;
+                            if (randnum2 >= enemy.luck) {
                                 dieflg = true;
-                            }else{
-                                displaymessage(scene,config,'しかしまほうが相手の運に負けてしまった！');
+                            } else {
+                                await displaymessage(scene, config, 'しかしまほうが相手の運に負けてしまった！');
                             }
-                        //HP回復
-                        }else if(magic.naiyou === 'HP回復'){
+                        // HP回復
+                        } else if (magic.naiyou === 'HP回復') {
                             let kouka = Math.floor((combatant.pow + combatant.def) / 2) * magic.shouhi_mp;
-                            friends.forEach(friend=>{
-                                if(friend.hp_nokori > 0){
+                            for (const friend of friends) {
+                                if (friend.hp_nokori > 0) {
                                     friend.hp_nokori += kouka;
-                                    if(friend.hp < friend.hp_nokori){
+                                    if (friend.hp < friend.hp_nokori) {
                                         friend.hp_nokori = friend.hp;
                                     }
                                 }
-                            });
-                            displaymessage(scene,config,`味方のHPを${kouka}回復した`);
-                        //MP回復
-                        }else if(magic.naiyou === 'MP回復'){
+                            }
+                            await displaymessage(scene, config, `味方のHPを${kouka}回復した`);
+                        // MP回復
+                        } else if (magic.naiyou === 'MP回復') {
                             let kouka = Math.floor((combatant.speed + combatant.luck) / 4) * magic.shouhi_mp;
-                            friends.forEach(friend=>{
-                                if(friend.hp_nokori > 0){
+                            for (const friend of friends) {
+                                if (friend.hp_nokori > 0) {
                                     friend.mp_nokori += kouka;
-                                    if(friend.mp < friend.mp_nokori){
+                                    if (friend.mp < friend.mp_nokori) {
                                         friend.mp_nokori = friend.mp;
                                     }
                                 }
-                            });
-                            displaymessage(scene,config,`味方のMPを${kouka}回復した`);
-                        //蘇生
-                        }else if(magic.naiyou === '蘇生'){
-                            friends.forEach(friend=>{
-                                if(friend.hp_nokori === 0){
-                                    randnum2 = Math.floor(Math.random() * 100) + 1;
-                                    if(friend.luck >= randnum2){
+                            }
+                            await displaymessage(scene, config, `味方のMPを${kouka}回復した`);
+                        // 蘇生
+                        } else if (magic.naiyou === '蘇生') {
+                            for (const friend of friends) {
+                                if (friend.hp_nokori === 0) {
+                                    let randnum2 = Math.floor(Math.random() * 100) + 1;
+                                    if (friend.luck >= randnum2) {
                                         friend.hp_nokori = friend.hp;
-                                        displaymessage(scene,config,`${friend.name}は${combatant.name}のまほうによって復活した！`);
-                                    }else{
-                                        displaymessage(scene,config,`しかし${combatant.name}のまほうは失敗に終わった`);
+                                        await displaymessage(scene, config, `${friend.monster_name}は${combatant.name}のまほうによって復活した！`);
+                                    } else {
+                                        await displaymessage(scene, config, `しかし${combatant.name}のまほうは失敗に終わった`);
                                     }
-                                }else{
-                                    displaymessage(scene,config,`${friend.name}には効果がなかった・・・`);
+                                } else {
+                                    await displaymessage(scene, config, `${friend.monster_name}には効果がなかった・・・`);
                                 }
-                            });
-                        //どれにも当てはまらない場合は攻撃魔法として処理をします。
-                        }else{
-                            if(enemy.hp_nokori > 0){
+                            }
+                        // 攻撃魔法
+                        } else {
+                            if (enemy.hp_nokori > 0) {
                                 let damage = Math.ceil(combatant.pow * (1 + magic.might / 100) / 1.5);
-                                randnum2 = Math.floor(Math.random() * 100) + 1;
-                                if(randnum2 <= combatant.luck){
+                                let randnum2 = Math.floor(Math.random() * 100) + 1;
+                                if (randnum2 <= combatant.luck) {
                                     damage = damage * 2;
-                                    displaymessage(scene,config,'会心の一撃！');
-                                    attack(enemy,damage,i);
-                                }else if(magic.naiyou === enemy.resist){
+                                    await displaymessage(scene, config, '会心の一撃！');
+                                    attack(enemy, damage, i);
+                                } else if (magic.naiyou === enemy.resist) {
                                     damage = Math.ceil(damage / 3);
-                                    displaymessage(scene,config,`${enemy.name}は耐性が${combatant.name}の${magic.waza_name}の魔法攻撃を激減させた！`);
-                                    attack(enemy,damage,i);
-                                }else{
+                                    await displaymessage(scene, config, `${enemy.name}は耐性が${combatant.name}の${magic.waza_name}の魔法攻撃を激減させた！`);
+                                    attack(enemy, damage, i);
+                                } else {
                                     damage -= enemy.def / 2;
-                                    attack(enemy,damage,i);
+                                    attack(enemy, damage, i);
                                 }
                                 i++;
                             }
                         }
-                    }else{
-                        displaymessage(scene,config,'しかしまほうは失敗した・・・');
+                    } else {
+                        await displaymessage(scene, config, 'しかしまほうは失敗した・・・');
                     }
-                });
+                }                
             }else{
-                displaymessage(scene,config,'MPが足りない！');
+                await displaymessage(scene,config,'MPが足りない！');
             }
         }
 
-        function itemRole(item){
+        async function itemRole(item){
             let rand1 = Math.floor(Math.random() * 100) + 1;
-            displaymessage(scene,config,`${combatant.name}は${item.name}を使った`);
+            await displaymessage(scene,config,`${combatant.name}は${item.name}を使った`);
             if(rand1 <= combatant.luck){
                 item.naiyou *= 2;
-                displaymessage(scene,config,`${combatant.account_name}の運がアイテムの効果を高めた！`);
+                await displaymessage(scene,config,`${combatant.account_name}の運がアイテムの効果を高めた！`);
             }
             if(item.bunrui === 'HP回復'){
                 combatant.hp_nokori += item.naiyou;
                 if(combatant.hp_nokori > combatant.hp){
                     combatant.hp_nokori = combatant.hp;
                 }
-                displaymessage(scene,config,`${combatant.account_name}のHPを${item.naiyou}回復した`);
+                await displaymessage(scene,config,`${combatant.account_name}のHPを${item.naiyou}回復した`);
             }else if(item.bunrui === 'MP回復'){
                 combatant.mp_nokori += item.naiyou;
                 if(combatant.mp_nokori > combatant.mp){
                     combatant.mp_nokori = combatant.mp;
                 }
-                displaymessage(scene,config,`${combatant.name}のMPを${item.naiyou}回復した`);
+                await displaymessage(scene,config,`${combatant.name}のMPを${item.naiyou}回復した`);
             }else if(item.bunrui === 'ちから'){
                 combatant.pow += item.naiyou;
-                displaymessage(scene,config,`${combatant.name}のちからステータスが${item.naiyou}上昇した`);
+                await displaymessage(scene,config,`${combatant.name}のちからステータスが${item.naiyou}上昇した`);
             }else if(item.bunrui === 'まもり'){
                 combatant.def += item.naiyou;
-                displaymessage(scene,config,`${combatant.name}のまもりステータスが${item.naiyou}上昇した`);
+                await displaymessage(scene,config,`${combatant.name}のまもりステータスが${item.naiyou}上昇した`);
             }else if(item.bunrui === 'スピード'){
                 combatant.speed += item.naiyou;
-                displaymessage(scene,config,`${combatant.name}のスピードステータスが${item.naiyou}上昇した`);
+                await displaymessage(scene,config,`${combatant.name}のスピードステータスが${item.naiyou}上昇した`);
             }else if( item.bunrui === '蘇生'){
-                friends.forEach(friend=>{
-                    if(friend.hp_nokori === 0){
+                for (const friend of friends) {
+                    if (friend.hp_nokori === 0) {
                         friend.hp_nokori = friend.hp;
-                        displaymessage(scene,config,`${friend.name}は息を吹き返した！`);
-                    }else{
-                        displaymessage(scene,config,`${friend.name}には効果がなかった・・・`);
+                        await displaymessage(scene, config, `${friend.monster_name}は息を吹き返した！`);
+                    } else {
+                        await displaymessage(scene, config, `${friend.monster_name}には効果がなかった・・・`);
                     }
-                });
+                }
             }
         }
     }
     async function attack(enemy,damage,i){
-        let respon;
         if(dieflg){
-            displaymessage(scene,config,`問答無用の一撃必殺まほうにより、${enemy.name}は即死した`);
+            await displaymessage(scene,config,`問答無用の一撃必殺まほうにより、${enemy.name}は即死した`);
             enemy.hp_nokori = 0;
         }else{
             //ダメージ表示（ダメージエフェクトをつけたいのならここにつけましょ
             const damag = `${enemy.name}に${damage}ダメージを与えた！`;
-            displaymessage(scene,config,damag);
+            await displaymessage(scene,config,damag);
             enemy.hp_nokori -= damage;
         }
         if(enemy.hp_nokori < 0){
             enemy.hp_nokori = 0;
             //モンスター名＋を倒した！を下のメッセージボックス内で表示
             const message = `${enemy.name}を倒した！`;
-            displaymessage(scene,config,message);
+            await displaymessage(scene,config,message);
+
             //指定していたお金ドロップの量を手持ち金額に追加して表示する
             playerStatus.money += enemy.drop_money;
             const message2 = `${enemy.drop_money}チピチャパを手に入れた！`;
-            displaymessage(scene,config,message2);
+            await displaymessage(scene,config,message2);
             //レベルアップ処理
             if(gameStatus.playerfight){
                 playerStatus.experimence += enemy.experience;
-                if(playerStatus.level * 200 <= playerStatus.experience){
+                if (playerStatus.level * 200 <= playerStatus.experience) {
                     playerStatus.level++;
-                    fetch('level_up.php',{
-                        method:'POST',
-                        headers:{
-                            'Content-Type':'application/json'
-                        },
-                        body:JSON.stringify({job_id:playerStatus.job_id})
-                    })
-                    .then(response => response.json())
-                    .then(data => {
+                
+                    try {
+                        const response = await fetch('level_up.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ job_id: playerStatus.job_id })
+                        });
+                
+                        const data = await response.json();
                         const statuses = data.levelUpData;
+                
+                        // ステータスの更新
                         playerStatus.hp += statuses.up_hp;
                         playerStatus.mp += statuses.up_mp;
                         playerStatus.pow += statuses.up_pow;
                         playerStatus.def += statuses.up_def;
                         playerStatus.speed += statuses.up_speed;
                         playerStatus.luck += statuses.up_luck;
-                        displaymessage(scene,config,`${playerStatus.account_name}のレベルが${playerStatus.level}になった！`);
-                        displaymessage(scene,config,`HP:${statuses.up_hp} MP:${statuses.up_mp} ちから：${statuses.up_pow} まもり:${statuses.up_def} スピード:${statuses.up_speed} 運:${statuses.up_luck}上昇した`);
-                    })
+                
+                        // メッセージの表示
+                        await displaymessage(scene, config, `${playerStatus.account_name}のレベルが${playerStatus.level}になった！`);
+                        await displaymessage(scene, config, `HP:${statuses.up_hp} MP:${statuses.up_mp} ちから：${statuses.up_pow} まもり:${statuses.up_def} スピード:${statuses.up_speed} 運:${statuses.up_luck}上昇した`);
+                    } catch (error) {
+                        console.error("レベルアップデータの取得中にエラーが発生しました:", error);
+                    }
                 }
             }else{
-                friends.forEach(friend => {
+                for (const friend of friends) {
                     friend.experience += enemy.experience;
-                    if(friend.level * 200 <= friend.experience){
-                        friend.level++;
-                        fetch('level_up.php',{
-                            method:'POST',
-                            headers:{
-                                'Content-Type':'application/json'
-                            },
-                            body:JSON.stringify({job_id:friend.job_id})
-                        })
-                        .then(response => response.json())
-                        .then(data => {
+                    
+                    if (playerStatus.level * 200 <= playerStatus.experience) {
+                        playerStatus.level++;
+                    
+                        try {
+                            const response = await fetch('level_up.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ job_id: playerStatus.job_id })
+                            });
+                    
+                            const data = await response.json();
                             const statuses = data.levelUpData;
-                            friend.hp += statuses.up_hp;
-                            friend.mp += statuses.up_mp;
-                            friend.pow += statuses.up_pow;
-                            friend.def += statuses.up_def;
-                            friend.speed += statuses.up_speed;
-                            friend.luck += statuses.up_luck;
-                            displaymessage(scene,config,`${friend.name}のレベルが${friend.level}になった！`);
-                            displaymessage(scene,config,`HP:${statuses.up_hp} MP:${statuses.up_mp} ちから：${statuses.up_pow} まもり:${statuses.up_def} スピード:${statuses.up_speed} 運:${statuses.up_luck}上昇した`);
-                        })
+                        
+                            // ステータスの更新
+                            playerStatus.hp += statuses.up_hp;
+                            playerStatus.mp += statuses.up_mp;
+                            playerStatus.pow += statuses.up_pow;
+                            playerStatus.def += statuses.up_def;
+                            playerStatus.speed += statuses.up_speed;
+                            playerStatus.luck += statuses.up_luck;
+                        
+                            // メッセージの表示
+                            await displaymessage(scene, config, `${playerStatus.account_name}のレベルが${playerStatus.level}になった！`);
+                            await displaymessage(scene, config, `HP:${statuses.up_hp} MP:${statuses.up_mp} ちから：${statuses.up_pow} まもり:${statuses.up_def} スピード:${statuses.up_speed} 運:${statuses.up_luck}上昇した`);
+                        } catch (error) {
+                            console.error("レベルアップデータの取得中にエラーが発生しました:", error);
+                        }
                     }
-                });
+                }
             }
             const nakama = Math.floor(Math.random() * 100) + 1;
-            if(nakama <= 20){
-                displaymessage(scene,config,`${enemy.name}が仲間になりたそうにしている。`);
+            if(nakama <= 10){
+                await displaymessage(scene,config,`${enemy.name}が仲間になりたそうにしている。`);
                 fetch('nakamaka.php',{
                     method:'POST',
                     headers:{
@@ -483,140 +586,101 @@ export async function battleupdate(scene,gameStatus,playerStatus,friend1Status,f
                     },
                     body:JSON.stringify(enemy)
                 });
-                displaymessage(scene,config,`${enemy.name}が仲間に加わった！`);
+                await displaymessage(scene,config,`${enemy.name}が仲間に加わった！`);
             }
     
             //仲間になるならない関係なく、倒したモンスターの画像をゲーム画面から消す
             enemyImages[i].setVisible(false);
         }
     }
-    function battleEnd(winflg){
-        gameStatus.battleflg = false;
-        if(!winflg){
-            playerStatus.hp_nokori = playerStatus.hp;
-            playerStatus.mp_nokori = playerStatus.mp;
-            const lostmoney = playerStatus.money * 0.05;
-            const message = `${playerStatus.account_name}は負けてしまったストレスから、${lostmoney}チピチャパをぶちまけた！`;
-            displaymessage(scene,config,message);
-            playerStatus.money *= 0.95;
-        }else{
-            const message = '勝った';
-            displaymessage(scene,config,message);
-        }
+    //勝利条件チェック
+    console.log(enemys[0],enemys[1],enemys[2]);
+    if(enemys[0].hp_nokori <= 0 && enemys[1].hp_nokori <= 0 && enemy[2].hp_nokoir <= 0 && playerStatus.hp_nokori >= 1){
+        battleEnd(scene,config,gameStatus,true,playerStatus);
+    }else if(enemys[0].hp_nokori > 0 || enemys[1].hp_nokori > 0 || enemy[2].hp_nokoir > 0 && playerStatus.hp_nokori === 0){
+        battleEnd(scene,config,gameStatus,false,playerStatus);
+    }else{
+        battleturn(scene,config.gameStatus,playerStatus,friends,itemList);
     }
-}
-
-//バトルスタート
-export async function battleStart(scene,config,bunrui,gameStatus,friend1Status,friend2Status,friend3Status){
-    let enemies = [];
-    gameStatus.battleflg = true;
-    let res;
-    if(bunrui === 1){
-        res = await fetch('get_zako.php');
-        enemies = await res.json();
-    }else if(bunrui === 2){
-        res = await fetch('tyuboss.php');
-        enemies = await res.json();
-    }else if(bunrui === 3){
-        res = await fetch('boss.php');
-        enemies = await res.json();
-    }
-    Object.assign(enemy1,enemies[0]);
-    Object.assign(enemy2,enemies[1]);
-    Object.assign(enemy3,enemies[2]);
-
-    const battleback = scene.add.image(0,0,'battleback');//左上端っこに背景画像表示※後でカメラの座標をオブジェクトに入れてそれを持ってくる
-    battleback.setOrigin(0,0);
-    battleback.setDisplaySize(1280,960);//画像のサイズを画面のサイズに合わせる
-    battleback.setDepth(0);
-
-    //モンスターを中央に並べて表示
-    const enemyImages = [
-        {enemy:enemy1,x:320},
-        {enemy:enemy2,x:640},
-        {enemy:enemy3,x:960}
-    ];
-
-    enemyImages.forEach(({teki,x},index)=>{
-        const monsterImage = scene.add.image(x,300,teki.id);//モンスター画像
-        monsterImage.setDisplaySize(150,150);
-        monsterImage.setDepth(1);//背景の上に
-        
-    });
-
-    //モンスターが戦う場合、手持ちモンスターを右下に表示する処理
-    if(!gameStatus.playerfight){
-        friends = [friend1Status,friend2Status,friend3Status].slice(0,gameStatus.temotisu);
-        const startX = 900;
-        const startY = 700;
-        const spacing = 60;
-
-        for(let i = 0; i < gameStatus.temotisu;i++){
-            gameStatus.playerfight = false;
-            const friend = friends[i];
-            const friendImagePath = `assets/battleimg/${friend.gazou}`;
-            const friendImage = scene.add.image(startX + i * spacing,startY,friendImagePath);
-            friendImage.setDisplaySize(50,50);
-            friendImage.setDepth(1);
-            friendImages.push(friendImage);
-        }
-    }
-
-    //敵の名前と～が現れた！を表示
-    const message = `${enemy1.name}と${enemy2.name}と${enemy3.name}が現れた！`;
-    await displaymessage(scene,config,message);
 }
 
 //１文字ずつ表示するメッセージ用の枠作成と表示関数
-function displaymessage(scene,config,message){
+async function displaymessage(scene, config, message) {
+    canact = false;
     const messageWidth = config.width * 0.9;
     const messageHeight = config.height * 0.3;
-    const messageX = scene.cameras.main.centerX;//変更予定
-    const messageY = scene.cameras.main.height - messageHeight - 10;//変更予定
+    const messageX = scene.cameras.main.centerX; //変更予定
+    const messageY = scene.cameras.main.height - messageHeight + 50; //変更予定
 
-    const messageBox = scene.add.rectangle(messageX,messageY,messageWidth,messageHeight,0xFFFFFF);
-    messageBox.setStrokeStyle(2,0x000000);
-    messageBox.setRadius(10);
+    const messageBox = scene.add.rectangle(messageX, messageY, messageWidth, messageHeight, 0xFFFFFF);
+    messageBox.setStrokeStyle(2, 0x000000);
+    messageBox.setDepth(12);
 
     const messagetext = scene.add.text(
         messageX - messageWidth / 2 + 20,
-        messageY - messageHeight / 2 + 20,
+        messageY - messageHeight / 2 + 30,
         '',
-        {fontSize:'24px',fill:'#0000000',wordWrap:{width:messageWidth - 40}}
+        { fontSize: '24px', fill: '#000000', wordWrap: { width: messageWidth - 40 } }
     );
+    messagetext.setDepth(13);
 
     let currentCharIndex = 0;
 
-    function displayNextChar(){
-        if(currentCharIndex < message.length){
-            messagetext.text += message[currentCharIndex];
-            currentCharIndex++;
-            scene.time.delayedCall(50,displayNextChar);
-        }else{
-            displayEndMarker();
-        }
+    async function displayNextChar() {
+        return new Promise(resolve => {
+            function next() {
+                if (currentCharIndex < message.length) {
+                    messagetext.text += message[currentCharIndex];
+                    currentCharIndex++;
+                    scene.time.delayedCall(50, next);
+                } else {
+                    resolve();
+                }
+            }
+            next();
+        });
     }
 
-    async function displayEndMarker(){
+    async function displayEndMarker() {
         const marker = scene.add.text(
             messageX + messageWidth / 2 - 30,
-             messageY + messageHeight / 2 - 40 ,
-             '▾',
-             {fontSize:'24px',fill:'#000000'}
+            messageY + messageHeight / 2 - 40,
+            '▾',
+            { fontSize: '24px', fill: '#000000' }
         );
         await waitForEnter(marker);
     }
 
-    function waitForEnter(marker){
-        return new Promise(resolve =>{
-            scene.input.keyboard.once('keydown-ENTER',()=>{
+    function waitForEnter(marker) {
+        return new Promise(resolve => {
+            scene.input.keyboard.once('keydown-ENTER', () => {
                 marker.destroy();
                 messagetext.destroy();
-                messageBox.destroy();//枠も消す
-                resolve();//ENTERが押されたことを通知
+                messageBox.destroy(); //枠も消す
+                canact = true;
+                resolve(); //ENTERが押されたことを通知
             });
         });
     }
 
-    displayNextChar();
+    await displayNextChar(); // 文字表示を待つ
+    await displayEndMarker(); // エンドマーカーの表示を待つ
+}
+
+async function battleEnd(scene,config,gameStatus,winflg,playerStatus){
+    if(!winflg){
+        playerStatus.hp_nokori = playerStatus.hp;
+        playerStatus.mp_nokori = playerStatus.mp;
+        const lostmoney = playerStatus.money * 0.05;
+        const message = `${playerStatus.account_name}は負けてしまったストレスから、${lostmoney}チピチャパをぶちまけた！`;
+        await displaymessage(scene,config,message);
+        playerStatus.money *= 0.95;
+    }else{
+        const message = '勝った';
+        await displaymessage(scene,config,message);
+    }
+    gameStatus.battleflg = false;
+    if(back){
+        back.destroy();
+    }
 }

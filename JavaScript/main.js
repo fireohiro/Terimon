@@ -13,7 +13,7 @@ import{logoutupdate} from './logout.js';
 const config = {
     type:Phaser.AUTO,//自動的に適切なレンダラー？を選択
     width:1500,//ゲームの横幅
-    height:750,//ゲームの縦幅
+    height:730,//ゲームの縦幅
     physics:{
         default:'arcade',
         arcade:{
@@ -56,23 +56,25 @@ function userData() {
 export async function loadFriends(){
     const response = await fetch('get_temoti.php');
     const friends = await response.json();
-    if(friends.length === 1){
-        statuses = [friend1Status];
-    }else if(friends.length === 2){
-        statuses = [friend1Status,friend2Status];
-    }else if(friends.length === 3){
-        statuses = [friend1Status,friend2Status,friend3Status];
+    if(friends !== null){
+        if(friends.length === 1){
+            statuses = [friend1Status];
+        }else if(friends.length === 2){
+            statuses = [friend1Status,friend2Status];
+        }else if(friends.length === 3){
+            statuses = [friend1Status,friend2Status,friend3Status];
+        }
+        if(friends.length !== 0){
+            //最大三体のオブジェクトに割り当て
+            friends.forEach((friend,index)=>{
+                Object.assign(statuses[index],friend);
+            });
+        }
+        //gameStatus.temotisuに取得したモンスターの数を格納
+        gameStatus.temotisu = friends.length;
     }else{
-        statuses = [];
+        gameStatus.temotisu=0;
     }
-    if(friends.length !== 0){
-        //最大三体のオブジェクトに割り当て
-        friends.forEach((friend,index)=>{
-            Object.assign(statuses[index],friend);
-        });
-    }
-    //gameStatus.temotisuに取得したモンスターの数を格納
-    gameStatus.temotisu = friends.length;
 }
 
 export async function fetchItems() {
@@ -105,7 +107,9 @@ export async function fetchGear() {
         // レスポンスをテキストとしてログに出力してみる
         const text = await response.text();
         const data = JSON.parse(text);
-        gearList = data.gears;
+        if(data !== null){
+            gearList = data.gears;
+        }
     } catch (error) {
         console.error('Error fetching gears:', error);
     }
@@ -137,6 +141,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
         gameStatus.encountflg = false;
     }
     createok = true;
+    
 }
 //ゲームの更新処理
 function update(){
@@ -144,8 +149,7 @@ function update(){
         return;
     }
     if(gameStatus.battleflg){
-        //バトル中はバトル処理だけをして、その他を実行しない
-        battleupdate(this,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,config,itemList);
+        battleupdate(this,config,gameStatus,playerStatus,statuses);
         return;
     }
     if(gameStatus.pauseflg){
