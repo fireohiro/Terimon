@@ -71,6 +71,22 @@
                  "height":17,
                  "id":1,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"targetMap",
+                         "type":"int",
+                         "value":6
+                        }, 
+                        {
+                         "name":"targetX",
+                         "type":"int",
+                         "value":448
+                        }, 
+                        {
+                         "name":"targetY",
+                         "type":"int",
+                         "value":935
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,

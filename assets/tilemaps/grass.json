@@ -8,6 +8,7 @@
          "encoding":"base64",
          "height":25,
          "id":1,
+         "locked":true,
          "name":"layer1",
          "opacity":1,
          "type":"tilelayer",
@@ -22,6 +23,7 @@
          "encoding":"base64",
          "height":25,
          "id":3,
+         "locked":true,
          "name":"layer2",
          "opacity":1,
          "type":"tilelayer",
@@ -83,8 +85,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":0.0517007,
-                 "y":-13.3333
+                 "x":-10.6149659666667,
+                 "y":-18.6666333333333
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -95,12 +97,29 @@
         {
          "draworder":"topdown",
          "id":7,
+         "locked":true,
          "name":"Transitions",
          "objects":[
                 {
                  "height":256,
                  "id":8,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"targetMap",
+                         "type":"int",
+                         "value":2
+                        }, 
+                        {
+                         "name":"targetX",
+                         "type":"int",
+                         "value":20
+                        }, 
+                        {
+                         "name":"targetY",
+                         "type":"int",
+                         "value":635
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
@@ -112,6 +131,22 @@
                  "height":157.333333333333,
                  "id":9,
                  "name":"",
+                 "properties":[
+                        {
+                         "name":"targetMap",
+                         "type":"int",
+                         "value":6
+                        }, 
+                        {
+                         "name":"targetX",
+                         "type":"int",
+                         "value":937
+                        }, 
+                        {
+                         "name":"targetY",
+                         "type":"int",
+                         "value":496
+                        }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
