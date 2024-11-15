@@ -8,6 +8,7 @@ import {statuspreload} from './status.js';
 // import {updateStatus} from './status.js';
 import {saveUpdate} from './save.js';
 import{logoutupdate} from './logout.js';
+import { shopPreload, createShop } from './shop.js';
 
 //Phaserの設定
 const config = {
@@ -118,6 +119,7 @@ function preload(){
     playerpreload(this.load);//player.jsのpreload処理を行う
     battlepreload(this.load);//battle.jsのpreload処理を行う
     statuspreload(this.load);//status.jsのpreload処理を行う
+    shopPreload(this.load);
 }
 
 //ゲームの作成処理
@@ -130,6 +132,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     await fetchGear();
     createMap(this,playerStatus,gameStatus);
     createPause(this,gameStatus,playerStatus,config,statuses,itemList,gearList);
+    createShop(this, playerStatus, itemList, config);
 
     if(playerStatus.map_id === 3 || playerStatus.map_id === 6 || playerStatus.map_id === 7){
         gameStatus.encountflg = true;

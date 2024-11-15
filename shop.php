@@ -7,7 +7,7 @@ $pdo = new PDO($connect, USER, PASS);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
  // アイテム一覧を取得するクエリ
-    $stmt = $pdo->query("SELECT item_id, item_name, bunrui, setumei, naiyou FROM item");
+    $stmt = $pdo->query("SELECT item_id, item_name, bunrui, setumei, naiyou, price FROM item");
     $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // JSON形式で出力
