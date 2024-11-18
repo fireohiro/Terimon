@@ -3,43 +3,12 @@ import { itemUse } from './main.js';
 
 let itemContainer;
 
-// itemRole 関数を定義
-export function itemRole(item, friends, scene, config) {
-
-forEach.friend();
-
-    if (item.bunrui === 'HP回復') {
-        combatant.hp_nokori += item.naiyou;
-        if (combatant.hp_nokori > combatant.hp) {
-            combatant.hp_nokori = combatant.hp;
-        }
-    } else if (item.bunrui === 'MP回復') {
-        combatant.mp_nokori += item.naiyou;
-        if (combatant.mp_nokori > combatant.mp) {
-            combatant.mp_nokori = combatant.mp;
-        }
-    } else if (item.bunrui === 'ちから') {
-        combatant.pow += item.naiyou;
-    } else if (item.bunrui === 'まもり') {
-        combatant.def += item.naiyou;
-    } else if (item.bunrui === 'スピード') {
-        combatant.speed += item.naiyou;
-    } else if (item.bunrui === '蘇生') {
-        friends.forEach(friend => {
-            if (friend.hp_nokori === 0) {
-                friend.hp_nokori = friend.hp;
-            } else {
-            }
-        });
-    }
-}
-
 //仮置き
-const summary1 = scene.add.text(config.width * 0.3+180,saveHeight / 4,'アイテム',{fontSize:'13px',fill:'#000'});
-summary1.setOrigin(0,0);
+// const summary1 = scene.add.text(config.width * 0.3+180,saveHeight / 4,'アイテム',{fontSize:'13px',fill:'#000'});
+// summary1.setOrigin(0,0);
 
-const summary2 = scene.add.text(config.width * 0.3+180,saveHeight / 4,'個数',{fontSize:'13px',fill:'#000'});
-summary2.setOrigin(10,0);
+// const summary2 = scene.add.text(config.width * 0.3+180,saveHeight / 4,'個数',{fontSize:'13px',fill:'#000'});
+// summary2.setOrigin(10,0);
 
 // アイテムメニューを表示する関数
 export function itemEvent(gameStatus) {
@@ -53,8 +22,6 @@ export async function useItem(scene, playerStatus, config, friends, itemlist) {
 
     const itemback = scene.add.rectangle(config.width * 0.3 + 10, 2, itemWidth, itemHeight, 0xFFFFFF, 0.8);
     itemback.setStrokeStyle(2, 0x000000);
-
-    
 
     itemContainer = scene.add.container(0, 0, [itemback]);
     itemContainer.setVisible(false);
@@ -86,3 +53,34 @@ function createItemButtons(scene, config, itemlist, combatant, friends) {
         itemContainer.add(itemButton);
     });
 }
+
+// itemRole 関数を定義
+export function itemRole(item, friends, scene, config) {
+
+    forEach.friend();
+    
+        if (item.bunrui === 'HP回復') {
+            combatant.hp_nokori += item.naiyou;
+            if (combatant.hp_nokori > combatant.hp) {
+                combatant.hp_nokori = combatant.hp;
+            }
+        } else if (item.bunrui === 'MP回復') {
+            combatant.mp_nokori += item.naiyou;
+            if (combatant.mp_nokori > combatant.mp) {
+                combatant.mp_nokori = combatant.mp;
+            }
+        } else if (item.bunrui === 'ちから') {
+            combatant.pow += item.naiyou;
+        } else if (item.bunrui === 'まもり') {
+            combatant.def += item.naiyou;
+        } else if (item.bunrui === 'スピード') {
+            combatant.speed += item.naiyou;
+        } else if (item.bunrui === '蘇生') {
+            friends.forEach(friend => {
+                if (friend.hp_nokori === 0) {
+                    friend.hp_nokori = friend.hp;
+                } else {
+                }
+            });
+        }
+    }
