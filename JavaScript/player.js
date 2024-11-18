@@ -1,5 +1,6 @@
 import {battleStart} from './battle.js';
 import {checkAndCreateMap} from './map.js';
+import { shopEvent,createShop } from './shop.js';
 
 const battlerate = 2;
 let player;
@@ -218,8 +219,9 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
             player.setPosition(20*gameStatus.scale, 480*gameStatus.scale);
         }
         if((623*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (623+34)*gameStatus.scale ) && ( 586*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (586+54)*gameStatus.scale)){
-            createShop(scene, playerStatus, itemList, config);
-            player.setPosition((621+19)*gameStatus.scale, (671+16)*gameStatus.scale);
+                shopEvent(gameStatus);
+                createShop(scene, playerStatus, itemList, config,gameStatus);
+                // player.setPosition((621+19)*gameStatus.scale, (671+16)*gameStatus.scale);          
         }
     // gacha
     }else if(playerStatus.map_id === 5){
