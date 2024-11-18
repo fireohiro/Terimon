@@ -15,13 +15,15 @@
         }
     }
 
+    let shopContainer;
+
     export function createShop(scene, playerStatus, itemList, config){
         console.log(itemList);
         // 背景を表示（画面の中央に配置）
-        scene.add.image(750, 375, 'shopBackground');
+        const background = scene.add.image(750, 375, 'shopBackground');
 
         // NPC画像を表示（左端に配置）
-        scene.add.image(200, 250, 'shopNpc');
+        const npc = scene.add.image(200, 250, 'shopNpc');
 
         // アイテムリストの背景枠
         const itemListBackground = scene.add.rectangle(300, 375, 400, 500, 0xFFFFFF).setStrokeStyle(2, 0x000000).setAlpha(0.8);
@@ -30,13 +32,13 @@
         const itemDetailsBackground = scene.add.rectangle(1150, 300, 300, 200, 0xFFFFFF).setStrokeStyle(2, 0x000000).setAlpha(0.8);
 
         // 「アイテム一覧」の見出し
-        scene.add.text(itemListBackground.x - 150, itemListBackground.y - 230, 'アイテム一覧', { fontSize: '24px', fontStyle: 'bold', color: '#000' });
+        const itiran = scene.add.text(itemListBackground.x - 150, itemListBackground.y - 230, 'アイテム一覧', { fontSize: '24px', fontStyle: 'bold', color: '#000' });
 
         // 所持金表示の背景枠
         const goldBackground = scene.add.rectangle(1150, 500, 300, 50, 0xFFFFFF).setStrokeStyle(2, 0x000000).setAlpha(0.8);
 
         // 所持金表示テキスト
-        scene.moneyText = scene.add.text(goldBackground.x - 80, goldBackground.y - 15, `所持金 ${playerStatus.money}T`, { fontSize: '22px', color: '#000' });
+        const money = scene.moneyText = scene.add.text(goldBackground.x - 80, goldBackground.y - 15, `所持金 ${playerStatus.money}T`, { fontSize: '22px', color: '#000' });
 
         // 「かう」と「でる」ボタン
         const buyButton = scene.add.text(goldBackground.x - 90, goldBackground.y - 80, 'かう', { fontSize: '22px', color: '#000' });
@@ -57,10 +59,10 @@
         let detailText = scene.add.text(itemDetailsBackground.x - 130, itemDetailsBackground.y - 60, '', { fontSize: '18px', color: '#000' });
 
         // アイテムリストを表示
-        const items = scene.cache.json.get('items');
         let yOffset = 150;
-        items.forEach((item, index) => {
-            const itemText = scene.add.text(150, yOffset, `${item.price}T - ${item.item_name}`, { fontSize: '18px', color: '#000' });
+        let itemText
+        itemList.forEach((item, index) => {
+            itemText = scene.add.text(150, yOffset, `${item.price}T - ${item.item_name}`, { fontSize: '18px', color: '#000' });
             yOffset += 30;
 
             // クリック可能にし、クリックで詳細表示
@@ -85,4 +87,8 @@
                 alert("アイテムを選択してください！");
             }
         });
+
+        shopContainer=scene.add.container(0,0,[background,npc,itiran,goldBackground,money,buyButton,exitButton,selectedItem,detailText,itemText]);
+        shopContainer.setVisible(false);//フラグが必要？
+        shopContainer.setDepth(7);
     }
