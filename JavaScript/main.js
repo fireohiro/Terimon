@@ -7,7 +7,7 @@ import {battlepreload,battleupdate} from './battle.js';
 import {statuspreload,statusUpdate} from './status.js';
 import {saveUpdate} from './save.js';
 import{logoutupdate} from './logout.js';
-import { shopPreload, createShop } from './shop.js';
+import { shopPreload, createShop,shopUpdate } from './shop.js';
 
 //Phaserの設定
 const config = {
@@ -174,6 +174,9 @@ function update(){
             statusUpdate(this);
         }
         return;
+    }
+    if(gameStatus.shopflg){
+        shopUpdate(this);
     }
     //バトルでもポーズでもないときの処理↓
     playerupdate(this,config,gameStatus,playerStatus,statuses,itemList);

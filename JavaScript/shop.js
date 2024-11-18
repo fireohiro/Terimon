@@ -19,16 +19,17 @@
     export function shopEvent(gameStatus){
         gameStatus.shopflg = !gameStatus.shopflg;
         shopContainer.setVisible(gameStatus.shopflg);
+        console.log(`shopContainer の表示状態: ${gameStatus.shopflg}`);
     }
 
-    export async function createShop(scene, playerStatus, itemList, config,gameStatus){
+    export async function createShop(scene, playerStatus, config,gameStatus){
         const shopItems = await loadItems(); // 非同期処理でデータ取得
-        if (!shopItems) {
+        if (!shopItems || shopItems.length === 0) {
             console.error('アイテムリストが取得できませんでした');
             return;
         }
 
-        console.log(itemList);
+        console.log(shopItems);
         // 背景を表示（画面の中央に配置）
         const background = scene.add.image(750, 375, 'shopBackground');
 
@@ -64,7 +65,6 @@
         exitButton.on('pointerout', () => exitButton.setStyle({ color: '#000000', fontStyle: 'normal' }));
         exitButton.on('pointerdown', () => {
             shopContainer.setVisible(false);
-            gameStatus.shopflg = false;
         });
 
         // アイテム詳細テキスト
@@ -73,9 +73,11 @@
 
         // アイテムリストを表示
         let yOffset = 150;
-        let itemText
+        let itemTexts = [];
         shopItems.forEach((item, index) => {
-            itemText = scene.add.text(150, yOffset, `${item.price}T - ${item.item_name}`, { fontSize: '18px', color: '#000' });
+            let itemText = scene.add.text(150, yOffset, `${item.price}T - ${item.item_name}`, { fontSize: '18px', color: '#000' });
+            itemText.setInteractive();
+            itemTexts.push(itemText);
             yOffset += 30;
 
             // クリック可能にし、クリックで詳細表示
@@ -101,7 +103,14 @@
             }
         });
 
-        shopContainer=scene.add.container(0,0,[background,npc,itemListBackground,itemDetailsBackground,itiran,goldBackground,money,buyButton,exitButton,detailText]);
+        shopContainer=scene.add.container(0,0,[background,npc,itemListBackground,itemDetailsBackground,itiran,goldBackground,money,buyButton,exitButton,detailText, ...itemTexts]);
         shopContainer.setVisible(false);//フラグが必要？
         shopContainer.setDepth(7);
+    }
+
+    export function shopUpdate(scene){
+        if (shopContainer) {
+            const camera = scene.cameras.main;
+            shopContainer.setPosition(camera.scrollX, camera.scrollY);
+        }
     }
