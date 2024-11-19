@@ -475,7 +475,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
     }
     function selectitem(textitem,item,maskShape,combatant){
         return new Promise(resolve=>{
-            magicContainer.setDepth(12);
+            itemContainer.setDepth(12);
             textitem.setInteractive().on('pointerdown',async()=>{
                 itemContainer.destroy();
                 maskShape.destroy();
