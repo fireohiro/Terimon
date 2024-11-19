@@ -245,7 +245,7 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         Moneybar.x-Moneybar.displayWidth/2+35,
         Moneybar.y-Moneybar.displayHeight/2+45,//表示位置ｘとｙ
         //表示文字と文字の設定
-        `　所持金\n${playerStatus.money}`,
+        `　所持金\n　　${playerStatus.money}TP`,
         {fontSize:'26px',fill:'#000'}
     );
 
