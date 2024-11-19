@@ -4,11 +4,10 @@ import {mappreload,createMap} from './map.js';
 import {createPause,updatepause} from './pause.js';
 import {playerpreload,playerupdate} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
-import {statuspreload} from './status.js';
-// import {updateStatus} from './status.js';
+import {statuspreload,statusUpdate} from './status.js';
 import {saveUpdate} from './save.js';
 import{logoutupdate} from './logout.js';
-import { shopPreload, createShop } from './shop.js';
+import { shopPreload, createShop,shopUpdate } from './shop.js';
 
 //Phaserの設定
 const config = {
@@ -33,7 +32,7 @@ const config = {
 //ゲームのインスタンスを作成
 const game = new Phaser.Game(config);
 //ポーズのbooleanをオブジェクトで管理することで、他プログラムで中身を同期できる
-const gameStatus = {pauseflg:false,battleflg:false,temotisu:0,playerfight:true,itemflg:false,gearflg:false,statusflg:false,saveflg:false,logoutflg:false,encountflg:false,scale:1};
+const gameStatus = {pauseflg:false,battleflg:false,temotisu:0,playerfight:true,itemflg:false,gearflg:false,statusflg:false,saveflg:false,logoutflg:false,encountflg:false,shopflg:false,scale:1};
 const playerStatus = {};
 const friend1Status ={};
 const friend2Status ={};
@@ -171,7 +170,13 @@ function update(){
         if(gameStatus.logoutflg){
             logoutupdate(this);
         }
+        if(gameStatus.statusflg){
+            statusUpdate(this);
+        }
         return;
+    }
+    if(gameStatus.shopflg){
+        shopUpdate(this);
     }
     //バトルでもポーズでもないときの処理↓
     playerupdate(this,config,gameStatus,playerStatus,statuses,itemList);

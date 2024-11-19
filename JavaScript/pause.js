@@ -1,4 +1,4 @@
-import{itemEvent,useItem} from './item.js';
+// import{itemEvent,useItem} from './item.js';
 import {createStatusScreen,statusEvent} from './status.js';
 import {saveEvent,saveGame} from './save.js';
 import{logoutmessage,logoutdisplay} from './logout.js';
@@ -19,7 +19,7 @@ export function createPause(scene,gameStatus,playerStatus,config,friends,itemLis
     logoutmessage(scene,config,gameStatus);
     menuBar(scene,playerStatus,config,gameStatus);
     createStatusScreen(scene,gameStatus, playerStatus,friends,config);
-    useItem(loader,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
+    // useItem(loader,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
 }
 
 function pauseStart(scene,gameStatus){
@@ -85,7 +85,7 @@ async function menuBar(scene,playerStatus,config,gameStatus){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
             logoutdisplay(gameStatus);
         }
-        itemEvent(gameStatus);
+        // itemEvent(gameStatus);
     });
     itemtext.setInteractive().on('pointerover', () => {
         if(!itemtra){

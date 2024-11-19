@@ -60,11 +60,11 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
     statusContainer=scene.add.container(0,0,[statusBackground,playerImage,playerInfo,attributes,...friendElements]);//,friendimage
     statusContainer.setVisible(false);
     statusContainer.setDepth(7);
-    // const monsters = playerStatus.monsters; // モンスターリスト
-    // let yOffset = 150;
-    // for (let i = 0; i < monsters.length; i++) {
-    //     scene.add.image(50, yOffset + i * 100, 'monsterSprite'); // モンスター画像
-    //     scene.add.text(100, yOffset + i * 100, `モンスター Lv.${monsters[i].level}`, { fontSize: '16px', fill: '#000' });
-    // }
+}
 
+export function statusUpdate(scene){
+    const camera = scene.cameras.main;
+    let saveX = camera.worldView.x + camera.worldView.width / 2;
+    let saveY = camera.worldView.y + camera.worldView.height / 2;
+    statusContainer.setPosition(camera.worldView.x,camera.worldView.y);
 }
