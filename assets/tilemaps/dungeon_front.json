@@ -79,7 +79,7 @@
          "height":26,
          "id":10,
          "name":"layer6",
-         "opacity":0.96,
+         "opacity":0.03,
          "type":"tilelayer",
          "visible":true,
          "width":48,
