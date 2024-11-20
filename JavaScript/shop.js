@@ -75,7 +75,6 @@
                 gameStatus.shopflg = false;
                 shopContainer.setVisible(false); 
             }
-            gameStatus.shopflg = false; // ショップフラグをリセット
         });
 
         // アイテム詳細テキスト
