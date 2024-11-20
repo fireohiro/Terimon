@@ -223,7 +223,7 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
             if (!gameStatus.shopflg) { // ショップが開いていない場合のみ処理
                 createShop(scene, playerStatus, config, gameStatus);
                 shopEvent(gameStatus);
-                
+                scene.physics.world.pause();//停止
             }else{
                 playerStatus.savepoint_y += 32;
             }
