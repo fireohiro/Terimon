@@ -232,12 +232,15 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
             checkAndCreateMap(scene,playerStatus,gameStatus);
             player.setPosition(20*gameStatus.scale, 480*gameStatus.scale);
         }
-        if((623*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (623+34)*gameStatus.scale ) && ( 586*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (586+54)*gameStatus.scale)){
+        if((623*gameStatus.scale <= playerStatus.savepoint_x && playerStatus.savepoint_x <= (623+34)*gameStatus.scale )
+             && ( 586*gameStatus.scale <= playerStatus.savepoint_y && playerStatus.savepoint_y <= (586+54)*gameStatus.scale)){
             if (!gameStatus.shopflg) { // ショップが開いていない場合のみ処理
                 createShop(scene, playerStatus, config, gameStatus);
                 shopEvent(gameStatus);
-                player.setPosition((623 + 50) * gameStatus.scale, (586 - 20) * gameStatus.scale); // 条件外の位置に移動
-            }        
+                scene.physics.world.pause();//停止
+            }else{
+                playerStatus.savepoint_y += 32;
+            }
         }
     // gacha
     }else if(playerStatus.map_id === 5){

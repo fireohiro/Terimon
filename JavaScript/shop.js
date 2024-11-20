@@ -18,17 +18,24 @@
     let shopContainer;
     export function shopEvent(gameStatus){
         gameStatus.shopflg = !gameStatus.shopflg;
-        shopContainer.setVisible(gameStatus.shopflg);
-        console.log(`shopContainer の表示状態: ${gameStatus.shopflg}`);
+        if (shopContainer) {
+            shopContainer.setVisible(gameStatus.shopflg);
+            console.log(`shopContainer の表示状態: ${shopContainer.visible}`);
+        } else {
+            console.error('shopContainer が見つかりません！');
+        }
     }
 
     export async function createShop(scene, playerStatus, config,gameStatus){
+        if (shopContainer) {
+            return; // 既に作成済みなら何もしない
+        }
         const shopItems = await loadItems(); // 非同期処理でデータ取得
         if (!shopItems || shopItems.length === 0) {
             console.error('アイテムリストが取得できませんでした');
             return;
         }
-
+        console.log(`shopContainer: ${!!shopContainer}, shopflg: ${gameStatus.shopflg}`);
         console.log(shopItems);
         // 背景を表示（画面の中央に配置）
         const background = scene.add.image(750, 375, 'shopBackground');
@@ -64,7 +71,10 @@
         exitButton.on('pointerover', () => exitButton.setStyle({ color: '#ff0000', fontStyle: 'bold' }));
         exitButton.on('pointerout', () => exitButton.setStyle({ color: '#000000', fontStyle: 'normal' }));
         exitButton.on('pointerdown', () => {
-            shopContainer.setVisible(false);
+            if (shopContainer) {
+                gameStatus.shopflg = false;
+                shopContainer.setVisible(false); 
+            }
         });
 
         // アイテム詳細テキスト
@@ -104,7 +114,7 @@
         });
 
         shopContainer=scene.add.container(0,0,[background,npc,itemListBackground,itemDetailsBackground,itiran,goldBackground,money,buyButton,exitButton,detailText, ...itemTexts]);
-        shopContainer.setVisible(false);//フラグが必要？
+        shopContainer.setVisible(false);
         shopContainer.setDepth(7);
     }
 
