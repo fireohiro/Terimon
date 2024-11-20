@@ -224,8 +224,9 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
                 createShop(scene, playerStatus, config, gameStatus);
                 shopEvent(gameStatus);
                 
+            }else{
+                playerStatus.savepoint_y += 32;
             }
-            player.setPosition((736 + 32) * gameStatus.scale, (735 - 33) * gameStatus.scale); // 条件外の位置に移動
         }
     // gacha
     }else if(playerStatus.map_id === 5){
