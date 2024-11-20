@@ -135,7 +135,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     await fetchGear();
     createMap(this,playerStatus,gameStatus);
     createPause(this,gameStatus,playerStatus,config,statuses,itemList,gearList);
-    createShop(this, playerStatus, itemList, config);
+    createShop(this, playerStatus, config, gameStatus);
 
     if(playerStatus.map_id === 3 || playerStatus.map_id === 6 || playerStatus.map_id === 7){
         gameStatus.encountflg = true;

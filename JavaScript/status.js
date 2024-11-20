@@ -45,7 +45,6 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
     const friendElements = [];
     if(gameStatus.temotisu != 0){
         friends.forEach((friendStatus,index) => {
-            console.log(friendStatus);
             friendImage = scene.add.sprite(config.width * 0.25, statusHeight * 0.4 + index * statusHeight * 0.25,'monster'+friendStatus.monster_id);
             friendImage.setDisplaySize(100, 100);
             friendInfo = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.315 + index * statusHeight * 0.25, 
