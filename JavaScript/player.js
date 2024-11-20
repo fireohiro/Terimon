@@ -17,10 +17,32 @@ export function playerpreload(loader){
 
 export function playercreate(scene,playerStatus,gameStatus,layer){
     //プレイヤーをセーブ地に出現させる
-    player = scene.add.sprite(playerStatus.savepoint_x*gameStatus.scale,playerStatus.savepoint_y*gameStatus.scale,'playerimage');
+    player = scene.physics.add.sprite(playerStatus.savepoint_x*gameStatus.scale,playerStatus.savepoint_y*gameStatus.scale,'playerimage');
     player.setScale(gameStatus.scale);
     scene.physics.add.existing(player);
-    player.body.setCollideWorldBounds(true);
+    player.setCollideWorldBounds(true);
+
+    if(playerStatus.map_id === 2){
+        scene.physics.add.collider(player,layer[3],function (player,layertile){
+            console.log('衝突を検知しました');
+            if(player.body.touching.right){
+                player.x -= 5;
+                console.log('右側に障害物が接触しました。');
+            }
+            if(player.body.touching.left){
+                player.x += 5;
+                console.log('左側に障害物が接触しました。');
+            }
+            if(player.body.touching.up){
+                player.y += 5;
+                console.log('上側に障害物が接触しました。');
+            }
+            if(player.body.touching.down){
+                player.y -= 5;
+                console.log('下側に障害物が接触しました。');
+            }
+        });
+    }
     //カメラ調整,必要に応じて調整
     scene.cameras.main.startFollow(player);//プレイヤー追従
 
@@ -82,44 +104,31 @@ export function dataMap(mapdata,scene,playerStatus,gameStatus,layer){
     playercreate(scene,playerStatus,gameStatus,layer);
 }
 
-export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemList,layer){
+export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemList){
+    console.log(player.x,'/',player.y);
     isMoving = false;//最初は動いていないことにする
     if (cursors.up.isDown) {
         isMoving = true;
-        playerStatus.savepoint_y -= Math.ceil(playerStatus.speed / 10);
+        player.setVelocityY(-playerStatus.speed*10);
         player.anims.play('playerup', true);
     } else if (cursors.down.isDown) {
         isMoving = true;
-        playerStatus.savepoint_y += Math.ceil(playerStatus.speed / 10);
+        player.setVelocityY(playerStatus.speed*10);
         player.anims.play('playerdown', true);
-    } else if (cursors.left.isDown) {
+    }else{
+        player.setVelocityY(0);
+    }
+    if (cursors.left.isDown) {
         isMoving = true;
-        playerStatus.savepoint_x -= Math.ceil(playerStatus.speed / 10);
+        player.setVelocityX(-playerStatus.speed*10);
         player.anims.play('playerleft', true);
     } else if (cursors.right.isDown) {
         isMoving = true;
-        playerStatus.savepoint_x += Math.ceil(playerStatus.speed / 10);
+        player.setVelocityX(playerStatus.speed*10);
         player.anims.play('playerright', true);
+    }else{
+        player.setVelocityX(0);
     }
-
-    // 更新された座標での衝突判定
-    if (playerStatus.map_id === 2) {
-        // プレイヤーが障害物と重なっていないかを確認
-        if (scene.physics.world.overlap(player, layer[3])) {
-            // 衝突した場合は、元の位置に戻す
-            if (cursors.up.isDown) {
-                playerStatus.savepoint_y += Math.ceil(playerStatus.speed / 10) + 1;
-            } else if (cursors.down.isDown) {
-                playerStatus.savepoint_y -= Math.ceil(playerStatus.speed / 10) + 1;
-            } else if (cursors.left.isDown) {
-                playerStatus.savepoint_x += Math.ceil(playerStatus.speed / 10) + 1;
-            } else if (cursors.right.isDown) {
-                playerStatus.savepoint_x -= Math.ceil(playerStatus.speed / 10) + 1;
-            }
-        }
-    }
-    // 更新された座標を player スプライトに適用
-    player.setPosition(playerStatus.savepoint_x, playerStatus.savepoint_y);
 
     // 動いていない場合に待機アニメーションを再生
     if (!isMoving) {
@@ -159,22 +168,6 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
             step = 0;
         }
     }
-    
-    
-    //map情報をもとにプレイヤーがマップの外に行かないように調整する
-    const mapWidth = map.widthInPixels*gameStatus.scale;
-    const mapHeight = map.heightInPixels*gameStatus.scale;
-    if(playerStatus.savepoint_x < 0){
-        playerStatus.savepoint_x = 0;
-    }else if(playerStatus.savepoint_x > mapWidth){
-        playerStatus.savepoint_x = mapWidth;
-    }
-    if(playerStatus.savepoint_y < 0){
-        playerStatus.savepoint_y = 0;
-    }else if(playerStatus.savepoint_y > mapHeight){
-        playerStatus.savepoint_y = mapHeight;
-    }
-
      // マップ切り替えのトリガーをチェック
     //  const transition = checkTransition(player);
     //  if (transition) {

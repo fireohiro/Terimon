@@ -202,12 +202,8 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[2].setDepth(3);
         layer[3].setDepth(4);
         layer[3].setCollisionByProperty({collides:true});
-        scene.physics.world.createDebugGraphic();
-        layer[3].renderDebug(scene.add.graphics(), {
-            tileColor: null, // 通常のタイル色
-            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // 衝突領域の色
-            faceColor: new Phaser.Display.Color(40, 39, 37, 255) // 各面の色
-        });
+        const graphics = scene.add.graphics();
+        graphics.setDepth(5);
     }else if(playerStatus.map_id === 3){
         layer[0].setScale(gameStatus.scale,gameStatus.scale);
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
@@ -270,8 +266,4 @@ export function createMap(scene,playerStatus,gameStatus){
       }
     }
     return null;
-  }
-
-  export function mapupdate(scene,config,gameStatus,playerStatus,friends,itemList){
-    playerupdate(scene,config,gameStatus,playerStatus,friends,itemList,layer);
   }

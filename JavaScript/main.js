@@ -1,8 +1,8 @@
 //呼び出すメソッドが存在するクラスを宣言する？
 //import {メソッド名（複数ある場合は,~とする)}from 'クラス名';
-import {mappreload,createMap,mapupdate} from './map.js';
+import {mappreload,createMap} from './map.js';
 import {createPause,updatepause} from './pause.js';
-import {playerpreload} from './player.js';
+import {playerpreload,playerupdate} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
 import {statuspreload,statusUpdate} from './status.js';
 import {saveUpdate} from './save.js';
@@ -176,7 +176,7 @@ function update(){
         shopUpdate(this);
     }
     //バトルでもポーズでもないときの処理↓
-    mapupdate(this,config,gameStatus,playerStatus,statuses,itemList);
+    playerupdate(this,config,gameStatus,playerStatus,statuses,itemList);
 }
 
 export function itemUse(item_id){
