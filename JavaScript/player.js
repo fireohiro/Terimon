@@ -15,10 +15,12 @@ export function playerpreload(loader){
     loader.spritesheet('playerImage','assets/character/terimon1.png', { frameWidth: 32, frameHeight: 32 });
 }
 
-export function playercreate(scene,playerStatus,gameStatus){
+export function playercreate(scene,playerStatus,gameStatus,layer){
     //プレイヤーをセーブ地に出現させる
-    player = scene.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'playerimage');
+    player = scene.add.sprite(playerStatus.savepoint_x*gameStatus.scale,playerStatus.savepoint_y*gameStatus.scale,'playerimage');
     player.setScale(gameStatus.scale);
+    scene.physics.add.existing(player);
+    player.body.setCollideWorldBounds(true);
     //カメラ調整,必要に応じて調整
     scene.cameras.main.startFollow(player);//プレイヤー追従
 
@@ -63,46 +65,58 @@ export function playercreate(scene,playerStatus,gameStatus){
     }else if(playerStatus.map_id === 5){
         player.setDepth(1);
     }else if(playerStatus.map_id === 6){
-        player.setDepth(1);
+        player.setDepth(3);
     }else if(playerStatus.map_id === 7){
+        player.setDepth(2);
+    }else if(playerStatus.map_id === 8){
         player.setDepth(3);
     }
 }
 
-export function dataMap(mapdata,scene,playerStatus,gameStatus){
+export function dataMap(mapdata,scene,playerStatus,gameStatus,layer){
     map = mapdata;
     //playerにデータが入っていた場合、それを消す
     if(player){
         player.destroy();
     }
-    playercreate(scene,playerStatus,gameStatus);
+    playercreate(scene,playerStatus,gameStatus,layer);
 }
 
-export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,friend2Status,friend3Status,itemList){
+export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemList,layer){
     isMoving = false;//最初は動いていないことにする
-    if(cursors.up.isDown){
-        //上入力処理
-        isMoving=true;
+    if (cursors.up.isDown) {
+        isMoving = true;
         playerStatus.savepoint_y -= Math.ceil(playerStatus.speed / 10);
         player.anims.play('playerup', true);
-    }else if(cursors.down.isDown){
-        //下入力処理
-        isMoving=true;
+    } else if (cursors.down.isDown) {
+        isMoving = true;
         playerStatus.savepoint_y += Math.ceil(playerStatus.speed / 10);
         player.anims.play('playerdown', true);
-    }
-    //左右処理を別のif分で書くことで斜め移動を可能にしている
-
-    if(cursors.left.isDown){
-        //左入力処理
-        isMoving=true;
+    } else if (cursors.left.isDown) {
+        isMoving = true;
         playerStatus.savepoint_x -= Math.ceil(playerStatus.speed / 10);
         player.anims.play('playerleft', true);
-    }else if(cursors.right.isDown){
-        //右入力処理
-        isMoving=true;
+    } else if (cursors.right.isDown) {
+        isMoving = true;
         playerStatus.savepoint_x += Math.ceil(playerStatus.speed / 10);
         player.anims.play('playerright', true);
+    }
+
+    // 更新された座標での衝突判定
+    if (playerStatus.map_id === 2) {
+        // プレイヤーが障害物と重なっていないかを確認
+        if (scene.physics.world.overlap(player, layer[3])) {
+            // 衝突した場合は、元の位置に戻す
+            if (cursors.up.isDown) {
+                playerStatus.savepoint_y += Math.ceil(playerStatus.speed / 10) + 1;
+            } else if (cursors.down.isDown) {
+                playerStatus.savepoint_y -= Math.ceil(playerStatus.speed / 10) + 1;
+            } else if (cursors.left.isDown) {
+                playerStatus.savepoint_x += Math.ceil(playerStatus.speed / 10) + 1;
+            } else if (cursors.right.isDown) {
+                playerStatus.savepoint_x -= Math.ceil(playerStatus.speed / 10) + 1;
+            }
+        }
     }
     // 更新された座標を player スプライトに適用
     player.setPosition(playerStatus.savepoint_x, playerStatus.savepoint_y);
@@ -138,7 +152,7 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friend1Status,
                 let encountnum = Math.floor(Math.random() * 100) + 1;
                 if(encountnum <= battlerate){//2%の確率でバトル発生
                     //バトル発生、configの後の引数はそのバトル相手が雑魚なのか中ボスなのかボスなのかを判定（１＝雑魚、２＝中ボス、３＝ボス）カスタムも可
-                    battleStart(scene,config,1,gameStatus,friend1Status,friend2Status,friend3Status);
+                    battleStart(scene,config,1,gameStatus,friends,playerStatus,itemList);
                 }
             }
         }else{

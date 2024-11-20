@@ -1,4 +1,4 @@
-import {dataMap} from './player.js';
+import {dataMap,playerupdate} from './player.js';
 let map;
 let mapData;
 let tilesets = [];
@@ -6,6 +6,7 @@ let layersu;
 let previousMapId = null;
 let transitionLayer;
 let transitionTriggers;
+let layer = [];
 
 export function mappreload(loader){
     //主人公の家内
@@ -32,13 +33,18 @@ export function mappreload(loader){
     loader.tilemapTiledJSON('gachaMap','assets/tilemaps/gacha.json');
     loader.image('gacha1','assets/tilesets/gacha1.png');
 
-    //ダンジョン入り口
-    loader.tilemapTiledJSON('entryMap','assets/tilemaps/dungeon_entry.json');
-    for(let i = 1; i <= 2; i++){
-        loader.image(`entry${i}`,`assets/tilesets/entry${i}`);
+    //ダンジョンまでの道
+    loader.tilemapTiledJSON('roadMap','assets/tilemaps/dungeon_road.json');
+    for(let i = 1; i <= 6; i++){
+        loader.image(`road${i}`,`assets/tilesets/dungeon_road${i}.png`);
     }
 
-    //ダンジョン
+    loader.tilemapTiledJSON('frontMap','assets/tilemaps/dungeon_front.json');
+    for(let i = 1; i <= 6; i++){
+        loader.image(`front${i}`,`assets/tilesets/dungeon_front${i}.png`);
+    }
+
+    //ダンジョン前
     loader.tilemapTiledJSON('dungeonMap','assets/tilemaps/dungeon.json');
     for(let i = 1; i <= 7; i++){
         loader.image(`rock${i}`,`assets/tilesets/rock${i}.png`);
@@ -98,7 +104,7 @@ export function createMap(scene,playerStatus,gameStatus){
         map = scene.make.tilemap({key:'homeMap'});
         let tileset = map.addTilesetImage('home1', 'home1');
         tilesets.push(tileset);
-        layersu = 3;
+        layersu = 4;
     }else if(map_id === 3){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'grassMap'});
@@ -125,13 +131,21 @@ export function createMap(scene,playerStatus,gameStatus){
         layersu = 2;
     }else if(map_id === 6){
         gameStatus.scale=1.5;
-        map = scene.make.tilemap({key:'entryMap'});
-        for(let i = 1; i <= 2; i++){
-            let tileset = map.addTilesetImage(`entry${i}`, `entry${i}`);
+        map = scene.make.tilemap({key:'roadMap'});
+        for(let i = 1; i <= 6; i++){
+            let tileset = map.addTilesetImage(`dungeon_road${i}`, `road${i}`);
             tilesets.push(tileset);
         }
-        layersu = 2;
+        layersu = 4;
     }else if(map_id === 7){
+        gameStatus.scale=2.5;
+        map = scene.make.tilemap({key:'frontMap'});
+        for(let i = 1; i <= 6; i++){
+            let tileset = map.addTilesetImage(`dungeon_front${i}`, `front${i}`);
+            tilesets.push(tileset);
+        }
+        layersu = 5;
+    }else if(map_id === 8){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'dungeonMap'});
         for(let i = 1; i <= 7; i++){
@@ -139,7 +153,7 @@ export function createMap(scene,playerStatus,gameStatus){
             tilesets.push(tileset);
         }
         layersu = 3;
-    }else if(map_id === 8){
+    }else if(map_id === 9){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'ranchMap'});
         let tileset = map.addTilesetImage('town2', 'town2');
@@ -162,8 +176,7 @@ export function createMap(scene,playerStatus,gameStatus){
     // }));
 
     //マップの情報をplayer.jsに送る
-    dataMap(map,scene,playerStatus,gameStatus);
-    let layer = [];
+    layer = [];
     for(let i = 1; i <= layersu; i++){
         const layerName = `layer${i}`;//レイヤー名をそろえる
         layer.push(map.createLayer(layerName,tilesets,0,0));
@@ -183,9 +196,18 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[0].setScale(gameStatus.scale,gameStatus.scale);
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
         layer[2].setScale(gameStatus.scale,gameStatus.scale);
+        layer[3].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(2);
         layer[2].setDepth(3);
+        layer[3].setDepth(4);
+        layer[3].setCollisionByProperty({collides:true});
+        scene.physics.world.createDebugGraphic();
+        layer[3].renderDebug(scene.add.graphics(), {
+            tileColor: null, // 通常のタイル色
+            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // 衝突領域の色
+            faceColor: new Phaser.Display.Color(40, 39, 37, 255) // 各面の色
+        });
     }else if(playerStatus.map_id === 3){
         layer[0].setScale(gameStatus.scale,gameStatus.scale);
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
@@ -208,9 +230,22 @@ export function createMap(scene,playerStatus,gameStatus){
     }else if(playerStatus.map_id === 6){
         layer[0].setScale(gameStatus.scale,gameStatus.scale);
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
+        layer[2].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
-        layer[1].setDepth(2);
+        layer[1].setDepth(1);
+        layer[2].setDepth(3);
     }else if(playerStatus.map_id === 7){
+        layer[0].setScale(gameStatus.scale,gameStatus.scale);
+        layer[1].setScale(gameStatus.scale,gameStatus.scale);
+        layer[2].setScale(gameStatus.scale,gameStatus.scale);
+        layer[3].setScale(gameStatus.scale,gameStatus.scale);
+        layer[4].setScale(gameStatus.scale,gameStatus.scale);
+        layer[0].setDepth(0);
+        layer[1].setDepth(1);
+        layer[2].setDepth(3);
+        layer[3].setDepth(4);
+        layer[4].setDepth(5);
+    }else if(playerStatus.map_id === 8){
         layer[0].setScale(gameStatus.scale,gameStatus.scale);
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
         layer[2].setScale(gameStatus.scale,gameStatus.scale);
@@ -218,6 +253,7 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[1].setDepth(1);
         layer[2].setDepth(2);
     }
+    dataMap(map,scene,playerStatus,gameStatus,layer);
     // マップの境界を設定
     scene.physics.world.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
     scene.cameras.main.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
@@ -234,4 +270,8 @@ export function createMap(scene,playerStatus,gameStatus){
       }
     }
     return null;
+  }
+
+  export function mapupdate(scene,config,gameStatus,playerStatus,friends,itemList){
+    playerupdate(scene,config,gameStatus,playerStatus,friends,itemList,layer);
   }

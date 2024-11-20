@@ -1,8 +1,8 @@
 //呼び出すメソッドが存在するクラスを宣言する？
 //import {メソッド名（複数ある場合は,~とする)}from 'クラス名';
-import {mappreload,createMap} from './map.js';
+import {mappreload,createMap,mapupdate} from './map.js';
 import {createPause,updatepause} from './pause.js';
-import {playerpreload,playerupdate} from './player.js';
+import {playerpreload} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
 import {statuspreload,statusUpdate} from './status.js';
 import {saveUpdate} from './save.js';
@@ -159,9 +159,9 @@ function update(){
         //アイテム位置調整
         //装備位置調整
         // //ステータス位置調整
-        // if(gameStatus.statusflg){
-        //     updateStatus(this);
-        // }
+        if(gameStatus.statusflg){
+            statusUpdate(this);
+        }
         //セーブ位置調整
         if(gameStatus.saveflg){
             saveUpdate(this);
@@ -170,16 +170,13 @@ function update(){
         if(gameStatus.logoutflg){
             logoutupdate(this);
         }
-        if(gameStatus.statusflg){
-            statusUpdate(this);
-        }
         return;
     }
     if(gameStatus.shopflg){
         shopUpdate(this);
     }
     //バトルでもポーズでもないときの処理↓
-    playerupdate(this,config,gameStatus,playerStatus,statuses,itemList);
+    mapupdate(this,config,gameStatus,playerStatus,statuses,itemList);
 }
 
 export function itemUse(item_id){
