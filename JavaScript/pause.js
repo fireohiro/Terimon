@@ -9,6 +9,7 @@ let stattra = null;
 let savetra = null;
 let logotra = null;
 let menuContainer;
+let moneytext;
 export function createPause(scene,gameStatus,playerStatus,config,friends,itemList,gearList){
     scene.input.keyboard.on('keydown',(event) => {
         if(event.key === 'Escape'){
@@ -240,24 +241,31 @@ async function menuBar(scene,playerStatus,config,gameStatus){
     Moneybar.setStrokeStyle(4,0x4169e1);
 
     //所持金のテキスト
-    const moneytext = scene.add.text(
+    const timeismoney = scene.add.text(
+        Moneybar.x - Moneybar.displayWidth/2+60,
+        Moneybar.y-Moneybar.displayHeight/2+15,
+        '所持金',
+        {fontSize:'32px',fill:'#000'}
+    );
+    moneytext = scene.add.text(
         //文字の設定兼表示内容
-        Moneybar.x-Moneybar.displayWidth/2+35,
-        Moneybar.y-Moneybar.displayHeight/2+45,//表示位置ｘとｙ
+        Moneybar.x-Moneybar.displayWidth/2+55,
+        Moneybar.y-Moneybar.displayHeight/2+90,//表示位置ｘとｙ
         //表示文字と文字の設定
-        `　所持金\n　　${playerStatus.money}TP`,
-        {fontSize:'26px',fill:'#000'}
+        `${playerStatus.money}TP`,
+        {fontSize:'32px',fill:'#000'}
     );
 
     //メニュー要素をコンテナにまとめる
-    menuContainer = scene.add.container(0,0,[menuBackground,itemtext,geartext,statustext,savetext,logouttext,Moneybar,moneytext]);
+    menuContainer = scene.add.container(0,0,[menuBackground,itemtext,geartext,statustext,savetext,logouttext,Moneybar,timeismoney,moneytext]);
     menuContainer.setVisible(false);//初期状態は非表示
     menuContainer.setDepth(7);//一意晩上に表示されるようにする
 }
 
-export function updatepause(scene){
+export function updatepause(scene,playerStatus){
     // //メニューの位置をカメラに追従させる
     const camera = scene.cameras.main;
+    moneytext.setText(`${playerStatus.money}ＴＰ`);
     let menuX;
     let menuY;
     const cameraCenterX = camera.worldView.x + camera.worldView.width / 2;

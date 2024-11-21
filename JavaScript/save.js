@@ -77,6 +77,7 @@ export async function saveGame(scene,playerStatus,config,gameStatus,friends,item
         }
         const geares = await gearres.json();
         console.log('Item data saved:',geares);
+        alert('セーブが完了しました！');
     });
     savetext.setInteractive().on('pointerover', () => {
         if(!savetra){

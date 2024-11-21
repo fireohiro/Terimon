@@ -12,6 +12,7 @@ let statusContainer;
 let itemContainer;
 let magicContainer;
 let actionContainer;
+let messageContainer;
 let statusDisplay;
 let canact = true;
 let koutai = false;
@@ -35,49 +36,65 @@ export async function battleupdate(scene,config,gameStatus,playerStatus,friends)
     //味方ステータス表示
     const statusWidth = config.width * 0.9;
     const statusHeight = config.height * 0.3;
-    let startX = (camera.worldView.width - camera.worldView.x) / 20 + camera.worldView.x;
-    const startY = (camera.worldView.height - camera.worldView.y) / 20 + camera.worldView.y - 30;
 
-    const statusBox = scene.add.rectangle(startX,startY,statusWidth,statusHeight,0xFFFFFF);
-    statusBox.setStrokeStyle(2,0x000000);
-    statusBox.setOrigin(0,0);
-    let textX = startX - 150;
-    const textY = startY - 5;
-    statusContainer = scene.add.container(0,0,[statusBox]);
-    if(gameStatus.playerfight){
+    // ステータスの初期配置（画面上部）
+    let startX = config.width * 0.05; // 左端から少し内側
+    const startY = config.height * 0.03; // 上端から少し内側
+
+    // ステータスボックスを作成
+    const statusBox = scene.add.rectangle(startX, startY, statusWidth, statusHeight, 0xFFFFFF);
+    statusBox.setStrokeStyle(2, 0x000000);
+    statusBox.setOrigin(0, 0);
+
+    // ステータスコンテナを作成
+    statusContainer = scene.add.container(0, 0, [statusBox]);
+
+    let textX = startX - 150; // テキストの初期X位置（余白を設ける）
+    const textY = startY; // テキストの初期Y位置（余白を設ける）
+
+    // ステータス表示内容を動的に変更
+    if (gameStatus.playerfight) {
         const statusText = `
             　　LV:${playerStatus.level}\n
             　${playerStatus.account_name}\n
             HP:${playerStatus.hp_nokori} ／ ${playerStatus.hp}\n
             MP:${playerStatus.mp_nokori} ／ ${playerStatus.mp}
         `;
-        statusDisplay = scene.add.text(textX,textY,statusText,{
-            fontSize:'28px',
-            fill:'#000000',
-            wordWrap:{width:statusWidth - 20}
+        statusDisplay = scene.add.text(textX, textY, statusText, {
+            fontSize: '28px',
+            fill: '#000000',
+            wordWrap: { width: statusWidth - 20 }
         });
-        statusDisplay.setOrigin(0,0);
+        statusDisplay.setOrigin(0, 0);
         statusContainer.add(statusDisplay);
-    }else{
-        friends.forEach(friend=>{
+    } else {
+        friends.forEach(friend => {
             const statusText = `
                 　　Lv:${friend.level}\n
                 　${friend.monster_name}\n
                 HP:${friend.hp_nokori} ／ ${friend.hp}\n
                 MP:${friend.mp_nokori} ／ ${friend.mp}
             `;
-            statusDisplay = scene.add.text(textX,textY,statusText,{
-                fontSize:'28px',
-                fill:'#000000',
-                wordWrap:{width:statusWidth - 20}
+            statusDisplay = scene.add.text(textX, textY, statusText, {
+                fontSize: '28px',
+                fill: '#000000',
+                wordWrap: { width: statusWidth - 20 }
             });
-            statusDisplay.setOrigin(0,0);
+            statusDisplay.setOrigin(0, 0);
             statusContainer.add(statusDisplay);
             textX += statusWidth / gameStatus.temotisu;
         });
     }
+
+    // 深度を設定して背景より上に表示
     statusContainer.setDepth(12);
-}
+
+    // カメラの動きに追従する処理
+    scene.events.on('postupdate', () => {
+        // カメラのスクロールに合わせてステータスコンテナを移動
+        statusContainer.setPosition(camera.scrollX, camera.scrollY);
+    });
+    }
 
 //バトルスタート
 export async function battleStart(scene,config,bunrui,gameStatus,friends,playerStatus,itemList){
@@ -126,6 +143,19 @@ export async function battleStart(scene,config,bunrui,gameStatus,friends,playerS
         monsterImage.setDepth(11);//背景の上に
         enemyImages.push(monsterImage);
         s+=3;
+    });
+
+    // カメラの動きに合わせて更新する
+    scene.events.on('postupdate', () => {
+        const camera = scene.cameras.main;
+        let s = 3;
+        enemys.forEach((enemy, index) => {
+            const monsterImage = enemyImages[index];
+            if (monsterImage) {
+                monsterImage.setPosition(camera.scrollX + (camera.width / 11) * s, camera.scrollY + camera.height / 2 - 20);
+                s += 3;
+            }
+        });
     });
 
     //敵の名前と～が現れた！を表示
@@ -196,7 +226,6 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                 await displayAction(combatant);
             }
             if(!gameStatus.battleflg || koutai){
-                console.log('バトル終了、または交代を感知しました');
                 break;
             }
         }
@@ -256,7 +285,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                 friendImages = [];
             }
             let startX = (camera.worldView.width - camera.worldView.x) / 12;
-            const startY = camera.worldView.y + camera.worldView.height / 10 * 8 + camera.worldView.y;
+            let startY = camera.worldView.y + camera.worldView.height / 10 * 8 + camera.worldView.y;
             let i = 9;
             for(const friend of friends){
                 if(friend.hp_nokori > 0){
@@ -276,28 +305,77 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                     i++;
                 }
             }
+            // カメラの動きに合わせて更新する処理
+            scene.events.on('postupdate', () => {
+                let i = 0; // 配置用のカウント
+                for (const friendImage of friendImages) {
+                    if (friendImage) {
+                        const yOffset = (combatant.friend_id === friends[i].friend_id) ? -100 : 0; // 戦闘中キャラを少し上に
+                        friendImage.setPosition(
+                            camera.scrollX + camera.width - 150 - 150 * i, // 右端から配置
+                            camera.scrollY + camera.height - 150 + yOffset // 下端から配置
+                        );
+                        i++;
+                    }
+                }
+            });
         }
         const actWidth = config.width * 0.25;
         const actHeight = config.height * 0.2;
-        const actX = (scene.cameras.main.worldView.width - scene.cameras.main.worldView.x) / 7 + scene.cameras.main.worldView.x;
-        const actY = (scene.cameras.main.worldView.height - scene.cameras.main.worldView.y) / 5 * 4 + scene.cameras.main.worldView.y;
+
+        // 初期位置計算（カメラ位置を基準に設定）
+        let actX = camera.scrollX + camera.width / 7;
+        let actY = camera.scrollY + (camera.height / 5) * 4;
+
+        // アクションコンテナ作成
         actionContainer = scene.add.container();
-    
-        const actBox = scene.add.rectangle(actX,actY,actWidth,actHeight,0xFFFFFF);
-        actBox.setStrokeStyle(2,0x000000);
-        const attacktext = scene.add.text(actX-125,actY-50,'こうげき',{fontSize:'24px',fill:'#000000'});
-        const itemtext = scene.add.text(actX + 20,actY-50,'どうぐ',{fontSize:'24px',fill:'#000000'});
-        const magictext = scene.add.text(actX-125, actY + 20,'まほう',{fontSize:'24px',fill:'#000000'});
-        if(gameStatus.playerfight){
-            const backtext = scene.add.text(actX + 20,actY + 20,'やっぱ引く',{fontSize:'24px',fill:'#000000'});
-            actionContainer.add([actBox,attacktext,itemtext,magictext,backtext]);
+
+        // アクションボックスとテキストの作成
+        const actBox = scene.add.rectangle(actX, actY, actWidth, actHeight, 0xFFFFFF);
+        actBox.setStrokeStyle(2, 0x000000);
+
+        const attacktext = scene.add.text(actX - 125, actY - 50, 'こうげき', { fontSize: '24px', fill: '#000000' });
+        const itemtext = scene.add.text(actX + 20, actY - 50, 'アイテム', { fontSize: '24px', fill: '#000000' });
+        const magictext = scene.add.text(actX - 125, actY + 20, 'まほう', { fontSize: '24px', fill: '#000000' });
+
+        if (gameStatus.playerfight) {
+            const backtext = scene.add.text(actX + 20, actY + 20, 'やっぱ引く', { fontSize: '24px', fill: '#000000' });
+            actionContainer.add([actBox, attacktext, itemtext, magictext, backtext]);
             actionContainer.setDepth(12);
-            await waitselect(attacktext,itemtext,magictext,backtext,combatant);
-        }else{
-            const fronttext = scene.add.text(actX + 20,actY + 20,'俺が出る',{fontSize:'24px',fill:'#000000'});
-            actionContainer.add([actBox,attacktext,itemtext,magictext,fronttext]);
+
+            // カメラが動いたときにアクションメニューを更新
+            scene.events.on('postupdate', () => {
+                actX = camera.scrollX + camera.width / 7;
+                actY = camera.scrollY + (camera.height / 5) * 4;
+
+                actBox.setPosition(actX, actY);
+                attacktext.setPosition(actX - 125, actY - 50);
+                itemtext.setPosition(actX + 20, actY - 50);
+                magictext.setPosition(actX - 125, actY + 20);
+                backtext.setPosition(actX + 20, actY + 20);
+            });
+
+            // オプションの選択を待つ
+            await waitselect(attacktext, itemtext, magictext, backtext, combatant);
+        } else {
+            const fronttext = scene.add.text(actX + 20, actY + 20, '俺が出る', { fontSize: '24px', fill: '#000000' });
+            actionContainer.add([actBox, attacktext, itemtext, magictext, fronttext]);
             actionContainer.setDepth(12);
-            await waitselect(attacktext,itemtext,magictext,fronttext,combatant);
+
+            // カメラが動いたときにアクションメニューを更新
+            scene.events.on('postupdate', () => {
+                actX = camera.scrollX + camera.width / 7;
+                actY = camera.scrollY + (camera.height / 5) * 4;
+
+                actBox.setPosition(actX, actY);
+                attacktext.setPosition(actX - 125, actY - 50);
+                itemtext.setPosition(actX + 20, actY - 50);
+                magictext.setPosition(actX - 125, actY + 20);
+                fronttext.setPosition(actX + 20, actY + 20);
+            });
+
+            // オプションの選択を待つ
+            await waitselect(attacktext, itemtext, magictext, fronttext, combatant);
         }
     }
     function waitselect(attacktext,itemtext,magictext,backtext,combatant){
@@ -309,12 +387,11 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
             });
             itemtext.setInteractive().on('pointerdown',async()=>{
                 actionContainer.destroy();
-                await handleActionSelection('どうぐ',combatant);
+                await handleActionSelection('アイテム',combatant);
                 resolve();
             });
             magictext.setInteractive().on('pointerdown',async()=>{
                 actionContainer.destroy();
-                console.log(gameStatus.playerfight);
                 await handleActionSelection('まほう',combatant);
                 resolve();
             });
@@ -387,71 +464,121 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
 
                     const data = await response.json();
                     magicList = data.magic;
-                    console.log(magicList);
                     //枠作成
-                    const frameWidth = config.width *0.7;
-                    const frameHeight = config.height * 0.4;
-                    const frameX = (camera.worldView.width - camera.worldView.x) / 9 + camera.worldView.x;
-                    const frameY = (camera.worldView.height - camera.worldView.y) / 5 * 3 + camera.worldView.y;
-                    const frame = scene.add.rectangle(frameX,frameY,frameWidth,frameHeight,0xffffff);
-                    frame.setStrokeStyle(2,0x000000);
-                    frame.setOrigin(0,0);
+                    const frameWidth = config.width * 0.7;
+                    const frameHeight = config.height * 0.3;
+
+                    // 初期の固定位置（画面左下）
+                    const offsetX = config.width * 0.05; // 左端からの余白
+                    const offsetY = config.height * 0.05; // 下端からの余白
+
+                    // フレーム（枠）を作成
+                    const frame = scene.add.rectangle(offsetX, config.height - frameHeight - offsetY, frameWidth, frameHeight, 0xffffff);
+                    frame.setStrokeStyle(2, 0x000000);
+                    frame.setOrigin(0, 0);
+
+                    // コンテナにフレームを追加
                     magicContainer.add(frame);
                     magicContainer.setDepth(12);
-                    let textY = frameY + 20;
-                    const wazatext1=scene.add.text(frameX + 10,textY,`${magicList[0].waza_name}　　　MP:${magicList[0].syouhi_mp}　　　分類：${magicList[0].naiyou}`,{fontSize:'16px',fill:'#000000'});
-                    const wazatext2=scene.add.text(frameX + 10,textY + 20,`${magicList[1].waza_name}　　　MP:${magicList[1].syouhi_mp}　　　分類：${magicList[1].naiyou}`,{fontSize:'16px',fill:'#000000'});
-                    const wazatext3=scene.add.text(frameX + 10,textY + 40,`${magicList[2].waza_name}　　　MP:${magicList[2].syouhi_mp}　　　分類：${magicList[2].naiyou}`,{fontSize:'16px',fill:'#000000'});
-                    const wazatext4=scene.add.text(frameX + 10,textY + 60,`${magicList[3].waza_name}　　　MP:${magicList[3].syouhi_mp}　　　分類：${magicList[3].naiyou}`,{fontSize:'16px',fill:'#000000'});
-                    wazatext1.setOrigin(0,0);
-                    wazatext2.setOrigin(0,0);
-                    wazatext3.setOrigin(0,0);
-                    wazatext4.setOrigin(0,0);
-                    wazatext1.setDepth(12);
-                    wazatext2.setDepth(12);
-                    wazatext3.setDepth(12);
-                    wazatext4.setDepth(12);
-                    magicContainer.add([wazatext1,wazatext2,wazatext3,wazatext4]);
+
+                    // テキストをフレーム内に配置
+                    let textY = config.height - frameHeight - offsetY + 20;
+                    const wazatext1 = scene.add.text(offsetX + 10, textY, `${magicList[0].waza_name}　　　MP:${magicList[0].syouhi_mp}　　　分類：${magicList[0].naiyou}`, { fontSize: '24px', fill: '#000000' });
+                    const wazatext2 = scene.add.text(offsetX + 10, textY + 20, `${magicList[1].waza_name}　　　MP:${magicList[1].syouhi_mp}　　　分類：${magicList[1].naiyou}`, { fontSize: '24px', fill: '#000000' });
+                    const wazatext3 = scene.add.text(offsetX + 10, textY + 40, `${magicList[2].waza_name}　　　MP:${magicList[2].syouhi_mp}　　　分類：${magicList[2].naiyou}`, { fontSize: '24px', fill: '#000000' });
+                    const wazatext4 = scene.add.text(offsetX + 10, textY + 60, `${magicList[3].waza_name}　　　MP:${magicList[3].syouhi_mp}　　　分類：${magicList[3].naiyou}`, { fontSize: '24px', fill: '#000000' });
+
+                    // テキストをまとめてコンテナに追加
+                    [wazatext1, wazatext2, wazatext3, wazatext4].forEach(text => {
+                        text.setOrigin(0, 0);
+                        text.setDepth(12);
+                        magicContainer.add(text);
+                    });
+
+                    // カメラのスクロールに追従
+                    scene.events.on('postupdate', () => {
+                        const scrollX = camera.scrollX;
+                        const scrollY = camera.scrollY;
+
+                        // フレームとテキストの位置を更新
+                        const frameNewX = scrollX + offsetX;
+                        const frameNewY = scrollY + config.height - frameHeight - offsetY;
+                        frame.setPosition(frameNewX, frameNewY);
+
+                        let textNewY = frameNewY + 20;
+                        wazatext1.setPosition(frameNewX + 10, textNewY);
+                        wazatext2.setPosition(frameNewX + 10, textNewY + 50);
+                        wazatext3.setPosition(frameNewX + 10, textNewY + 100);
+                        wazatext4.setPosition(frameNewX + 10, textNewY + 150);
+                    });
+
                     await magicselect(wazatext1,wazatext2,wazatext3,wazatext4,combatant);
                 }
                 break;
-                case "どうぐ":
-                    const frameX = (camera.worldView.width - camera.worldView.x) / 7 + camera.worldView.x;
-                    const frameY = (camera.worldView.height - camera.worldView.y) / 5 * 3 + camera.worldView.y;
-                    itemContainer = scene.add.container(frameX,frameY);
+                case "アイテム":
                     if(itemList){
+                        // 定数を定義（左下のオフセット）
+                        const offsetX = 20; // 左端からの距離
+                        const offsetY = 20; // 下端からの距離
+                        const frameWidth = config.width * 0.7;
+                        const frameHeight = config.height * 0.3;
+
+                        // itemContainerを初期化
+                        itemContainer = scene.add.container(0, 0);
+                        itemContainer.setDepth(12);
+
+                        // マスクを作成
                         const maskShape = scene.add.graphics();
                         maskShape.fillStyle(0xffffff);
-                        maskShape.fillRect(frameX,frameY,config.width * 0.7,config.height * 0.4);
+                        maskShape.fillRect(0, 0, frameWidth, frameHeight);
                         maskShape.setDepth(11);
                         itemContainer.setMask(maskShape.createGeometryMask());
 
-                        //スクロールロジックを追加
+                        // アイテムリストを描画
+                        let index = 0;
+                        for (const item of itemList) {
+                            const textitem = scene.add.text(
+                                0,
+                                index * 20,
+                                `${item.item_name}　　　分類：${item.bunrui}　　${item.setumei}　　所持数：${item.su}個`,
+                                {
+                                    fontSize: '24px',
+                                    color: '#000000'
+                                }
+                            );
+                            itemContainer.add(textitem);
+                            index += 1;
+                            // 左下固定ロジック
+                            scene.events.on('postupdate', () => {
+                                const cameraScrollX = camera.scrollX;
+                                const cameraScrollY = camera.scrollY;
+
+                                // itemContainerを画面左下に配置
+                                itemContainer.x = cameraScrollX + offsetX;
+                                itemContainer.y = cameraScrollY + config.height - frameHeight - offsetY;
+
+                                // マスクも同様に移動
+                                maskShape.x = itemContainer.x;
+                                maskShape.y = itemContainer.y;
+                            });
+                            await selectitem(textitem, item, maskShape, combatant);
+                        }
+
+                        // スクロールロジックを追加
                         const maxScrollY = 0;
-                        const minScrollY = -Math.max(0,(itemList.length * 20) - (config.height * 0.4));//下方向の限界
-                        scene.input.on('wheel',(pointer,deltaX,deltaY,) => {
+                        const minScrollY = -Math.max(0, itemList.length * 20 - frameHeight); // 下方向の限界
+                        scene.input.on('wheel', (pointer, deltaX, deltaY) => {
                             const scrollAmount = 10;
                             itemContainer.y += deltaY > 0 ? -scrollAmount : scrollAmount;
 
-                            if(itemContainer.y > maxScrollY){
+                            if (itemContainer.y > maxScrollY) {
                                 itemContainer.y = maxScrollY;
-                            }else if(itemContainer.y < minScrollY){
+                            } else if (itemContainer.y < minScrollY) {
                                 itemContainer.y = minScrollY;
                             }
                         });
-                        itemContainer.setDepth(12);
-                        let index = 0;
-                        for(const item of itemList){
-                            const textitem = scene.add.text(0,index * 20,`${item.item_name}　　　分類：${item.bunrui}　　${item.setumei}　　所持数：${item.su}個`,{
-                                fontSize:'24px',
-                                color:'#000000'
-                            });
-                            itemContainer.add(textitem);
-                            index = index + 1;
-                            await selectitem(textitem,item,maskShape,combatant);
-                        }
                     }else{
-                        await displaymessage(scene,config,`${playerStatus.account_name}は何もどうぐを持っていないようだ・・・`)
+                        await displaymessage(scene,config,`${playerStatus.account_name}は何もアイテムを持っていないようだ・・・`)
                     }
                     break;
             case "俺が出る":
@@ -526,6 +653,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                             randnum2 = Math.floor(Math.random() * 100) + 1;
                             if (randnum2 >= enemy.luck) {
                                 dieflg = true;
+                                await attack(enemy,0,i);
                             } else {
                                 await displaymessage(scene, config, 'しかしまほうが相手の運に負けてしまった！');
                             }
@@ -789,11 +917,15 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
 
 //１文字ずつ表示するメッセージ用の枠作成と表示関数
 async function displaymessage(scene, config, message) {
+    if(messageContainer){
+        messageContainer.destroy();
+    }
     canact = false;
     const messageWidth = config.width * 0.9;
     const messageHeight = config.height * 0.3;
-    const messageX = scene.cameras.main.centerX; //変更予定
-    const messageY = scene.cameras.main.height - messageHeight + 50; //変更予定
+    const camera = scene.cameras.main;
+    let messageX = camera.centerX; //変更予定
+    let messageY = camera.height - messageHeight + 50; //変更予定
 
     const messageBox = scene.add.rectangle(messageX, messageY, messageWidth, messageHeight, 0xFFFFFF);
     messageBox.setStrokeStyle(2, 0x000000);
@@ -806,6 +938,18 @@ async function displaymessage(scene, config, message) {
         { fontSize: '24px', fill: '#000000', wordWrap: { width: messageWidth - 40 } }
     );
     messagetext.setDepth(13);
+
+    // カメラの位置変化に応じてメッセージボックスの位置を更新
+    scene.events.on('postupdate', () => {
+        messageX = camera.scrollX + camera.centerX;
+        messageY = camera.scrollY + camera.height - messageHeight / 2 - 20;
+
+        messageBox.setPosition(messageX, messageY);
+        messagetext.setPosition(
+            messageX - messageWidth / 2 + 20,
+            messageY - messageHeight / 2 + 40
+        );
+    });
 
     let currentCharIndex = 0;
 

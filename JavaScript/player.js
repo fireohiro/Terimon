@@ -142,6 +142,7 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
                 //エンカウント処理
                 let encountnum = Math.floor(Math.random() * 100) + 1;
                 if(encountnum <= battlerate){//2%の確率でバトル発生
+                    playerstop();
                     //バトル発生、configの後の引数はそのバトル相手が雑魚なのか中ボスなのかボスなのかを判定（１＝雑魚、２＝中ボス、３＝ボス）カスタムも可
                     battleStart(scene,config,1,gameStatus,friends,playerStatus,itemList);
                 }
@@ -287,4 +288,7 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
             player.setPosition(448*gameStatus.scale, 935*gameStatus.scale);
         }
     }
+}function playerstop(){
+    player.setVelocityX(0);
+    player.setVelocityY(0);
 }

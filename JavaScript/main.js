@@ -155,7 +155,7 @@ function update(){
         return;
     }
     if(gameStatus.pauseflg){
-        updatepause(this);
+        updatepause(this,playerStatus);
         //アイテム位置調整
         //装備位置調整
         // //ステータス位置調整
