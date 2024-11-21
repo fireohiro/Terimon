@@ -180,11 +180,6 @@ export function createMap(scene,playerStatus,gameStatus){
     for(let i = 1; i <= layersu; i++){
         const layerName = `layer${i}`;//レイヤー名をそろえる
         layer.push(map.createLayer(layerName,tilesets,0,0));
-        if(layer){
-            console.log(layer[i-1]);
-        }else{
-            console.log('nullですけど何か？');
-        }
     }
     //カメラのズーム倍率を変える＆レイヤーの変更
     if(playerStatus.map_id === 1){
