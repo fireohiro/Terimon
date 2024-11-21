@@ -17,31 +17,14 @@ export function playerpreload(loader){
 
 export function playercreate(scene,playerStatus,gameStatus,layer){
     //プレイヤーをセーブ地に出現させる
-    player = scene.physics.add.sprite(playerStatus.savepoint_x*gameStatus.scale,playerStatus.savepoint_y*gameStatus.scale,'playerimage');
+    player = scene.physics.add.sprite(playerStatus.savepoint_x.scale,playerStatus.savepoint_y,'playerimage');
     player.setScale(gameStatus.scale);
     scene.physics.add.existing(player);
     player.setCollideWorldBounds(true);
 
-    if(playerStatus.map_id === 2){
-        scene.physics.add.collider(player,layer[3],function (player,layertile){
-            console.log('衝突を検知しました');
-            if(player.body.touching.right){
-                player.x -= 5;
-                console.log('右側に障害物が接触しました。');
-            }
-            if(player.body.touching.left){
-                player.x += 5;
-                console.log('左側に障害物が接触しました。');
-            }
-            if(player.body.touching.up){
-                player.y += 5;
-                console.log('上側に障害物が接触しました。');
-            }
-            if(player.body.touching.down){
-                player.y -= 5;
-                console.log('下側に障害物が接触しました。');
-            }
-        });
+    //タイルプロパティがcollidesで値がtrueになっているものを障害物として、playerが接触できないようにする
+    for(let i = 0; i < layer.length; i++){
+        scene.physics.add.collider(player,layer[i]);
     }
     //カメラ調整,必要に応じて調整
     scene.cameras.main.startFollow(player);//プレイヤー追従
@@ -105,7 +88,6 @@ export function dataMap(mapdata,scene,playerStatus,gameStatus,layer){
 }
 
 export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemList){
-    console.log(player.x,'/',player.y);
     isMoving = false;//最初は動いていないことにする
     if (cursors.up.isDown) {
         isMoving = true;

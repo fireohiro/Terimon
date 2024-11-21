@@ -180,6 +180,11 @@ export function createMap(scene,playerStatus,gameStatus){
     for(let i = 1; i <= layersu; i++){
         const layerName = `layer${i}`;//レイヤー名をそろえる
         layer.push(map.createLayer(layerName,tilesets,0,0));
+        if(layer){
+            console.log(layer[i-1]);
+        }else{
+            console.log('nullですけど何か？');
+        }
     }
     //カメラのズーム倍率を変える＆レイヤーの変更
     if(playerStatus.map_id === 1){
@@ -201,9 +206,6 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[1].setDepth(2);
         layer[2].setDepth(3);
         layer[3].setDepth(4);
-        layer[3].setCollisionByProperty({collides:true});
-        const graphics = scene.add.graphics();
-        graphics.setDepth(5);
     }else if(playerStatus.map_id === 3){
         layer[0].setScale(gameStatus.scale,gameStatus.scale);
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
@@ -248,6 +250,9 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[0].setDepth(0);
         layer[1].setDepth(1);
         layer[2].setDepth(2);
+    }
+    for(let s = 0; s<layer.length; s++){
+        layer[s].setCollisionByProperty({collides:true});
     }
     dataMap(map,scene,playerStatus,gameStatus,layer);
     // マップの境界を設定
