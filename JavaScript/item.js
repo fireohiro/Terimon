@@ -9,18 +9,21 @@ let summaryContainer = null;
 let savetra = null;
 
 // アイテムメニューを表示する関数
-export function itemEvent(gameStatus) {
+export function itemEvent(scene, config, gameStatus) {
     gameStatus.itemflg = !gameStatus.itemflg;
     console.log('Item flag status:', gameStatus.itemflg);
+    console.log('Scene:', scene);
+    console.log('Config:', config);
+    console.log('Scene and Config initialized');
     if (itemContainer) {
         itemContainer.setVisible(gameStatus.itemflg);
+    }
+    if (gameStatus.itemflg) {
+        useItem(scene, config); // `scene` と `config` を渡す
     }
 }
 
 export async function useItem(scene, config) {
-    console.log('Scene:', scene);
-    console.log('Config:', config);
-
 
     const itemWidth = config.width * 0.6;
     const itemHeight = config.height * 0.95;
