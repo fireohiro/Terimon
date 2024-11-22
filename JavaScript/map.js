@@ -136,7 +136,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`dungeon_road${i}`, `road${i}`);
             tilesets.push(tileset);
         }
-        layersu = 4;
+        layersu = 5;
     }else if(map_id === 7){
         gameStatus.scale=2.5;
         map = scene.make.tilemap({key:'frontMap'});
@@ -144,7 +144,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`dungeon_front${i}`, `front${i}`);
             tilesets.push(tileset);
         }
-        layersu = 5;
+        layersu = 6;
     }else if(map_id === 8){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'dungeonMap'});
@@ -225,6 +225,7 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[0].setScale(gameStatus.scale,gameStatus.scale);
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
         layer[2].setScale(gameStatus.scale,gameStatus.scale);
+        layer[3].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(1);
         layer[2].setDepth(3);
@@ -234,6 +235,7 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[2].setScale(gameStatus.scale,gameStatus.scale);
         layer[3].setScale(gameStatus.scale,gameStatus.scale);
         layer[4].setScale(gameStatus.scale,gameStatus.scale);
+        layer[5].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(1);
         layer[2].setDepth(3);

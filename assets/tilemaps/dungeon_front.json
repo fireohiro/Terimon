@@ -67,7 +67,7 @@
          "name":"layer5",
          "opacity":1,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":48,
          "x":0,
          "y":0
@@ -96,7 +96,7 @@
         {
          "columns":16,
          "firstgid":1,
-         "image":"../tilesets/dungeon_front1.png",
+         "image":"..\/tilesets\/dungeon_front1.png",
          "imageheight":384,
          "imagewidth":512,
          "margin":0,
@@ -110,7 +110,7 @@
         {
          "columns":16,
          "firstgid":193,
-         "image":"../tilesets/dungeon_front2.png",
+         "image":"..\/tilesets\/dungeon_front2.png",
          "imageheight":384,
          "imagewidth":512,
          "margin":0,
@@ -124,7 +124,7 @@
         {
          "columns":8,
          "firstgid":385,
-         "image":"../tilesets/dungeon_front3.png",
+         "image":"..\/tilesets\/dungeon_front3.png",
          "imageheight":512,
          "imagewidth":256,
          "margin":0,
@@ -138,7 +138,7 @@
         {
          "columns":16,
          "firstgid":513,
-         "image":"../tilesets/dungeon_front4.png",
+         "image":"..\/tilesets\/dungeon_front4.png",
          "imageheight":512,
          "imagewidth":512,
          "margin":0,
@@ -2462,7 +2462,7 @@
         {
          "columns":16,
          "firstgid":769,
-         "image":"../tilesets/dungeon_front5.png",
+         "image":"..\/tilesets\/dungeon_front5.png",
          "imageheight":512,
          "imagewidth":512,
          "margin":0,
@@ -3305,7 +3305,6 @@
                  "objectgroup":
                     {
                      "draworder":"index",
-                     "id":3,
                      "name":"",
                      "objects":[
                             {
@@ -4736,7 +4735,6 @@
                  "objectgroup":
                     {
                      "draworder":"index",
-                     "id":3,
                      "name":"",
                      "objects":[
                             {
@@ -4832,7 +4830,7 @@
         {
          "columns":16,
          "firstgid":1025,
-         "image":"../tilesets/dungeon_front6.png",
+         "image":"..\/tilesets\/dungeon_front6.png",
          "imageheight":512,
          "imagewidth":512,
          "margin":0,
