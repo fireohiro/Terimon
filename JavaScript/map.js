@@ -98,7 +98,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`house${i}`, `house${i}`);
             tilesets.push(tileset);
         }
-        layersu = 4;//レイヤーの数を格納
+        layersu = 5;//レイヤーの数を格納
     }else if(map_id === 2){
         gameStatus.scale=2.0;
         map = scene.make.tilemap({key:'homeMap'});
@@ -187,6 +187,7 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
         layer[2].setScale(gameStatus.scale,gameStatus.scale);
         layer[3].setScale(gameStatus.scale,gameStatus.scale);
+        layer[4].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(1);
         layer[2].setDepth(3);
