@@ -596,9 +596,6 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                 }
                 break;
         }
-        if(enemys[0].hp_nokori === 0 && enemys[1].hp_nokori === 0 && enemys[2].hp_nokori === 0 && playerStatus.hp_nokori >= 1){
-            await battleEnd(scene,config,gameStatus,true,playerStatus);
-        }
     }
     function selectitem(textitem,item,maskShape,combatant){
         return new Promise(resolve=>{
@@ -911,6 +908,9 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
     
             //仲間になるならない関係なく、倒したモンスターの画像をゲーム画面から消す
             enemyImages[i].setVisible(false);
+            if(enemys[0].hp_nokori === 0 && enemys[1].hp_nokori === 0 && enemys[2].hp_nokori === 0 && playerStatus.hp_nokori >= 1){
+                await battleEnd(scene,config,gameStatus,true,playerStatus);
+            }
         }
     }
 }
