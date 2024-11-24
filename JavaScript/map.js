@@ -136,7 +136,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`dungeon_road${i}`, `road${i}`);
             tilesets.push(tileset);
         }
-        layersu = 5;
+        layersu = 4;
     }else if(map_id === 7){
         gameStatus.scale=2.5;
         map = scene.make.tilemap({key:'frontMap'});

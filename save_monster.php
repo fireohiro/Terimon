@@ -14,8 +14,8 @@ if (!isset($data) || !is_array($data)) {
 }
 
 // friends配列が存在し、かつそれが配列であることを確認
-if (!isset($data['friends']) || !is_array($data['friends'])) {
-    echo json_encode(['error' => 'Invalid friends data']);
+if (!isset($data['statuses']) || !is_array($data['statuses'])) {
+    echo json_encode(['error' => 'Invalid statuses data']);
     exit;
 }
 
@@ -25,7 +25,7 @@ try {
     
 
     // モンスター情報を保存
-    foreach ($data['friends'] as $friend) {
+    foreach ($data['statuses'] as $friend) {
         // 必要なキーが存在するか確認
         if (
             !isset($friend['level']) || !isset($friend['experience']) || 
@@ -58,7 +58,7 @@ try {
             $friend['waza_id2'],
             $friend['waza_id3'],
             $friend['waza_id4'],
-            $_SESSION['user']['account_id']
+            $friend['friend_id']
         ]);
         // 各モンスターの更新が成功したか確認
         if (!$result) {

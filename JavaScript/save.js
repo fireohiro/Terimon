@@ -1,3 +1,4 @@
+import {save} from './main.js';
 let saveContainer;
 let savetra = null;
 let backtra = null;
@@ -6,7 +7,7 @@ export function saveEvent(gameStatus){
     saveContainer.setVisible(gameStatus.saveflg);
 }
 
-export async function saveGame(scene,playerStatus,config,gameStatus,friends,itemList,gearList){
+export async function saveGame(scene,config,gameStatus){
     //メニューのサイズを設定
     const saveWidth = config.width * 0.6;
     const saveHeight = config.height * 0.85;
@@ -25,59 +26,7 @@ export async function saveGame(scene,playerStatus,config,gameStatus,friends,item
     backtext.setOrigin(0,0);
     //クリックイベント
     savetext.setInteractive().on('pointerdown',async()=>{
-        //fetch関数を使ってデータをsave_player.phpに送信
-        const response = await fetch('save_player.php',{
-            method:'POST',//HTTPのPOSTメソッドを使用
-            headers:{
-                'Content-Type':'application/json',//送信データがJSON形式であることを宣言
-            },
-            body:JSON.stringify(playerStatus),//saveDataオブジェクトをJSON形式の文字列に変換し、送信
-        });
-        if(!response.ok){
-            throw new Error(`HTTP error! Status:${response.status}`);
-        }
-        const result = await response.json();
-        //モンスターの更新
-        const payload = {friends:friends};
-        const monsterres = await fetch('save_monster.php',{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify(payload)
-        });
-        if(!monsterres.ok){
-            throw new Error(`HTTP error! Status:${monsterres.status}`);
-        }
-        const monres = await monsterres.json();
-        console.log('Monster data saved:',monres);
-        const itemload =  {itemList:itemList};
-        const itemres = await fetch('save_item.php',{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify(itemload)
-        });
-        if(!itemres.ok){
-            throw new Error(`HTTP error! Status:${itemres.status}`);
-        }
-        const iteres = await itemres.json();
-        console.log('Item data saved:',iteres);
-        const gearload =  {gearList:gearList};
-        const gearres = await fetch('save_gear.php',{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify(gearload)
-        });
-        if(!itemres.ok){
-            throw new Error(`HTTP error! Status:${gearres.status}`);
-        }
-        const geares = await gearres.json();
-        console.log('Item data saved:',geares);
-        alert('セーブが完了しました！');
+        await save();
     });
     savetext.setInteractive().on('pointerover', () => {
         if(!savetra){

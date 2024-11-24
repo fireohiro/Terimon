@@ -1,3 +1,4 @@
+import {itemUse, loadFriends} from './main.js';
 //ここはインポートする際に１回だけ通るらしい
 let friendImages = [];
 let enemyImages = [];
@@ -268,7 +269,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
             }
         }
         if(enemys[0].hp_nokori > 0 && playerStatus.hp_nokori === 0 || enemys[2].hp_nokori > 0 && playerStatus.hp_nokori === 0 || enemys[2].hp_nokoir > 0 && playerStatus.hp_nokori === 0){
-            await battleEnd(scene,config,gameStatus,false,playerStatus);
+            await battleEnd(scene,config,gameStatus,false,playerStatus,friends);
             for(let i = 0;i < 3; i++){
                 enemyImages[i].setVisible(false);
             }
@@ -718,7 +719,8 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                     }
                 } else {
                     if(enemy.hp_nokori >= 1){
-                        await displaymessage(scene, config, 'しかしまほうを外してしまった・・・');
+                        await displaymessage(scene, config, 'しかしまほうは失敗してしまった・・・');
+                        break;
                     }
                 }
                 i++;
@@ -732,6 +734,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
         itemContainer.destroy();
         let luckflg = false; 
         let rand1 = Math.floor(Math.random() * 100) + 1;
+        await itemUse(item.item_id);
         if(gameStatus.playerfight){
             await displaymessage(scene,config,`${playerStatus.account_name}は${item.item_name}を使った！`);
         }else{
@@ -826,90 +829,153 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
             await displaymessage(scene,config,message2);
             //レベルアップ処理
             if(gameStatus.playerfight){
-                playerStatus.experimence += enemy.experience;
-                if (playerStatus.level * 200 <= playerStatus.experience) {
+                console.log('プレイヤーに経験値が入りました。');
+                playerStatus.experience += enemy.experience;
+                if (playerStatus.level < 20 && playerStatus.level * 200 <= playerStatus.experience) {
                     playerStatus.level++;
+                    playerStatus.experience = 0;
                 
                     try {
+                        // サーバーに送るデータのキーを修正
                         const response = await fetch('level_up.php', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({ job_id: playerStatus.job_id })
+                            body: JSON.stringify({ job_id: playerStatus.job_id }), // 修正：fob_id -> job_id
                         });
-                
-                        const data = await response.json();
+                    
+                        // HTTPレスポンスが正常かチェック
+                        if (!response.ok) {
+                            throw new Error(`HTTPエラー：${response.status}`);
+                        }
+                    
+                        // 応答の生データをテキストで受け取り、ログ出力
+                        const responseText = await response.text();
+                    
+                        // レスポンスがJSONであると仮定してパース
+                        const data = JSON.parse(responseText); // 応答をJSONとしてパース
+                    
+                        // サーバーが返すデータにerrorが含まれている場合
+                        if (data.error) {
+                            console.error("Server Error:", data.error, "Details:", data);
+                            return; // エラー発生時は処理を中止
+                        }
+                    
                         const statuses = data.levelUpData;
-                
+                    
                         // ステータスの更新
                         playerStatus.hp += statuses.up_hp;
+                        playerStatus.hp_nokori += statuses.up_hp;
                         playerStatus.mp += statuses.up_mp;
+                        playerStatus.mp_nokori += statuses.up_mp;
                         playerStatus.pow += statuses.up_pow;
                         playerStatus.def += statuses.up_def;
                         playerStatus.speed += statuses.up_speed;
                         playerStatus.luck += statuses.up_luck;
-                
+                    
                         // メッセージの表示
                         await displaymessage(scene, config, `${playerStatus.account_name}のレベルが${playerStatus.level}になった！`);
                         await displaymessage(scene, config, `HP:${statuses.up_hp} MP:${statuses.up_mp} ちから：${statuses.up_pow} まもり:${statuses.up_def} スピード:${statuses.up_speed} 運:${statuses.up_luck}上昇した`);
+                    
                     } catch (error) {
+                        // エラー内容を詳細に表示
                         console.error("レベルアップデータの取得中にエラーが発生しました:", error);
                     }
                 }
             }else{
+                console.log('モンスターに経験値が入りました。');
                 for (const friend of friends) {
                     friend.experience += enemy.experience;
-                    
-                    if (playerStatus.level * 200 <= playerStatus.experience) {
-                        playerStatus.level++;
-                    
+                    if (friend.level < 20 && friend.level * 200 <= friend.experience) {
+                        friend.level++;
+                        friend.experience = 0;
                         try {
+                            // サーバーに送るデータのキーを修正
                             const response = await fetch('level_up.php', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
-                                body: JSON.stringify({ job_id: playerStatus.job_id })
+                                body: JSON.stringify({ job_id: friend.job_id }), // 修正：fob_id -> job_id
                             });
-                    
-                            const data = await response.json();
+                        
+                            // HTTPレスポンスが正常かチェック
+                            if (!response.ok) {
+                                throw new Error(`HTTPエラー：${response.status}`);
+                            }
+                        
+                            // 応答の生データをテキストで受け取り、ログ出力
+                            const responseText = await response.text();
+                        
+                            // レスポンスがJSONであると仮定してパース
+                            const data = JSON.parse(responseText); // 応答をJSONとしてパース
+                        
+                            // サーバーが返すデータにerrorが含まれている場合
+                            if (data.error) {
+                                console.error("Server Error:", data.error, "Details:", data);
+                                return; // エラー発生時は処理を中止
+                            }
+                        
                             const statuses = data.levelUpData;
                         
                             // ステータスの更新
-                            playerStatus.hp += statuses.up_hp;
-                            playerStatus.mp += statuses.up_mp;
-                            playerStatus.pow += statuses.up_pow;
-                            playerStatus.def += statuses.up_def;
-                            playerStatus.speed += statuses.up_speed;
-                            playerStatus.luck += statuses.up_luck;
+                            friend.hp += statuses.up_hp;
+                            friend.hp_nokori += statuses.up_hp;
+                            friend.mp += statuses.up_mp;
+                            friend.mp_nokori += statuses.up_mp;
+                            friend.pow += statuses.up_pow;
+                            friend.def += statuses.up_def;
+                            friend.speed += statuses.up_speed;
+                            friend.luck += statuses.up_luck;
                         
                             // メッセージの表示
-                            await displaymessage(scene, config, `${playerStatus.account_name}のレベルが${playerStatus.level}になった！`);
+                            await displaymessage(scene, config, `${friend.monster_name}のレベルが${friend.level}になった！`);
                             await displaymessage(scene, config, `HP:${statuses.up_hp} MP:${statuses.up_mp} ちから：${statuses.up_pow} まもり:${statuses.up_def} スピード:${statuses.up_speed} 運:${statuses.up_luck}上昇した`);
+                        
                         } catch (error) {
+                            // エラー内容を詳細に表示
                             console.error("レベルアップデータの取得中にエラーが発生しました:", error);
                         }
                     }
                 }
             }
             const nakama = Math.floor(Math.random() * 100) + 1;
-            if(nakama <= 10){
-                await displaymessage(scene,config,`${enemy.name}が仲間になりたそうにしている。`);
-                fetch('nakamaka.php',{
-                    method:'POST',
-                    headers:{
-                        'Content-Type':'application/json'
-                    },
-                    body:JSON.stringify(enemy)
-                });
-                await displaymessage(scene,config,`${enemy.name}が仲間に加わった！`);
+            if(nakama <= 100){
+                try{
+                    await displaymessage(scene,config,`${enemy.name}が仲間になりたそうにしている。`);
+                    const response = await fetch('nakamaka.php',{
+                        method:'POST',
+                        headers:{
+                            'Content-Type':'application/json'
+                        },
+                        body:JSON.stringify({enemy:enemy})
+                    });
+                    if(!response.ok){
+                        throw new Error(`HTTPエラー:${response.status}`);
+                    }
+                    const data = await response.json();
+                    if(data.error){
+                        console.log(data.error);
+                    }else{
+                        displaymessage(scene,config,`${enemy.monster_name}が仲間に加わった！`);
+                    }
+                    await displaymessage(scene,config,`${enemy.name}が仲間に加わった！`);
+                    if(gameStatus.temotisu < 3){
+                        await loadFriends();
+                    }else{
+                        await displaymessage(scene,config,`${playerStatus.account_name}は手持ちがいっぱい！`);
+                        await displaymessage(scene,config,`${playerStatus.account_name}は${enemy.monster_name}を牧場に誘導した！`);
+                    }
+                }catch{
+                    console.log('謎のエラーが発生しました。');
+                }
             }
     
             //仲間になるならない関係なく、倒したモンスターの画像をゲーム画面から消す
             enemyImages[i].setVisible(false);
             if(enemys[0].hp_nokori === 0 && enemys[1].hp_nokori === 0 && enemys[2].hp_nokori === 0 && playerStatus.hp_nokori >= 1){
-                await battleEnd(scene,config,gameStatus,true,playerStatus);
+                await battleEnd(scene,config,gameStatus,true,playerStatus,friends);
             }
         }
     }
@@ -994,7 +1060,7 @@ async function displaymessage(scene, config, message) {
     await displayEndMarker(); // エンドマーカーの表示を待つ
 }
 
-async function battleEnd(scene,config,gameStatus,winflg,playerStatus){
+async function battleEnd(scene,config,gameStatus,winflg,playerStatus,friends){
     if(!winflg){
         const lostmoney = Math.floor(playerStatus.money * 0.05);
         const message = `${playerStatus.account_name}は負けてしまったストレスから、${lostmoney}チピチャパをぶちまけた！`;
@@ -1002,7 +1068,16 @@ async function battleEnd(scene,config,gameStatus,winflg,playerStatus){
         playerStatus.money = Math.floor(playerStatus.money * 0.95);
         playerStatus.hp_nokori = playerStatus.hp;
         playerStatus.mp_nokori = playerStatus.mp;
+        friends.forEach(friend=>{
+            friend.hp_nokori = friend.hp;
+            friend.mp_nokori = friend.mp;
+        });
     }else{
+        for(let s = 0; s < 3; s++){
+            if(enemyImages[s]){
+                enemyImages[s].setVisible(false);
+            }
+        }
         const message = '勝った';
         await displaymessage(scene,config,message);
     }

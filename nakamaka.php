@@ -1,13 +1,18 @@
 <?php
+session_start();
     require 'db-connect.php';
-    $pdo=new PDO($connect,USER,PASS);
-
     header('Content-Type: application/json');
 
     $inputData =file_get_contents('php://input');
-    $wazaList = [4];
 
     $data = json_decode($inputData,true);
+
+    if(!isset($data)){
+        echo json_encode(['error' => 'Invalid data format']);
+        exit;
+    }
+    $wazaList = [4];
+    $pdo = new PDO($connect,USER,PASS);
     $sql=$pdo->prepare('insert into friends values(null,?,?,FLOOR(1+RAND() * 7),default,default,?,?,?,?,?,?,?,?,default,?,?,?,?)');
     $sss=$pdo->prepare('select waza_id from monster_waza where monster_id = ? order by rand() limit 4');
     $sss->execute([$data['enemy']['id']]);
