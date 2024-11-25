@@ -113,8 +113,17 @@ export async function battleStart(scene,config,bunrui,gameStatus,friends,playerS
     const camera = scene.cameras.main;
     gameStatus.battleflg = true;
     let res;
-    if(bunrui === 1){
-        res = await fetch('get_zako.php');
+    if(bunrui === 1 && playerStatus.map_id === 3){
+        res = await fetch('get_zako1.php');
+        enemies = await res.json();
+    }else if(bunrui === 1 && playerStatus.map_id === 6){
+        res = await fetch('get_zako2.php');
+        enemies = await res.json();
+    }else if(bunrui === 1 && playerStatus.map_id === 7){
+        res = await fetch('get_zako3.php');
+        enemies = await res.json();
+    }else if(bunrui === 1 && playerStatus.map_id === 8){
+        res = await fetch('get_zako4.php');
         enemies = await res.json();
     }else if(bunrui === 2){
         res = await fetch('tyuboss.php');
