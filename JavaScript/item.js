@@ -1,34 +1,22 @@
-// import { fetchItems } from './main.js';
-// import { itemUse } from './main.js';
-
 console.log('Phaser Version:', Phaser.VERSION);
-
 
 let itemContainer = null;
 let summaryContainer = null;
-let savetra = null;
+let itemtra = null;
 
-// アイテムメニューを表示する関数
+// アイテムメニューを表示する関数111
 export function itemEvent(scene, config, gameStatus) {
+    console.log('itemEvent called');
     gameStatus.itemflg = !gameStatus.itemflg;
-    console.log('Item flag status:', gameStatus.itemflg);
-    console.log('Scene:', scene);
-    console.log('Config:', config);
-    console.log('Scene and Config initialized');
-    if (itemContainer) {
-        itemContainer.setVisible(gameStatus.itemflg);
-    }
-    if (gameStatus.itemflg) {
-        useItem(scene, config); // `scene` と `config` を渡す
-    }
+    itemContainer.setVisible(gameStatus.itemflg);
 }
 
-export async function useItem(scene, config) {
+export async function useItem(scene, config, gameStatus,itemList) {
+    console.log('useItem called with:', scene, config);
 
     const itemWidth = config.width * 0.6;
     const itemHeight = config.height * 0.95;
 
-    // メニュー背景を作成
     const itemback = scene.add.rectangle(config.width * 0.3 + 10, 2, itemWidth, itemHeight, 0xFFFFFF, 0.8);
     itemback.setStrokeStyle(2, 0x000000);
 
@@ -37,15 +25,7 @@ export async function useItem(scene, config) {
 
     summaryContainer = scene.add.container(0, 0, [summary1, summary2]);
     itemContainer = scene.add.container(0, 0, [itemback, summary1, summary2]);
-    itemContainer.setVisible(false); // 初期状態では非表示
+    itemContainer.setVisible(false);
 
-    itemtext.setInteractive().on('pointerover', () => {
-        if(!itemtra){
-            itemtra = scene.add.text(config.width * 0.5,itemHeight / 2,'▶',{fontSize:'64px',fill:'#000'});
-            itemtra.setDepth(8);
-        }
-    });
-    console.log('Config width:', config.width);
-    console.log('Config height:', config.height);
-    console.log('Item Container:', itemContainer);
+    console.log('Item container initialized:', itemContainer);
 }
