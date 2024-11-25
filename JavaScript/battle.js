@@ -829,7 +829,6 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
             await displaymessage(scene,config,message2);
             //レベルアップ処理
             if(gameStatus.playerfight){
-                console.log('プレイヤーに経験値が入りました。');
                 playerStatus.experience += enemy.experience;
                 if (playerStatus.level < 20 && playerStatus.level * 200 <= playerStatus.experience) {
                     playerStatus.level++;
@@ -884,7 +883,6 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                     }
                 }
             }else{
-                console.log('モンスターに経験値が入りました。');
                 for (const friend of friends) {
                     friend.experience += enemy.experience;
                     if (friend.level < 20 && friend.level * 200 <= friend.experience) {
@@ -941,34 +939,46 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                 }
             }
             const nakama = Math.floor(Math.random() * 100) + 1;
-            if(nakama <= 100){
-                try{
-                    await displaymessage(scene,config,`${enemy.name}が仲間になりたそうにしている。`);
-                    const response = await fetch('nakamaka.php',{
-                        method:'POST',
-                        headers:{
-                            'Content-Type':'application/json'
+            if(nakama <= 10){
+                try {
+                    await displaymessage(scene, config, `${enemy.name}が仲間になりたそうにしている。`);
+                    const response = await fetch('nakamaka.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
                         },
-                        body:JSON.stringify({enemy:enemy})
+                        body: JSON.stringify({ enemy: enemy })
                     });
-                    if(!response.ok){
-                        throw new Error(`HTTPエラー:${response.status}`);
+                
+                    if (!response.ok) {
+                        throw new Error(`HTTPエラー: ${response.status}`);
                     }
-                    const data = await response.json();
-                    if(data.error){
-                        console.log(data.error);
-                    }else{
-                        displaymessage(scene,config,`${enemy.monster_name}が仲間に加わった！`);
+                
+                    let data;
+                    try {
+                        data = await response.json(); // JSONをパース
+                    } catch (jsonError) {
+                        const text = await response.text();
+                        console.error('JSONパースエラー:', jsonError);
+                        console.error('レスポンス内容:', text);
+                        throw new Error('サーバーが無効なレスポンスを返しました。');
                     }
-                    await displaymessage(scene,config,`${enemy.name}が仲間に加わった！`);
-                    if(gameStatus.temotisu < 3){
+                
+                    if (data.error) {
+                        console.error('サーバーエラー:', data.error);
+                    } else {
+                        await displaymessage(scene, config, `${enemy.name}が仲間に加わった！`);
+                    }
+                
+                    if (gameStatus.temotisu < 3) {
                         await loadFriends();
-                    }else{
-                        await displaymessage(scene,config,`${playerStatus.account_name}は手持ちがいっぱい！`);
-                        await displaymessage(scene,config,`${playerStatus.account_name}は${enemy.monster_name}を牧場に誘導した！`);
+                    } else {
+                        await displaymessage(scene, config, `${playerStatus.account_name}は手持ちがいっぱい！`);
+                        await displaymessage(scene, config, `${playerStatus.account_name}は${enemy.name}を牧場に送った`);
                     }
-                }catch{
-                    console.log('謎のエラーが発生しました。');
+                } catch (error) {
+                    console.error('エラーが発生しました:', error);
+                    await displaymessage(scene, config, 'エラーが発生しました。詳細はコンソールを確認してください。');
                 }
             }
     

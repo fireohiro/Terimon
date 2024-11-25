@@ -12,6 +12,7 @@
         $enemy = [
             'id' => $monster['monster_id'],
             'name' => $monster['monster_name'],
+            'level' => $monster['level'],
             'gazou' => $monster['gazou'],
             'resist' => $monster['resist'],
             'hp' => $maxhp,

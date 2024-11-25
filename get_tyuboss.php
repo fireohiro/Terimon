@@ -13,6 +13,7 @@
             'id' => $monster['monster_id'],
             'name' => $monster['monster_name'],
             'gazou' => $monster['gazou'],
+            'level' => $monster['level'],
             'resist' => $monster['resist'],
             'hp' => $maxhp,
             'hp_nokori' => $maxhp,
