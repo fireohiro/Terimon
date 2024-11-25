@@ -37,6 +37,7 @@
         }
         console.log(`shopContainer: ${!!shopContainer}, shopflg: ${gameStatus.shopflg}`);
         console.log(shopItems);
+        console.log(playerStatus);
         // 背景を表示（画面の中央に配置）
         const background = scene.add.image(750, 375, 'shopBackground');
 
@@ -80,8 +81,44 @@
         // アイテム詳細テキスト
         let selectedItem;
         const detailText = scene.add.text(itemDetailsBackground.x - 130, itemDetailsBackground.y - 60, '', { fontSize: '18px', color: '#000' });
+        let quantity = 1; // 初期購入数
+        let quantityText, totalPriceText;
+        let decrementButton,incrementButton;
 
-        // アイテムリストを表示
+        // 購入数と合計価格の表示
+        const updateQuantityDisplay = (item) => {
+            if (quantityText && totalPriceText) {
+                quantityText.setText(`個数: ${quantity}`);
+                totalPriceText.setText(`合計: ${item.price * quantity}T`);
+            }
+        };
+
+        // 個数変更ボタン
+        const addQuantityButtons = (x, y, item) => {
+            decrementButton = scene.add.text(x, y, '-', { fontSize: '24px', color: '#000' });
+            decrementButton.setInteractive();
+            decrementButton.on('pointerdown', () => {
+                if (quantity > 1) {
+                    quantity--;
+                    updateQuantityDisplay(item);
+                }
+            });
+
+            quantityText = scene.add.text(x + 30, y, `個数: ${quantity}`, { fontSize: '18px', color: '#000' });
+
+            incrementButton = scene.add.text(x + 120, y, '+', { fontSize: '24px', color: '#000' });
+            incrementButton.setInteractive();
+            incrementButton.on('pointerdown', () => {
+                if (quantity < 50) {
+                    quantity++;
+                    updateQuantityDisplay(item);
+                }
+            });
+
+            totalPriceText = scene.add.text(x, y + 40, `合計: ${item.price * quantity}T`, { fontSize: '18px', color: '#000' });
+        };
+
+        // アイテムリスト表示
         let yOffset = 150;
         let itemTexts = [];
         shopItems.forEach((item, index) => {
@@ -90,30 +127,47 @@
             itemTexts.push(itemText);
             yOffset += 30;
 
-            // クリック可能にし、クリックで詳細表示
-            itemText.setInteractive();
-            itemText.on('pointerover', () => itemText.setStyle({ color: '#ff0000', fontStyle: 'bold' })); // ホバーで色変更
-            itemText.on('pointerout', () => itemText.setStyle({ color: '#000000', fontStyle: 'normal' }));
             itemText.on('pointerdown', () => {
                 selectedItem = item;
+                quantity = 1; // 選択時に購入数を初期化
                 detailText.setText(`${item.item_name}\n${item.setumei}\n効果: ${item.naiyou} HP`);
+
+                if (!quantityText || !totalPriceText) {
+                    addQuantityButtons(itemDetailsBackground.x - 120, itemDetailsBackground.y + 70, selectedItem);
+                } else {
+                    updateQuantityDisplay(selectedItem);
+                }
             });
         });
 
-        // 「かう」ボタンのクリック処理
+        // 「かう」ボタンの処理を修正
         buyButton.on('pointerdown', () => {
-            if (selectedItem && playerStatus.money >= selectedItem.price) {
-                playerStatus.money -= selectedItem.price;
-                scene.moneyText.setText(`所持金 ${playerStatus.money}T`);
-                alert(`${selectedItem.item_name}を購入しました！`);
-            } else if (selectedItem) {
-                alert("所持金が足りません！");
+            if (selectedItem) {
+                const totalPrice = selectedItem.price * quantity;
+                if (playerStatus.money >= totalPrice) {
+                    playerStatus.money -= totalPrice;
+                    money.setText(`所持金 ${playerStatus.money}T`);
+                    alert(`${selectedItem.item_name}を${quantity}個購入しました！`);
+                } else {
+                    alert('所持金が足りません！');
+                }
             } else {
-                alert("アイテムを選択してください！");
+                alert('アイテムを選択してください！');
             }
         });
 
-        shopContainer=scene.add.container(0,0,[background,npc,itemListBackground,itemDetailsBackground,itiran,goldBackground,money,buyButton,exitButton,detailText, ...itemTexts]);
+         // shopContainerを作成して表示状態を管理
+        const containerItems = [
+            background, npc, itemListBackground, itemDetailsBackground, 
+            itiran, goldBackground, money, buyButton, exitButton, 
+            detailText, ...itemTexts
+        ];
+
+        // 必要なテキストやボタンが作成された後に追加
+        if (quantityText && totalPriceText && decrementButton && incrementButton) {
+            containerItems.push(quantityText, totalPriceText, decrementButton, incrementButton);
+        }
+        shopContainer = scene.add.container(0, 0, containerItems);
         shopContainer.setVisible(false);
         shopContainer.setDepth(7);
     }
@@ -124,3 +178,4 @@
             shopContainer.setPosition(camera.scrollX, camera.scrollY);
         }
     }
+//購入処理、購入数の枠とその計算、レイアウト

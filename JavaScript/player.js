@@ -215,7 +215,8 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
                 shopEvent(gameStatus);
                 scene.physics.world.pause();//停止
             }else{
-                player.y += 32;
+                scene.physics.world.resume();//再稼働
+                player.setPosition(player.x,player.y+32);
             }
         }
     // gacha
