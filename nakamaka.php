@@ -43,6 +43,15 @@ try {
         $wazaList[2] ?? NULL,
         $wazaList[3] ?? NULL,
     ]);
+    // 挿入されたデータの `friend_id` を取得
+    $friend_id = $pdo->lastInsertId();
+    $sql = $pdo->prepare('select count(*) as count from temoti where account_id = ?');
+    $sql->execute([$_SESSION['user']['account_id']]);
+    $result = $sql->fetch(PDO::FETCH_ASSOC);
+    if($result['count'] < 3){
+        $sql = $pdo->prepare('insert into temoti values(?,?)');
+        $sql->execute([$_SESSION['user']['account_id'],$friend_id]);
+    }
 
     echo json_encode(['success' => true]);
 } catch (PDOException $e) {

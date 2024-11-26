@@ -289,7 +289,8 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
             player.setPosition(448*gameStatus.scale, 935*gameStatus.scale);
         }
     }
-}function playerstop(){
+}
+export function playerstop(){
     player.setVelocityX(0);
     player.setVelocityY(0);
 }

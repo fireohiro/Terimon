@@ -54,9 +54,6 @@ function userData() {
 
 //手持ちモンスターの情報格納
 export async function loadFriends(){
-    if(statuses){
-        statuses.destroy();
-    }
     const response = await fetch('get_temoti.php');
     const friends = await response.json();
     if(friends !== null){
@@ -216,44 +213,50 @@ export async function save(){
     }
     const result = await response.json();
     //モンスターの更新
-    const payload = {statuses:statuses};
-    const monsterres = await fetch('save_monster.php',{
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json'
-        },
-        body:JSON.stringify(payload)
-    });
-    if(!monsterres.ok){
-        throw new Error(`HTTP error! Status:${monsterres.status}`);
+    if(statuses){
+        const payload = {statuses:statuses};
+        const monsterres = await fetch('save_monster.php',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(payload)
+        });
+        if(!monsterres.ok){
+            throw new Error(`HTTP error! Status:${monsterres.status}`);
+        }
+        const monres = await monsterres.json();
+        console.log('Monster data saved:',monres);
     }
-    const monres = await monsterres.json();
-    console.log('Monster data saved:',monres);
-    const itemload =  {itemList:itemList};
-    const itemres = await fetch('save_item.php',{
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json'
-        },
-        body:JSON.stringify(itemload)
-    });
-    if(!itemres.ok){
-        throw new Error(`HTTP error! Status:${itemres.status}`);
+    if(itemList){
+        const itemload =  {itemList:itemList};
+        const itemres = await fetch('save_item.php',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(itemload)
+        });
+        if(!itemres.ok){
+            throw new Error(`HTTP error! Status:${itemres.status}`);
+        }
+        const iteres = await itemres.json();
+        console.log('Item data saved:',iteres);
     }
-    const iteres = await itemres.json();
-    console.log('Item data saved:',iteres);
-    const gearload =  {gearList:gearList};
-    const gearres = await fetch('save_gear.php',{
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json'
-        },
-        body:JSON.stringify(gearload)
-    });
-    if(!itemres.ok){
-        throw new Error(`HTTP error! Status:${gearres.status}`);
+    if(gearList){
+        const gearload =  {gearList:gearList};
+        const gearres = await fetch('save_gear.php',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(gearload)
+        });
+        if(!itemres.ok){
+            throw new Error(`HTTP error! Status:${gearres.status}`);
+        }
+        const geares = await gearres.json();
+        console.log('Item data saved:',geares);
     }
-    const geares = await gearres.json();
-    console.log('Item data saved:',geares);
     alert('セーブが完了しました！');
 }
