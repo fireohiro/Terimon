@@ -13,6 +13,9 @@ export function statusEvent(gameStatus){
 }
 
 export function createStatusScreen(scene,gameStatus, playerStatus,friends, config) {
+    if(statusContainer){
+        statusContainer.destroy();
+    }
     const statusWidth = config.width * 0.6;
     const statusHeight = config.height * 0.8;
 

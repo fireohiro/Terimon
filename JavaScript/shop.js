@@ -1,3 +1,5 @@
+    import {itemGet} from './main.js';
+    
     export function shopPreload(loader) {
         // 必要な画像などを読み込み
         loader.image('shopBackground', 'assets/shop/shop_background.png');
@@ -39,22 +41,22 @@
         console.log(shopItems);
         console.log(playerStatus);
         // 背景を表示（画面の中央に配置）
-        const background = scene.add.image(750, 375, 'shopBackground');
+        const background = scene.add.image(620, 300, 'shopBackground').setScale(1.3);
 
         // NPC画像を表示（左端に配置）
-        const npc = scene.add.image(200, 250, 'shopNpc');
+        const npc = scene.add.image(300, 250, 'shopNpc').setScale(0.55);
 
         // アイテムリストの背景枠
-        const itemListBackground = scene.add.rectangle(300, 375, 400, 500, 0xFFFFFF).setStrokeStyle(2, 0x000000).setAlpha(0.8);
+        const itemListBackground = scene.add.rectangle(470, 420, 800, 300, 0xFFFFFF).setStrokeStyle(2, 0x000000);
 
         // アイテム詳細表示の背景枠
-        const itemDetailsBackground = scene.add.rectangle(1150, 300, 300, 200, 0xFFFFFF).setStrokeStyle(2, 0x000000).setAlpha(0.8);
+        const itemDetailsBackground = scene.add.rectangle(1050, 350, 300, 200, 0xFFFFFF).setStrokeStyle(2, 0x000000);
 
         // 「アイテム一覧」の見出し
-        const itiran = scene.add.text(itemListBackground.x - 150, itemListBackground.y - 230, 'アイテム一覧', { fontSize: '24px', fontStyle: 'bold', color: '#000' });
+        const itiran = scene.add.text(itemListBackground.x - 150, itemListBackground.y - 120, 'アイテム一覧', { fontSize: '36px', fontStyle: 'bold', color: '#000' });
 
         // 所持金表示の背景枠
-        const goldBackground = scene.add.rectangle(1150, 500, 300, 50, 0xFFFFFF).setStrokeStyle(2, 0x000000).setAlpha(0.8);
+        const goldBackground = scene.add.rectangle(1050, 545, 300, 50, 0xFFFFFF).setStrokeStyle(2, 0x000000);
 
         // 所持金表示テキスト
         const money = scene.add.text(goldBackground.x - 80, goldBackground.y - 15, `所持金 ${playerStatus.money}T`, { fontSize: '22px', color: '#000' });
@@ -94,6 +96,7 @@
         };
 
         // 個数変更ボタン
+        
         const addQuantityButtons = (x, y, item) => {
             decrementButton = scene.add.text(x, y, '-', { fontSize: '24px', color: '#000' });
             decrementButton.setInteractive();
@@ -104,7 +107,7 @@
                 }
             });
 
-            quantityText = scene.add.text(x + 30, y, `個数: ${quantity}`, { fontSize: '18px', color: '#000' });
+            quantityText = scene.add.text(x + 30, y, `個数: ${quantity}`, { fontSize: '24px', color: '#000' });
 
             incrementButton = scene.add.text(x + 120, y, '+', { fontSize: '24px', color: '#000' });
             incrementButton.setInteractive();
@@ -115,14 +118,14 @@
                 }
             });
 
-            totalPriceText = scene.add.text(x, y + 40, `合計: ${item.price * quantity}T`, { fontSize: '18px', color: '#000' });
+            totalPriceText = scene.add.text(x, y + 40, `合計: ${item.price * quantity}T`, { fontSize: '24px', color: '#000' });
         };
 
         // アイテムリスト表示
-        let yOffset = 150;
+        let yOffset = 350;
         let itemTexts = [];
         shopItems.forEach((item, index) => {
-            let itemText = scene.add.text(150, yOffset, `${item.price}T - ${item.item_name}`, { fontSize: '18px', color: '#000' });
+            let itemText = scene.add.text(150, yOffset, `${item.price}T - ${item.item_name}`, { fontSize: '24px', color: '#000' });
             itemText.setInteractive();
             itemTexts.push(itemText);
             yOffset += 30;
@@ -133,7 +136,7 @@
                 detailText.setText(`${item.item_name}\n${item.setumei}\n効果: ${item.naiyou} HP`);
 
                 if (!quantityText || !totalPriceText) {
-                    addQuantityButtons(itemDetailsBackground.x - 120, itemDetailsBackground.y + 70, selectedItem);
+                    addQuantityButtons(itemDetailsBackground.x + 130, itemDetailsBackground.y + 600, selectedItem);
                 } else {
                     updateQuantityDisplay(selectedItem);
                 }
@@ -148,6 +151,7 @@
                     playerStatus.money -= totalPrice;
                     money.setText(`所持金 ${playerStatus.money}T`);
                     alert(`${selectedItem.item_name}を${quantity}個購入しました！`);
+                    itemGet(selectedItem.item_id);
                 } else {
                     alert('所持金が足りません！');
                 }
@@ -178,4 +182,3 @@
             shopContainer.setPosition(camera.scrollX, camera.scrollY);
         }
     }
-//購入処理、購入数の枠とその計算、レイアウト
