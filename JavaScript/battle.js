@@ -1,4 +1,5 @@
 import {itemUse, loadFriends} from './main.js';
+import { playsound } from './sound.js';
 //ここはインポートする際に１回だけ通るらしい
 let friendImages = [];
 let enemyImages = [];
@@ -99,6 +100,15 @@ export async function battleupdate(scene,config,gameStatus,playerStatus,friends)
 
 //バトルスタート
 export async function battleStart(scene,config,bunrui,gameStatus,friends,playerStatus,itemList){
+    let condition;
+    if (bunrui === 1){
+        condition = 'battle';
+    }else if(bunrui === 2){
+        condition = 'boss1';
+    }else if(bunrui === 3){
+        condition = 'boss2';
+    }
+    playsound(scene,condition);
     canact = false;
     friends.forEach(friend=>{
         if(friend.hp_nokori > 0){
@@ -1121,4 +1131,5 @@ async function battleEnd(scene,config,gameStatus,winflg,playerStatus,friends){
     if(statusContainer){
         statusContainer.destroy();
     }
+    playsound(scene,playerStatus.map_id);
 }
