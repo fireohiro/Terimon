@@ -1,4 +1,5 @@
     import {itemGet} from './main.js';
+    import {playerstop} from './player.js';
     
     export function shopPreload(loader) {
         // 必要な画像などを読み込み
@@ -29,6 +30,7 @@
     }
 
     export async function createShop(scene, playerStatus, config,gameStatus){
+        playerstop();
         if (shopContainer) {
             return; // 既に作成済みなら何もしない
         }
@@ -98,6 +100,7 @@
         // 個数変更ボタン
         
         const addQuantityButtons = (x, y, item) => {
+        if (!decrementButton || !incrementButton || !quantityText || !totalPriceText) {
             decrementButton = scene.add.text(x, y, '-', { fontSize: '24px', color: '#000' });
             decrementButton.setInteractive();
             decrementButton.on('pointerdown', () => {
@@ -109,7 +112,7 @@
 
             quantityText = scene.add.text(x + 30, y, `個数: ${quantity}`, { fontSize: '24px', color: '#000' });
 
-            incrementButton = scene.add.text(x + 120, y, '+', { fontSize: '24px', color: '#000' });
+            incrementButton = scene.add.text(x + 140, y, '+', { fontSize: '24px', color: '#000' });
             incrementButton.setInteractive();
             incrementButton.on('pointerdown', () => {
                 if (quantity < 50) {
@@ -118,14 +121,21 @@
                 }
             });
 
-            totalPriceText = scene.add.text(x, y + 40, `合計: ${item.price * quantity}T`, { fontSize: '24px', color: '#000' });
+            totalPriceText = scene.add.text(x, y + 40, `合計: ${item.price * quantity}TP`, { fontSize: '24px', color: '#000' });
+            // 必要なテキストやボタンが作成された後に追加
+            if (shopContainer) {
+                shopContainer.add([decrementButton, quantityText, incrementButton, totalPriceText]);
+            }
+        }else{
+            updateQuantityDisplay(item);
+        }
         };
 
         // アイテムリスト表示
         let yOffset = 350;
         let itemTexts = [];
         shopItems.forEach((item, index) => {
-            let itemText = scene.add.text(150, yOffset, `${item.price}T - ${item.item_name}`, { fontSize: '24px', color: '#000' });
+            let itemText = scene.add.text(150, yOffset, `${item.price}TP - ${item.item_name}`, { fontSize: '24px', color: '#000' });
             itemText.setInteractive();
             itemTexts.push(itemText);
             yOffset += 30;
@@ -133,10 +143,18 @@
             itemText.on('pointerdown', () => {
                 selectedItem = item;
                 quantity = 1; // 選択時に購入数を初期化
-                detailText.setText(`${item.item_name}\n${item.setumei}\n効果: ${item.naiyou} HP`);
+                // 改行処理
+                const formatText = (text, lineLength) => {
+                    const regex = new RegExp(`(.{1,${lineLength}})`, 'g'); // 1行の最大文字数で分割
+                    return text.match(regex).join('\n'); // 分割した文字列を改行で結合
+                };
+
+                // `setumei`を30文字ごとに改行
+                const formattedSetumei = formatText(item.setumei, 15);
+                detailText.setText(`${item.item_name}\n${formattedSetumei}\n効果: ${item.naiyou}`);
 
                 if (!quantityText || !totalPriceText) {
-                    addQuantityButtons(itemDetailsBackground.x + 130, itemDetailsBackground.y + 600, selectedItem);
+                    addQuantityButtons(itemDetailsBackground.x - 130, itemDetailsBackground.y + 10, selectedItem);
                 } else {
                     updateQuantityDisplay(selectedItem);
                 }
@@ -149,7 +167,7 @@
                 const totalPrice = selectedItem.price * quantity;
                 if (playerStatus.money >= totalPrice) {
                     playerStatus.money -= totalPrice;
-                    money.setText(`所持金 ${playerStatus.money}T`);
+                    money.setText(`所持金 ${playerStatus.money}TP`);
                     alert(`${selectedItem.item_name}を${quantity}個購入しました！`);
                     itemGet(selectedItem.item_id);
                 } else {
@@ -167,10 +185,7 @@
             detailText, ...itemTexts
         ];
 
-        // 必要なテキストやボタンが作成された後に追加
-        if (quantityText && totalPriceText && decrementButton && incrementButton) {
-            containerItems.push(quantityText, totalPriceText, decrementButton, incrementButton);
-        }
+        
         shopContainer = scene.add.container(0, 0, containerItems);
         shopContainer.setVisible(false);
         shopContainer.setDepth(7);

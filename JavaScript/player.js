@@ -213,9 +213,7 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
             if (!gameStatus.shopflg) { // ショップが開いていない場合のみ処理
                 createShop(scene, playerStatus, config, gameStatus);
                 shopEvent(gameStatus);
-                scene.physics.world.pause();//停止
             }else{
-                scene.physics.world.resume();//再稼働
                 player.setPosition(player.x,player.y+32);
             }
         }
