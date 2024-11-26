@@ -225,9 +225,8 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
             if (!gameStatus.shopflg) { // ショップが開いていない場合のみ処理
                 createShop(scene, playerStatus, config, gameStatus);
                 shopEvent(gameStatus);
-                scene.physics.world.pause();//停止
             }else{
-                player.y += 32;
+                player.setPosition(player.x,player.y+32);
             }
         }
     // gacha
@@ -301,7 +300,7 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
         }
     }
 }
-function playerstop(){
+export function playerstop(){
     player.setVelocityX(0);
     player.setVelocityY(0);
 }

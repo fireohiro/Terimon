@@ -1,4 +1,5 @@
 import {dataMap,playerupdate} from './player.js';
+import { playsound } from './sound.js';
 let map;
 let mapData;
 let tilesets = [];
@@ -256,6 +257,7 @@ export function createMap(scene,playerStatus,gameStatus){
     // マップの境界を設定
     scene.physics.world.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
     scene.cameras.main.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
+    playsound(scene,playerStatus.map_id);
 }
 
   // プレイヤーがトリガーに触れているかをチェック

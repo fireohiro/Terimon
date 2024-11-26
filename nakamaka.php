@@ -1,40 +1,63 @@
 <?php
 session_start();
-    require 'db-connect.php';
-    header('Content-Type: application/json');
+require 'db-connect.php';
+header('Content-Type: application/json');
 
-    $inputData =file_get_contents('php://input');
+try {
+    $inputData = file_get_contents('php://input');
+    $data = json_decode($inputData, true);
 
-    $data = json_decode($inputData,true);
-
-    if(!isset($data)){
+    if (!isset($data['enemy'])) {
         echo json_encode(['error' => 'Invalid data format']);
         exit;
     }
+
+    $enemy = $data['enemy'];
     $wazaList = [4];
-    $pdo = new PDO($connect,USER,PASS);
-    $sql=$pdo->prepare('insert into friends values(null,?,?,FLOOR(1+RAND() * 7),default,default,?,?,?,?,?,?,?,?,default,?,?,?,?)');
-    $sss=$pdo->prepare('select waza_id from monster_waza where monster_id = ? order by rand() limit 4');
-    $sss->execute([$data['enemy']['id']]);
+
+    $pdo = new PDO($connect, USER, PASS);
+    $sql = $pdo->prepare('INSERT INTO friends VALUES (NULL, ?, ?, FLOOR(1+RAND() * 7), ?, DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, DEFAULT, ?, ?, ?, ?)');
+    $sss = $pdo->prepare('SELECT waza_id FROM monster_waza WHERE monster_id = ? ORDER BY RAND() LIMIT 4');
+    $sss->execute([$enemy['id']]);
+
     $i = 0;
-    foreach($row as $sss){
+    while ($row = $sss->fetch(PDO::FETCH_ASSOC)) {
         $wazaList[$i] = $row['waza_id'];
         $i++;
     }
+
     $sql->execute([
-        $data['enemy']['name'],
-        $data['enemy']['id'],
-        $data['enemy']['hp'],
-        $data['enemy']['hp'],
-        $data['enemy']['mp'],
-        $data['enemy']['mp'],
-        $data['enemy']['pow'],
-        $data['enemy']['def'],
-        $data['enemy']['speed'],
-        $data['enemy']['luck'],
-        $wazaList[1],
-        $wazaList[2],
-        $wazaList[3],
-        $wazaList[4]
+        $_SESSION['user']['account_id'],
+        $enemy['id'],
+        $enemy['level'],
+        $enemy['hp'],
+        $enemy['hp'],
+        $enemy['mp'],
+        $enemy['mp'],
+        $enemy['pow'],
+        $enemy['def'],
+        $enemy['speed'],
+        $enemy['luck'],
+        $wazaList[0] ?? NULL,
+        $wazaList[1] ?? NULL,
+        $wazaList[2] ?? NULL,
+        $wazaList[3] ?? NULL,
     ]);
-?>
+    // 挿入されたデータの `friend_id` を取得
+    $friend_id = $pdo->lastInsertId();
+    $sql = $pdo->prepare('select count(*) as count from temoti where account_id = ?');
+    $sql->execute([$_SESSION['user']['account_id']]);
+    $result = $sql->fetch(PDO::FETCH_ASSOC);
+    if($result['count'] < 3){
+        $sql = $pdo->prepare('insert into temoti values(?,?)');
+        $sql->execute([$_SESSION['user']['account_id'],$friend_id]);
+    }
+
+    echo json_encode(['success' => true]);
+} catch (PDOException $e) {
+    echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    exit;
+} catch (Exception $e) {
+    echo json_encode(['error' => 'General error: ' . $e->getMessage()]);
+    exit;
+}

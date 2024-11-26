@@ -8,6 +8,7 @@ import {statuspreload,statusUpdate} from './status.js';
 import {saveUpdate} from './save.js';
 import{logoutupdate} from './logout.js';
 import { shopPreload, createShop,shopUpdate } from './shop.js';
+import {soundpreload, soundcreate} from './sound.js';
 
 //Phaserの設定
 const config = {
@@ -54,9 +55,6 @@ function userData() {
 
 //手持ちモンスターの情報格納
 export async function loadFriends(){
-    if(statuses){
-        statuses.destroy();
-    }
     const response = await fetch('get_temoti.php');
     const friends = await response.json();
     if(friends !== null){
@@ -126,6 +124,7 @@ function preload(){
     battlepreload(this.load);//battle.jsのpreload処理を行う
     statuspreload(this.load);//status.jsのpreload処理を行う
     shopPreload(this.load);
+    soundpreload(this.load);
 }
 
 //ゲームの作成処理
@@ -133,6 +132,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     //プレイヤーステータスを持ってくてuserに入れる
     const user = await userData();//awaitはこの処理が終わってから次の処理に行くこと
     Object.assign(playerStatus, user);//セッションデータをオブジェクトに保存
+    soundcreate();
     await loadFriends();
     await fetchItems();
     await fetchGear();
@@ -216,44 +216,50 @@ export async function save(){
     }
     const result = await response.json();
     //モンスターの更新
-    const payload = {statuses:statuses};
-    const monsterres = await fetch('save_monster.php',{
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json'
-        },
-        body:JSON.stringify(payload)
-    });
-    if(!monsterres.ok){
-        throw new Error(`HTTP error! Status:${monsterres.status}`);
+    if(statuses){
+        const payload = {statuses:statuses};
+        const monsterres = await fetch('save_monster.php',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(payload)
+        });
+        if(!monsterres.ok){
+            throw new Error(`HTTP error! Status:${monsterres.status}`);
+        }
+        const monres = await monsterres.json();
+        console.log('Monster data saved:',monres);
     }
-    const monres = await monsterres.json();
-    console.log('Monster data saved:',monres);
-    const itemload =  {itemList:itemList};
-    const itemres = await fetch('save_item.php',{
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json'
-        },
-        body:JSON.stringify(itemload)
-    });
-    if(!itemres.ok){
-        throw new Error(`HTTP error! Status:${itemres.status}`);
+    if(itemList){
+        const itemload =  {itemList:itemList};
+        const itemres = await fetch('save_item.php',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(itemload)
+        });
+        if(!itemres.ok){
+            throw new Error(`HTTP error! Status:${itemres.status}`);
+        }
+        const iteres = await itemres.json();
+        console.log('Item data saved:',iteres);
     }
-    const iteres = await itemres.json();
-    console.log('Item data saved:',iteres);
-    const gearload =  {gearList:gearList};
-    const gearres = await fetch('save_gear.php',{
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json'
-        },
-        body:JSON.stringify(gearload)
-    });
-    if(!itemres.ok){
-        throw new Error(`HTTP error! Status:${gearres.status}`);
+    if(gearList){
+        const gearload =  {gearList:gearList};
+        const gearres = await fetch('save_gear.php',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(gearload)
+        });
+        if(!itemres.ok){
+            throw new Error(`HTTP error! Status:${gearres.status}`);
+        }
+        const geares = await gearres.json();
+        console.log('Item data saved:',geares);
     }
-    const geares = await gearres.json();
-    console.log('Item data saved:',geares);
     alert('セーブが完了しました！');
 }
