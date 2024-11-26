@@ -8,6 +8,7 @@ import {statuspreload,statusUpdate} from './status.js';
 import {saveUpdate} from './save.js';
 import{logoutupdate} from './logout.js';
 import { shopPreload, createShop,shopUpdate } from './shop.js';
+import {soundpreload, soundcreate} from './sound.js';
 
 //Phaserの設定
 const config = {
@@ -123,6 +124,7 @@ function preload(){
     battlepreload(this.load);//battle.jsのpreload処理を行う
     statuspreload(this.load);//status.jsのpreload処理を行う
     shopPreload(this.load);
+    soundpreload(this.load);
 }
 
 //ゲームの作成処理
@@ -130,6 +132,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     //プレイヤーステータスを持ってくてuserに入れる
     const user = await userData();//awaitはこの処理が終わってから次の処理に行くこと
     Object.assign(playerStatus, user);//セッションデータをオブジェクトに保存
+    soundcreate();
     await loadFriends();
     await fetchItems();
     await fetchGear();
