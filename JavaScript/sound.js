@@ -24,10 +24,10 @@ export function playsound(scene,condition){
 const musicKey = musicMap[condition];
 if(!musicKey){
     console.log(`条件 ${condition} に該当する音楽は見つかりませんでした。`);
-    return;
-}
+}else{
 if(currentMusic){
     currentMusic.stop();
 }
 currentMusic = scene.sound.add(musicKey, { loop:true,volume: 0.5});
 currentMusic.play();
+}
