@@ -11,6 +11,9 @@ let lastDirection = 'down';
 let step = 0;
 const StepToEncounter = 80;//バトル発生するまでの必要歩数
 
+let direction = "down"; // プレイヤーの向きを保持
+let interactionRange = 32; // 調べられる距離
+
 export function playerpreload(loader){
     loader.spritesheet('playerImage','assets/character/terimon1.png', { frameWidth: 32, frameHeight: 32 });
 }
@@ -30,6 +33,11 @@ export function playercreate(scene,playerStatus,gameStatus,layer){
     scene.cameras.main.startFollow(player);//プレイヤー追従
 
     cursors = scene.input.keyboard.createCursorKeys();
+
+    // キーボード入力を設定
+    scene.input.keyboard.on("keydown-E", () => {
+        checkForInteraction();
+    });
 
     //ここに大きさ調整だったりプレイヤーがいる層の設定をする
 
@@ -93,10 +101,12 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
         isMoving = true;
         player.setVelocityY(-playerStatus.speed*10);
         player.anims.play('playerup', true);
+        direction="up";
     } else if (cursors.down.isDown) {
         isMoving = true;
         player.setVelocityY(playerStatus.speed*10);
         player.anims.play('playerdown', true);
+        direction="down";
     }else{
         player.setVelocityY(0);
     }
@@ -104,10 +114,12 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
         isMoving = true;
         player.setVelocityX(-playerStatus.speed*10);
         player.anims.play('playerleft', true);
+        direction="left";
     } else if (cursors.right.isDown) {
         isMoving = true;
         player.setVelocityX(playerStatus.speed*10);
         player.anims.play('playerright', true);
+        direction="right";
     }else{
         player.setVelocityX(0);
     }
@@ -288,7 +300,54 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
             player.setPosition(448*gameStatus.scale, 935*gameStatus.scale);
         }
     }
-}function playerstop(){
+}
+function playerstop(){
     player.setVelocityX(0);
     player.setVelocityY(0);
 }
+function checkForInteraction(){
+    const interactionArea = getInteractionArea();
+    // イベントの範囲チェック
+    const event = findEventAt(interactionArea);
+    if (event) {
+        triggerEvent(event, this.player);
+    } else {
+        console.log("何も見つかりませんでした");
+    }
+}
+
+// 調査可能なエリアを計算
+function getInteractionArea() {
+    const { x, y } = player;
+    switch (direction) {
+      case "up":
+        return { x, y: y - interactionRange, width: 32, height: 32 };
+      case "down":
+        return { x, y: y + interactionRange, width: 32, height: 32 };
+      case "left":
+        return { x: x - interactionRange, y, width: 32, height: 32 };
+      case "right":
+        return { x: x + interactionRange, y, width: 32, height: 32 };
+      default:
+        return { x, y, width: 32, height: 32 };
+    }
+  }
+
+  // 指定範囲内のイベントを検索
+  function findEventAt(area) {
+    return this.events.find(event =>
+      area.x >= event.x && area.x <= event.x + event.width &&
+      area.y >= event.y && area.y <= event.y + event.height
+    );
+  }
+
+  loadEventsFromLayer(objectLayer) {
+    this.events = objectLayer.objects.map(obj => ({
+      x: obj.x,
+      y: obj.y,
+      width: obj.width,
+      height: obj.height,
+      type: obj.properties.find(prop => prop.name === "type")?.value,
+      data: obj.properties.find(prop => prop.name === "text")?.value
+    }));
+  }

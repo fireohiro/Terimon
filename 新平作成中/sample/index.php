@@ -1,8 +1,6 @@
 <?php session_start(); ?>
-<?
-// ログインしているか確認
-if (!isset($_SESSION['user'])) {
-    // 未ログインの場合、ログインページにリダイレクト
+<?php
+if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
 }
@@ -28,6 +26,8 @@ if (!isset($_SESSION['user'])) {
     </style>
     <!-- Phaserの読み込み -->
     <script src="https://cdn.jsdelivr.net/npm/phaser@v3.86.0/dist/phaser.min.js"></script>
+    <!-- matter.jsプラグインの読み込み -->
+    <script src="//cdn.jsdelivr.net/npm/phaser-matter-collision-plugin"></script>
 </head>
 <body>
     <!-- ゲームを表示するコンテナ -->
