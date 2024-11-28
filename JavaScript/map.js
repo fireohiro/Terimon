@@ -73,8 +73,6 @@ function map_idHasChanged(playerStatus){
 
 export function changeMap(scene,playerStatus,gameStatus,transition){
     playerStatus.map_id=transition.targetMap;
-    playerStatus.savepoint_x=transition.targetX;
-    playerStatus.savepoint_y=transition.targetY;
     createMap(scene,playerStatus,gameStatus);
 }
 
@@ -259,6 +257,7 @@ export function createMap(scene,playerStatus,gameStatus){
     }
 
     loadEventsFromLayer(scene);
+    setTransitionTriggers()
 
     dataMap(map,scene,playerStatus,gameStatus,layer);
     // マップの境界を設定
@@ -268,7 +267,7 @@ export function createMap(scene,playerStatus,gameStatus){
 }
 
   // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
-  export function setTransitionTriggers() {
+  function setTransitionTriggers() {
     const transitionLayer = map.getObjectLayer('Transitions');
 
     // transitionLayer が存在するか確認
