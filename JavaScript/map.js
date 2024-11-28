@@ -306,7 +306,7 @@ export function createMap(scene,playerStatus,gameStatus){
   // イベントレイヤーからオブジェクトを表示
   function loadEventsFromLayer(scene) {
     events = [];
-    clearEventImages()
+    clearEventImages();
     
     const EventLayer = map.getObjectLayer("EventLayer");
 

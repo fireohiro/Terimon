@@ -96,14 +96,9 @@
                          "name":"tileSet",
                          "type":"string",
                          "value":"house3"
-                        }, 
-                        {
-                         "name":"type",
-                         "type":"string",
-                         "value":"dialog"
                         }],
                  "rotation":0,
-                 "type":"event",
+                 "type":"dialog",
                  "visible":true,
                  "width":28,
                  "x":198,
