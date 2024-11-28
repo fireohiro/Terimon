@@ -1,7 +1,7 @@
-let sound;
+let currentMusic;
 
 export function soundpreload(loader){
-    loader.audio('town','assets/audio/town_music.mp3');
+    // loader.audio('town','assets/audio/town_music.mp3');
     loader.audio('battle','assets/audio/nomal_battle.mp3');
     loader.audio('dungeon','assets/audio/dungeon.mp3');
     loader.audio('boss1','assets/audio/boss.mp3');
@@ -23,6 +23,9 @@ export function playsound(scene,condition){
     const musicKey = musicMap[condition];
     if(!musicKey){
         console.log(`条件 ${condition} に該当する音楽は見つかりませんでした。`);
+        if(currentMusic){
+            currentMusic.stop();
+        }
     }else{
         if(currentMusic){
             currentMusic.stop();

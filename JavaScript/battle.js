@@ -100,13 +100,15 @@ export async function battleupdate(scene,config,gameStatus,playerStatus,friends)
 
 //バトルスタート
 export async function battleStart(scene,config,bunrui,gameStatus,friends,playerStatus,itemList){
+    let condition;
     if (bunrui === 1){
-        playsound(scene,battle);
+        condition = 'battle';
     }else if(bunrui === 2){
-        playsound(scene,boss1);
+        condition = 'boss1';
     }else if(bunrui === 3){
-        playsound(scene,boss2);
+        condition = 'boss2';
     }
+    playsound(scene,condition);
     canact = false;
     friends.forEach(friend=>{
         if(friend.hp_nokori > 0){

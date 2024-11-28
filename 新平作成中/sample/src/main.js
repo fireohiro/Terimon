@@ -11,13 +11,13 @@ import WorldScene from './scenes/world-scene.js'; // ワールド画面
 
 const config = {
   type: Phaser.AUTO,
-  pixelArt: true, // 2Dならtrue
+  pixelArt: false, // 2Dならtrue
   backgroundColor: '#000000',
   physics: {
-    default: "arcade",
-    arcade: {
-      gravity: { y:0 },
-      debug: true
+    default: 'matter', // Matter.js を指定
+    matter: {
+      debug: true, // デバッグを有効化（必要に応じて）
+      gravity: { x:0, y: 0 } // 重力設定
     }
   },
   scale: {
@@ -27,6 +27,16 @@ const config = {
     mode: Phaser.Scale.FIT,  // アスペクト比を維持して画面にフィットさせる
     autoCenter: Phaser.Scale.CENTER_BOTH  // ゲーム画面を中央に配置
   },
+  plugins: {
+    scene: [
+      {
+        plugin: PhaserMatterCollisionPlugin.default, 
+        key: "matterCollision", 
+        mapping: "matterCollision" 
+      }
+    ]
+  }
+
 };
 
 const game = new Phaser.Game(config);

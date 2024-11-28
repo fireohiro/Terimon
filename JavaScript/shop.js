@@ -84,7 +84,7 @@ export async function createShop(scene, playerStatus, config,gameStatus){
 
     // アイテム詳細テキスト
     let selectedItem;
-    const detailText = scene.add.text(itemDetailsBackground.x - 130, itemDetailsBackground.y - 60, '', { fontSize: '18px', color: '#000' });
+    const detailText = scene.add.text(itemDetailsBackground.x - 130, itemDetailsBackground.y - 70, '', { fontSize: '18px', color: '#000' });
     let quantity = 1; // 初期購入数
     let quantityText, totalPriceText;
     let decrementButton,incrementButton;
@@ -169,7 +169,7 @@ export async function createShop(scene, playerStatus, config,gameStatus){
                 playerStatus.money -= totalPrice;
                 money.setText(`所持金 ${playerStatus.money}TP`);
                 alert(`${selectedItem.item_name}を${quantity}個購入しました！`);
-                itemGet(selectedItem,su);
+                itemGet(selectedItem,quantity);
             } else {
                 alert('所持金が足りません！');
             }
