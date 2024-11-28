@@ -19,14 +19,11 @@ export default class WorldScene extends Phaser.Scene {
         // マップのインスタンス
         this.mapManager = new MapManager(this);
 
-        // マップ・プレイヤーの表示
-        this.loadMap(saveData.map_id, saveData.save_point_x, saveData.save_point_y, this.player.sprite);
-
         // マップイベントのインスタンス
         this.eventManager = new EventManager(this);
 
-        // EventLayer(オブジェクトレイヤー)を渡して処理
-        this.eventManager.loadEventsFromLayer(this.mapManager.getEventLayer());
+        // マップ・プレイヤーの表示
+        this.loadMap(saveData.map_id, saveData.save_point_x, saveData.save_point_y, this.player.sprite);
   
         // 移動カーソル
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -57,6 +54,8 @@ export default class WorldScene extends Phaser.Scene {
             const startPosition = { x: startX, y: startY}; 
             this.setPlayer(startPosition.x, startPosition.y);
         });
+        // EventLayer(オブジェクトレイヤー)を渡して処理
+        this.eventManager.loadEventsFromLayer(this.mapManager.getMap());
     }
 
     // プレイヤー作成

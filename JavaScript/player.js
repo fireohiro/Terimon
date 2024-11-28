@@ -304,6 +304,7 @@ export function playerstop(){
     player.setVelocityX(0);
     player.setVelocityY(0);
 }
+
 function checkForInteraction(){
     const interactionArea = getInteractionArea();
     // イベントの範囲チェック
@@ -334,19 +335,10 @@ function getInteractionArea() {
 
   // 指定範囲内のイベントを検索
   function findEventAt(area) {
-    return this.events.find(event =>
+    return events.find(event =>
       area.x >= event.x && area.x <= event.x + event.width &&
       area.y >= event.y && area.y <= event.y + event.height
     );
   }
 
-  loadEventsFromLayer(objectLayer) {
-    this.events = objectLayer.objects.map(obj => ({
-      x: obj.x,
-      y: obj.y,
-      width: obj.width,
-      height: obj.height,
-      type: obj.properties.find(prop => prop.name === "type")?.value,
-      data: obj.properties.find(prop => prop.name === "text")?.value
-    }));
-  }
+  

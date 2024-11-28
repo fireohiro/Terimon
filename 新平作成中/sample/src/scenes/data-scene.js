@@ -4,20 +4,24 @@ export default class DataScene extends Phaser.Scene {
     }
 
     create() {
-        // 各データをカテゴリごとに格納する、セーブデータに紐づくデータと共通データがある
+        // 各データをカテゴリごとに格納する、
+        
+        // セーブデータに紐づくデータ
         this.data.set('SaveData',{});
         this.data.set('Friends',{});
         this.data.set('Friends_party',{});
         this.data.set('Inventory',{});
         this.data.set('Inventory_Gear',{});
-        this.data.set('Monster',{}); // 共通データ
-        this.data.set('Monster_Waza',{}); // 共通データ
-        this.data.set('Waza',{}); // 共通データ
-        this.data.set('Gear',{}); // 共通データ
-        this.data.set('Item',{}); // 共通データ
-        this.data.set('Job',{}); // 共通データ
-        this.data.set('Maps',{}); // 共通データ
-        this.data.set('Resistance',{}); // 共通データ
+
+        // 共通データ
+        this.data.set('Monster',{});
+        this.data.set('Monster_Waza',{});
+        this.data.set('Waza',{});
+        this.data.set('Gear',{});
+        this.data.set('Item',{});
+        this.data.set('Job',{});
+        this.data.set('Maps',{});
+        this.data.set('Resistance',{});
 
         // PHPファイルからモンスター情報を取得してキャッシュ
         this.loadData('src/php/get_save_data.php','SaveData');

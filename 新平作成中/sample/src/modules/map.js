@@ -210,7 +210,7 @@ export default class MapManager{
         this.scene.matterCollision.addOnCollideStart({
           objectA: player,
           objectB: box,
-          callback: () => console.log("Player touched hidden box")
+          callback: () => {}// console.log("Player touched hidden box")
         });
         box.visible = false; // 衝突エリアを非表示に設定
         this.matterBodies.push(box);
@@ -229,7 +229,7 @@ export default class MapManager{
           this.scene.matterCollision.addOnCollideStart({
             objectA: player,
             objectB: circle,
-            callback: () => console.log("Player touched hidden box")
+            callback: () => {}// console.log("Player touched hidden box")
           });
           circle.visible = false;
           this.matterBodies.push(circle);
@@ -262,7 +262,7 @@ export default class MapManager{
           this.scene.matterCollision.addOnCollideStart({
             objectA: player,
             objectB: ellipse,
-            callback: () => console.log("Player touched hidden box")
+            callback: () => {}// console.log("Player touched hidden box")
           });
           ellipse.visible = false;
           this.matterBodies.push(ellipse);
@@ -346,9 +346,8 @@ export default class MapManager{
   }
 
   // map情報を返す
-  getEventLayer(){
-    const EventLayer = this.tilemap.getObjectLayer("EventLayer");
-    return EventLayer;
+  getMap(){
+    return this.tilemap;
   }
   
 }

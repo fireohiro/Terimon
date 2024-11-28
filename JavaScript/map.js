@@ -8,6 +8,8 @@ let previousMapId = null;
 let transitionLayer;
 let transitionTriggers;
 let layer = [];
+let events = [];
+let imageGroup=[];
 
 export function mappreload(loader){
     //主人公の家内
@@ -271,4 +273,51 @@ export function createMap(scene,playerStatus,gameStatus){
       }
     }
     return null;
+  }
+
+
+  export function loadEventsFromLayer(scene) {
+    events = [];
+    imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
+    
+    const EventLayer = map.getObjectLayer("EventLayer");
+
+    if(EventLayer){
+        events = EventLayer.objects.map(obj => {
+
+        const tileSetName = obj.properties.find(prop => prop.name === "tileSet")?.value;
+  
+        const tileSet = map.getTileset(tileSetName); // タイルセット名
+  
+        const gid = obj.gid;
+        const tileIndex = gid - tileSet.firstgid;
+  
+        const image = tileSet.name; // タイルセットの名前を参照
+        const frame = tileIndex;   // タイルのフレーム番号
+  
+        const event = {
+          id: obj.id,
+          x: obj.x,
+          y: obj.y,
+          width: obj.width,
+          height: obj.height,
+          type: obj.properties.find(prop => prop.name === "type")?.value,
+          data: obj.properties.find(prop => prop.name === "text")?.value,
+          active: true,
+        };
+  
+        const adjustedX = obj.x + obj.width / 2;  // 中心補正
+        const adjustedY = obj.y - obj.height / 2; // 中心補正
+  
+        // イメージをシーンに追加
+        const addimage = scene.add.image(adjustedX, adjustedY, image, frame)
+          .setOrigin(0.5, 0.5) // 必要に応じてオリジンを調整
+          .setDepth(10)   // 深度を設定して他のオブジェクトとの重なりを調整
+          .setDisplaySize(event.width, event.height);
+
+        imageGroup.add(addimage); // グループに追加
+  
+        return event;
+      });
+    }
   }

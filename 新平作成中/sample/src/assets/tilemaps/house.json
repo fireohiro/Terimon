@@ -84,9 +84,19 @@
                  "name":"",
                  "properties":[
                         {
+                         "name":"image",
+                         "type":"string",
+                         "value":"letter"
+                        }, 
+                        {
                          "name":"text",
                          "type":"string",
                          "value":"\u305f\u3060\u306e\u624b\u7d19\u3067\u3059"
+                        }, 
+                        {
+                         "name":"tileSet",
+                         "type":"string",
+                         "value":"house3"
                         }, 
                         {
                          "name":"type",
