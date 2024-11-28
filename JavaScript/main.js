@@ -230,7 +230,7 @@ export async function save(){
     }
     const result = await response.json();
     //モンスターの更新
-    if(statuses){
+    if(gameStatus.temotisu !== 0){
         const payload = {statuses:statuses};
         const monsterres = await fetch('save_monster.php',{
             method:'POST',
