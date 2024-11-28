@@ -329,7 +329,7 @@ export function createMap(scene,playerStatus,gameStatus){
           y: obj.y,
           width: obj.width,
           height: obj.height,
-          type: obj.properties.find(prop => prop.name === "type")?.value,
+          type: obj.type,
           data: obj.properties.find(prop => prop.name === "text")?.value,
           active: true,
         };
