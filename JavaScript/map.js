@@ -6,7 +6,7 @@ let tilesets = [];
 let layersu;
 let previousMapId = null;
 let transitionLayer;
-let transitionTriggers;
+let transitionTriggers = [];
 let layer = [];
 let events = [];
 let imageGroup=[];
@@ -257,12 +257,38 @@ export function createMap(scene,playerStatus,gameStatus){
     for(let s = 0; s<layer.length; s++){
         layer[s].setCollisionByProperty({collides:true});
     }
+
+    loadEventsFromLayer(scene);
+
     dataMap(map,scene,playerStatus,gameStatus,layer);
     // マップの境界を設定
     scene.physics.world.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
     scene.cameras.main.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
     playsound(scene,playerStatus.map_id);
 }
+
+  // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
+  export function setTransitionTriggers() {
+    const transitionLayer = map.getObjectLayer('Transitions');
+
+    // transitionLayer が存在するか確認
+    if (!transitionLayer) {
+      console.warn('Transitionsレイヤーが見つかりません');
+      transitionTriggers = []; // トリガーを空にして終了
+      return;
+    }
+
+    // トリガーをマップのオブジェクトレイヤーから設定
+    transitionTriggers = transitionLayer.objects.map(obj => ({
+      x: obj.x,
+      y: obj.y,
+      width: obj.width,
+      height: obj.height,
+      targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
+      targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
+      targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
+    }));
+  }
 
   // プレイヤーがトリガーに触れているかをチェック
   export function checkTransition(player) {
@@ -277,7 +303,8 @@ export function createMap(scene,playerStatus,gameStatus){
     return null;
   }
 
-  export function loadEventsFromLayer(scene) {
+  // イベントレイヤーからオブジェクトを表示
+  function loadEventsFromLayer(scene) {
     events = [];
     clearEventImages()
     
