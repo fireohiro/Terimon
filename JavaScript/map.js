@@ -9,7 +9,7 @@ let transitionLayer;
 let transitionTriggers = [];
 let layer = [];
 let events = [];
-let imageGroup=[];
+// let imageGroup=scene.add.group();
 
 export function mappreload(loader){
     //主人公の家内
@@ -306,7 +306,7 @@ export function createMap(scene,playerStatus,gameStatus){
   // イベントレイヤーからオブジェクトを表示
   function loadEventsFromLayer(scene) {
     events = [];
-    clearEventImages();
+    // clearEventImages();
     
     const EventLayer = map.getObjectLayer("EventLayer");
 
@@ -396,6 +396,6 @@ export function createMap(scene,playerStatus,gameStatus){
     player.itemManager.addItem({ name: data.itemName });
   }
 
-  function clearEventImages() {
-    imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
-  }
+//   function clearEventImages() {
+//     imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
+//   }
