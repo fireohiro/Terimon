@@ -190,12 +190,26 @@ export function itemUse(item_id){
     });
 }
 
-export function itemGet(item_id){
+export function itemGet(items,su){
+    let newflg = true;
     itemList.forEach(item=>{
-        if(item.item_id === item_id){
-            item.su++;
+        if(item.item_id === items.item_id){
+            item.su+=su;
+            newflg =false;
         }
-    })
+    });
+    if(newflg){
+        const newItem = {
+            item_id:items.item_id,
+            item_name:items.item_name,
+            bunrui:items.bunrui,
+            setumei:items.setumei,
+            naiyou:items.naiyou,
+            price:items.price,
+            su:su
+        };
+        itemList.push(newItem);
+    }
 }
 
 export function gearGet(get_gear){
@@ -212,7 +226,7 @@ export async function save(){
         body:JSON.stringify(playerStatus),//saveDataオブジェクトをJSON形式の文字列に変換し、送信
     });
     if(!response.ok){
-        throw new Error(`HTTP error! Status:${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const result = await response.json();
     //モンスターの更新
@@ -255,7 +269,7 @@ export async function save(){
             },
             body:JSON.stringify(gearload)
         });
-        if(!itemres.ok){
+        if(!res.ok){
             throw new Error(`HTTP error! Status:${gearres.status}`);
         }
         const geares = await gearres.json();

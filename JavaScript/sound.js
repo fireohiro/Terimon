@@ -14,7 +14,7 @@ export function soundcreate(){
 
 export function playsound(scene,condition){
     const musicMap = { 
-        4 : 'town',
+        // 4 : 'town',
         battle : 'battle',
         dungeon : 'dungeon',
         boss1 : 'boss1',

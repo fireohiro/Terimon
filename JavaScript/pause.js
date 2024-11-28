@@ -16,7 +16,7 @@ export function createPause(scene,gameStatus,playerStatus,config,friends,itemLis
             pauseStart(scene,gameStatus);
         }
     });
-    saveGame(scene,playerStatus,config,gameStatus,friends,itemList,gearList);
+    saveGame(scene,config,gameStatus);
     logoutmessage(scene,config,gameStatus);
     menuBar(scene,playerStatus,config,gameStatus);
     createStatusScreen(scene,gameStatus, playerStatus,friends,config);

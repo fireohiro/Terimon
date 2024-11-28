@@ -187,6 +187,7 @@ export async function battleStart(scene,config,bunrui,gameStatus,friends,playerS
     while(gameStatus.battleflg){
         await battleturn(scene,config,gameStatus,playerStatus,friends,itemList);
         i++;
+        console.log(i);
     }
 }
 
@@ -292,7 +293,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                 }
             }
         }
-        if(enemys[0].hp_nokori > 0 && playerStatus.hp_nokori === 0 || enemys[2].hp_nokori > 0 && playerStatus.hp_nokori === 0 || enemys[2].hp_nokoir > 0 && playerStatus.hp_nokori === 0){
+        if(enemys[0].hp_nokori > 0 && playerStatus.hp_nokori === 0 || enemys[2].hp_nokori > 0 && playerStatus.hp_nokori === 0 || enemys[2].hp_nokori > 0 && playerStatus.hp_nokori === 0){
             await battleEnd(scene,config,gameStatus,false,playerStatus,friends);
             for(let i = 0;i < 3; i++){
                 enemyImages[i].setVisible(false);
@@ -679,7 +680,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                 if (randnum <= magic.hit_rate) {
                     // 即死
                     if (magic.naiyou === '即死') {
-                        if(enemy.hp_nokoir >= 1){
+                        if(enemy.hp_nokori >= 1){
                             randnum2 = Math.floor(Math.random() * 100) + 1;
                             if (randnum2 >= enemy.luck) {
                                 dieflg = true;
@@ -719,12 +720,8 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                         for (const friend of friends) {
                             if (friend.hp_nokori === 0) {
                                 let randnum2 = Math.floor(Math.random() * 100) + 1;
-                                if (friend.luck >= randnum2) {
-                                    friend.hp_nokori = friend.hp;
-                                    await displaymessage(scene, config, `${friend.monster_name}は${combatant.name}のまほうによって復活した！`);
-                                } else {
-                                    await displaymessage(scene, config, `しかし${combatant.name}のまほうは失敗に終わった`);
-                                }
+                                friend.hp_nokori = friend.hp / 2;
+                                await displaymessage(scene, config, `${friend.monster_name}は${combatant.name}のまほうによって復活した！`);
                             } else {
                                 await displaymessage(scene, config, `${friend.monster_name}には効果がなかった・・・`);
                             }
@@ -733,7 +730,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                     // 攻撃魔法
                     } else {
                         if (enemy.hp_nokori > 0) {
-                            let damage = Math.ceil(combatant.pow * (1 + magic.might / 100) / 1.5);
+                            let damage = Math.ceil(combatant.pow * (1 + magic.might / 10) / 1.5);
                             let randnum2 = Math.floor(Math.random() * 100) + 1;
                             if (randnum2 <= combatant.luck) {
                                 damage = damage * 2;
