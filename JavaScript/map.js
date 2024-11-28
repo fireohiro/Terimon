@@ -6,7 +6,7 @@ let tilesets = [];
 let layersu;
 let previousMapId = null;
 let transitionLayer;
-let transitionTriggers;
+let transitionTriggers = [];
 let layer = [];
 let events = [];
 let imageGroup=[];
@@ -164,19 +164,21 @@ export function createMap(scene,playerStatus,gameStatus){
         layersu = 4;
     }
 
-    // // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
-    // transitionLayer = map.getObjectLayer('Transitions');
+    // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
+    transitionLayer = map.getObjectLayer('Transitions');
 
-    // // トリガーをマップのオブジェクトレイヤーから設定
-    // transitionTriggers = transitionLayer.objects.map(obj => ({
-    // x: obj.x,
-    // y: obj.y,
-    // width: obj.width,
-    // height: obj.height,
-    // targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
-    // targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
-    // targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
-    // }));
+    if(transitionLayer){
+    // トリガーをマップのオブジェクトレイヤーから設定
+    transitionTriggers = transitionLayer.objects.map(obj => ({
+        x: obj.x,
+        y: obj.y,
+        width: obj.width,
+        height: obj.height,
+        targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
+        targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
+        targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
+        }));
+    }
 
     //マップの情報をplayer.jsに送る
     layer = [];
@@ -255,12 +257,38 @@ export function createMap(scene,playerStatus,gameStatus){
     for(let s = 0; s<layer.length; s++){
         layer[s].setCollisionByProperty({collides:true});
     }
+
+    loadEventsFromLayer(scene);
+
     dataMap(map,scene,playerStatus,gameStatus,layer);
     // マップの境界を設定
     scene.physics.world.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
     scene.cameras.main.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
     playsound(scene,playerStatus.map_id);
 }
+
+  // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
+  export function setTransitionTriggers() {
+    const transitionLayer = map.getObjectLayer('Transitions');
+
+    // transitionLayer が存在するか確認
+    if (!transitionLayer) {
+      console.warn('Transitionsレイヤーが見つかりません');
+      transitionTriggers = []; // トリガーを空にして終了
+      return;
+    }
+
+    // トリガーをマップのオブジェクトレイヤーから設定
+    transitionTriggers = transitionLayer.objects.map(obj => ({
+      x: obj.x,
+      y: obj.y,
+      width: obj.width,
+      height: obj.height,
+      targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
+      targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
+      targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
+    }));
+  }
 
   // プレイヤーがトリガーに触れているかをチェック
   export function checkTransition(player) {
@@ -275,15 +303,15 @@ export function createMap(scene,playerStatus,gameStatus){
     return null;
   }
 
-
-  export function loadEventsFromLayer(scene) {
+  // イベントレイヤーからオブジェクトを表示
+  function loadEventsFromLayer(scene) {
     events = [];
-    imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
+    clearEventImages()
     
     const EventLayer = map.getObjectLayer("EventLayer");
 
     if(EventLayer){
-        events = EventLayer.objects.map(obj => {
+      events = EventLayer.objects.map(obj => {
 
         const tileSetName = obj.properties.find(prop => prop.name === "tileSet")?.value;
   
@@ -320,4 +348,54 @@ export function createMap(scene,playerStatus,gameStatus){
         return event;
       });
     }
+  }
+    
+  // 指定範囲内のイベントを検索（矩形の重なりを判定）
+  export function findEventAt(area) {
+    return events.find(event => {
+      const eventRect = {
+        x: event.x,
+        y: event.y,
+        width: event.width,
+        height: event.height,
+      };
+      return isRectOverlap(area, eventRect);
+    });
+  }
+
+  // 矩形同士が重なっているかを判定する関数
+  function isRectOverlap(rectA, rectB) {
+    return !(
+      rectA.x > rectB.x + rectB.width || // AがBの右側にある
+      rectA.x + rectA.width < rectB.x || // AがBの左側にある
+      rectA.y > rectB.y + rectB.height || // AがBの下側にある
+      rectA.y + rectA.height < rectB.y    // AがBの上側にある
+    );
+  }
+
+  export function triggerEvent(event, player) {
+    switch (event.type) {
+      case "dialog":
+        startDialog(event.data);
+        break;
+      case "item":
+        giveItemToPlayer(event.data, player);
+        break;
+      default:
+        console.warn("未対応のイベントタイプ:", event.type);
+    }
+  }
+
+  function startDialog(data) {
+    console.log("セリフイベント:", data);
+    // 実際のダイアログUI表示処理
+  }
+
+  function giveItemToPlayer(data, player) {
+    console.log("アイテムを取得:", data.itemName);
+    player.itemManager.addItem({ name: data.itemName });
+  }
+
+  function clearEventImages() {
+    imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
   }

@@ -1,5 +1,5 @@
 import {battleStart} from './battle.js';
-import {checkAndCreateMap} from './map.js';
+import {checkAndCreateMap,findEventAt} from './map.js';
 import { shopEvent,createShop } from './shop.js';
 
 const battlerate = 2;
@@ -310,7 +310,7 @@ function checkForInteraction(){
     // イベントの範囲チェック
     const event = findEventAt(interactionArea);
     if (event) {
-        triggerEvent(event, this.player);
+        triggerEvent(event, player);
     } else {
         console.log("何も見つかりませんでした");
     }
@@ -333,12 +333,5 @@ function getInteractionArea() {
     }
   }
 
-  // 指定範囲内のイベントを検索
-  function findEventAt(area) {
-    return events.find(event =>
-      area.x >= event.x && area.x <= event.x + event.width &&
-      area.y >= event.y && area.y <= event.y + event.height
-    );
-  }
 
   
