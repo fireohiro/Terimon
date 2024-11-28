@@ -96,7 +96,7 @@ export async function battleupdate(scene,config,gameStatus,playerStatus,friends)
         // カメラのスクロールに合わせてステータスコンテナを移動
         statusContainer.setPosition(camera.scrollX, camera.scrollY);
     });
-    }
+}
 
 //バトルスタート
 export async function battleStart(scene,config,bunrui,gameStatus,friends,playerStatus,itemList){
@@ -621,7 +621,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                 });
                 if(!friends[0]){
                     await displaymessage(scene,config,`しかし${playerStatus.account_name}に戦闘を任せられる仲間はいない！`);
-                }else if(cans){
+                }else if(!cans){
                     await displaymessage(scene,config,`${playerStatus.account_name}の味方は全員倒れていて交代することができない`);
                 }else{
                     gameStatus.playerfight = false;
@@ -846,7 +846,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
             await displaymessage(scene,config,damag);
             enemy.hp_nokori -= damage;
         }
-        if(enemy.hp_nokori < 0){
+        if(enemy.hp_nokori <= 0){
             enemy.hp_nokori = 0;
             //モンスター名＋を倒した！を下のメッセージボックス内で表示
             const message = `敵の${enemy.name}を倒した！`;
