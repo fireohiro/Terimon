@@ -115,7 +115,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`grass${i}`, `grass${i}`);
             tilesets.push(tileset);
         }
-        layersu = 2;
+        layersu = 3;
     }else if(map_id === 4){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'townMap'});
