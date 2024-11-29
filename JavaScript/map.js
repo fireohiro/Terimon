@@ -15,42 +15,42 @@ export function mappreload(loader){
     //主人公の家内
     loader.tilemapTiledJSON('houseMap','assets/tilemaps/house.json');
     for(let i = 1; i <= 9;i++){
-        loader.image(`house${i}`,`assets/tilesets/house${i}.png`);
+        loader.spritesheet(`house${i}`,`assets/tilesets/house${i}.png`, { frameWidth: 32, frameHeight: 32 });
     }
     //主人公の家外
     loader.tilemapTiledJSON('homeMap','assets/tilemaps/home.json');
-    loader.image('home1','assets/tilesets/home1.png');
+    loader.spritesheet('home1','assets/tilesets/home1.png', { frameWidth: 32, frameHeight: 32 });
     
     //草原
     loader.tilemapTiledJSON('grassMap','assets/tilemaps/grass.json');
     for(let i = 1; i <= 2; i++){
-        loader.image(`grass${i}`,`assets/tilesets/grass${i}.png`);
+        loader.spritesheet(`grass${i}`,`assets/tilesets/grass${i}.png`, { frameWidth: 32, frameHeight: 32 });
     }
     //町
     loader.tilemapTiledJSON('townMap','assets/tilemaps/town.json');
     for(let i = 1; i <= 15; i++){
-        loader.image(`town${i}`,`assets/tilesets/town${i}.png`);
+        loader.spritesheet(`town${i}`,`assets/tilesets/town${i}.png`, { frameWidth: 32, frameHeight: 32 });
     }
     
     //ガチャ
     loader.tilemapTiledJSON('gachaMap','assets/tilemaps/gacha.json');
-    loader.image('gacha1','assets/tilesets/gacha1.png');
+    loader.spritesheet('gacha1','assets/tilesets/gacha1.png', { frameWidth: 32, frameHeight: 32 });
 
     //ダンジョンまでの道
     loader.tilemapTiledJSON('roadMap','assets/tilemaps/dungeon_road.json');
     for(let i = 1; i <= 6; i++){
-        loader.image(`road${i}`,`assets/tilesets/dungeon_road${i}.png`);
+        loader.spritesheet(`road${i}`,`assets/tilesets/dungeon_road${i}.png`, { frameWidth: 32, frameHeight: 32 });
     }
 
     loader.tilemapTiledJSON('frontMap','assets/tilemaps/dungeon_front.json');
     for(let i = 1; i <= 6; i++){
-        loader.image(`front${i}`,`assets/tilesets/dungeon_front${i}.png`);
+        loader.spritesheet(`front${i}`,`assets/tilesets/dungeon_front${i}.png`, { frameWidth: 32, frameHeight: 32 });
     }
 
     //ダンジョン前
     loader.tilemapTiledJSON('dungeonMap','assets/tilemaps/dungeon.json');
     for(let i = 1; i <= 7; i++){
-        loader.image(`rock${i}`,`assets/tilesets/rock${i}.png`);
+        loader.spritesheet(`rock${i}`,`assets/tilesets/rock${i}.png`, { frameWidth: 32, frameHeight: 32 });
     }
 
     //牧場
