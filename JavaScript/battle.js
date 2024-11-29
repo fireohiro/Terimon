@@ -509,10 +509,10 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
 
                     // テキストをフレーム内に配置
                     let textY = config.height - frameHeight - offsetY + 20;
-                    const wazatext1 = scene.add.text(offsetX + 10, textY, `${magicList[0].waza_name}　　　MP:${magicList[0].syouhi_mp}　　　分類：${magicList[0].naiyou}`, { fontSize: '24px', fill: '#000000' });
-                    const wazatext2 = scene.add.text(offsetX + 10, textY + 20, `${magicList[1].waza_name}　　　MP:${magicList[1].syouhi_mp}　　　分類：${magicList[1].naiyou}`, { fontSize: '24px', fill: '#000000' });
-                    const wazatext3 = scene.add.text(offsetX + 10, textY + 40, `${magicList[2].waza_name}　　　MP:${magicList[2].syouhi_mp}　　　分類：${magicList[2].naiyou}`, { fontSize: '24px', fill: '#000000' });
-                    const wazatext4 = scene.add.text(offsetX + 10, textY + 60, `${magicList[3].waza_name}　　　MP:${magicList[3].syouhi_mp}　　　分類：${magicList[3].naiyou}`, { fontSize: '24px', fill: '#000000' });
+                    const wazatext1 = scene.add.text(offsetX + 10, textY, `${magicList[0].waza_name}　　　MP:${magicList[0].syouhi_mp}　　　分類：${magicList[0].naiyou}　　　威力：${magicList[0].might}　　　命中：${magicList[0].hit_rate}`, { fontSize: '24px', fill: '#000000' });
+                    const wazatext2 = scene.add.text(offsetX + 10, textY + 20, `${magicList[1].waza_name}　　　MP:${magicList[1].syouhi_mp}　　　分類：${magicList[1].naiyou}　　　威力：${magicList[1].might}　　　命中：${magicList[1].hit_rate}`, { fontSize: '24px', fill: '#000000' });
+                    const wazatext3 = scene.add.text(offsetX + 10, textY + 40, `${magicList[2].waza_name}　　　MP:${magicList[2].syouhi_mp}　　　分類：${magicList[2].naiyou}　　　威力：${magicList[2].might}　　　命中：${magicList[2].hit_rate}`, { fontSize: '24px', fill: '#000000' });
+                    const wazatext4 = scene.add.text(offsetX + 10, textY + 60, `${magicList[3].waza_name}　　　MP:${magicList[3].syouhi_mp}　　　分類：${magicList[3].naiyou}　　　威力：${magicList[3].might}　　　命中：${magicList[3].hit_rate}`, { fontSize: '24px', fill: '#000000' });
 
                     // テキストをまとめてコンテナに追加
                     [wazatext1, wazatext2, wazatext3, wazatext4].forEach(text => {
@@ -730,7 +730,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList)
                     // 攻撃魔法
                     } else {
                         if (enemy.hp_nokori > 0) {
-                            let damage = Math.ceil(combatant.pow * (1 + magic.might / 10) / 1.5);
+                            let damage = Math.ceil(combatant.pow * (1 + magic.might / 50) / 1.5);
                             let randnum2 = Math.floor(Math.random() * 100) + 1;
                             if (randnum2 <= combatant.luck) {
                                 damage = damage * 2;

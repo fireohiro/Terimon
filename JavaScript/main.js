@@ -269,7 +269,7 @@ export async function save(){
             },
             body:JSON.stringify(gearload)
         });
-        if(!res.ok){
+        if(!gearres.ok){
             throw new Error(`HTTP error! Status:${gearres.status}`);
         }
         const geares = await gearres.json();
