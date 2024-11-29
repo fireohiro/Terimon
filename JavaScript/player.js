@@ -20,7 +20,7 @@ export function playerpreload(loader){
 
 export function playercreate(scene,playerStatus,gameStatus,layer){
     //プレイヤーをセーブ地に出現させる
-    player = scene.physics.add.sprite(playerStatus.savepoint_x.scale,playerStatus.savepoint_y,'playerimage');
+    player = scene.physics.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'playerimage');
     player.setScale(gameStatus.scale);
     scene.physics.add.existing(player);
     player.setCollideWorldBounds(true);
@@ -125,6 +125,9 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
         player.setVelocityX(0);
     }
 
+    //プレイヤーの現在地をリアルタイムに入れる
+    playerStatus.savepoint_x = player.x;
+    playerStatus.savepoint_y = player.y;
     // 動いていない場合に待機アニメーションを再生
     if (!isMoving) {
         player.anims.stop();  // 現在のアニメーションを停止
