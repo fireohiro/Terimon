@@ -259,7 +259,7 @@ export function createMap(scene,playerStatus,gameStatus){
     }
 
     loadEventsFromLayer(scene);
-    setTransitionTriggers()
+    // setTransitionTriggers();
 
     dataMap(map,scene,playerStatus,gameStatus,layer);
     // マップの境界を設定
