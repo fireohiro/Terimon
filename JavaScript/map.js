@@ -170,8 +170,8 @@ export function createMap(scene,playerStatus,gameStatus){
     if(transitionLayer){
     // トリガーをマップのオブジェクトレイヤーから設定
     transitionTriggers = transitionLayer.objects.map(obj => ({
-        x: obj.x,
-        y: obj.y,
+        x: obj.x*gameStatus.scale,
+        y: obj.y*gameStatus.scale,
         width: obj.width,
         height: obj.height,
         targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
@@ -258,7 +258,7 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[s].setCollisionByProperty({collides:true});
     }
 
-    loadEventsFromLayer(scene);
+    loadEventsFromLayer(scene,gameStatus);
     // setTransitionTriggers();
 
     dataMap(map,scene,playerStatus,gameStatus,layer);
@@ -305,7 +305,7 @@ export function createMap(scene,playerStatus,gameStatus){
   // }
 
   // イベントレイヤーからオブジェクトを表示
-  function loadEventsFromLayer(scene) {
+  function loadEventsFromLayer(scene,gameStatus) {
     events = [];
     clearEventImages();
     
@@ -326,8 +326,8 @@ export function createMap(scene,playerStatus,gameStatus){
   
         const event = {
           id: obj.id,
-          x: obj.x,
-          y: obj.y,
+          x: obj.x*gameStatus.scale,
+          y: obj.y*gameStatus.scale,
           width: obj.width,
           height: obj.height,
           type: obj.type,
