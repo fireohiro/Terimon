@@ -335,8 +335,8 @@ export function createMap(scene,playerStatus,gameStatus){
           active: true,
         };
   
-        const adjustedX = obj.x + obj.width / 2;  // 中心補正
-        const adjustedY = obj.y - obj.height / 2; // 中心補正
+        const adjustedX = obj.x*gameStatus.scale + obj.width / 2;  // 中心補正
+        const adjustedY = obj.y*gameStatus.scale - obj.height / 2; // 中心補正
   
         // イメージをシーンに追加
         const addimage = scene.add.image(adjustedX, adjustedY, image, frame)
