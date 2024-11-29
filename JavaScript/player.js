@@ -1,5 +1,5 @@
 import {battleStart} from './battle.js';
-import {checkAndCreateMap,findEventAt,changeMap,checkTransition} from './map.js';
+import {checkAndCreateMap,findEventAt} from './map.js';
 import { shopEvent,createShop } from './shop.js';
 
 const battlerate = 2;
@@ -36,7 +36,6 @@ export function playercreate(scene,playerStatus,gameStatus,layer){
     // キーボード入力を設定
     scene.input.keyboard.on("keydown-E", () => {
         checkForInteraction();
-        console.log(player.x);
     });
 
     //ここに大きさ調整だったりプレイヤーがいる層の設定をする
@@ -167,11 +166,11 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
         }
     }
      // マップ切り替えのトリガーをチェック
-     const transition = checkTransition(player);
-     if (transition) {
-        changeMap(scene,playerStatus,gameStatus,transition);
-        player.setPosition(transition.targetX*gameStatus.scale, transition.targetY*gameStatus.scale);
-     }
+    //  const transition = checkTransition(player);
+    //  if (transition) {
+    //     changeMap(scene,playerStatus,gameStatus,transition);
+    //     player.setPosition(transition.targetX*gameStatus.scale, transition.targetY*gameStatus.scale);
+    //  }
 
     //それぞれのマップごとにマップが切り替わるポイントを指定
     // house
