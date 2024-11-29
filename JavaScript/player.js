@@ -1,5 +1,5 @@
 import {battleStart} from './battle.js';
-import {checkAndCreateMap,findEventAt,changeMap} from './map.js';
+import {checkAndCreateMap,findEventAt,changeMap,checkTransition} from './map.js';
 import { shopEvent,createShop } from './shop.js';
 
 const battlerate = 2;
