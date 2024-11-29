@@ -7,7 +7,6 @@ let player;
 let isMoving = false;//動いているのかの確認
 let map;
 let cursors;
-let lastDirection = 'down';
 let step = 0;
 const StepToEncounter = 80;//バトル発生するまでの必要歩数
 

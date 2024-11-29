@@ -9,7 +9,7 @@ let transitionLayer;
 let transitionTriggers = [];
 let layer = [];
 let events = [];
-// let imageGroup=scene.add.group();
+let imageGroup;
 
 export function mappreload(loader){
     //主人公の家内
@@ -55,6 +55,7 @@ export function mappreload(loader){
 
     //牧場
     loader.tilemapTiledJSON('ranchMap','assets/tilemaps/ranch.json');
+
 }
 //マップが切り替わったかを確認
 export function checkAndCreateMap(scene,playerStatus,gameStatus){
@@ -77,6 +78,7 @@ export function changeMap(scene,playerStatus,gameStatus,transition){
 }
 
 export function createMap(scene,playerStatus,gameStatus){
+    imageGroup=scene.add.group();
     if(map){
         map.destroy();
     }
@@ -395,6 +397,6 @@ export function createMap(scene,playerStatus,gameStatus){
     player.itemManager.addItem({ name: data.itemName });
   }
 
-//   function clearEventImages() {
-//     imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
-//   }
+  function clearEventImages() {
+    imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
+  }
