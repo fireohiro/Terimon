@@ -94,7 +94,7 @@ export function dataMap(mapdata,scene,playerStatus,gameStatus,layer){
     playercreate(scene,playerStatus,gameStatus,layer);
 }
 
-export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemList){
+export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemList,friendList){
     isMoving = false;//最初は動いていないことにする
     if (cursors.up.isDown) {
         isMoving = true;
@@ -158,7 +158,7 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
                 if(encountnum <= battlerate){//2%の確率でバトル発生
                     playerstop();
                     //バトル発生、configの後の引数はそのバトル相手が雑魚なのか中ボスなのかボスなのかを判定（１＝雑魚、２＝中ボス、３＝ボス）カスタムも可
-                    battleStart(scene,config,1,gameStatus,friends,playerStatus,itemList);
+                    battleStart(scene,config,1,gameStatus,friends,playerStatus,itemList,friendList);
                 }
             }
         }else{
