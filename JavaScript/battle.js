@@ -1,5 +1,5 @@
-import {itemUse, loadFriends} from './main.js';
-import { playsound } from './sound.js';
+import {itemUse} from './main.js';
+import { waitEffect,playEffect, playsound } from './sound.js';
 //ここはインポートする際に１回だけ通るらしい
 let friendImages = [];
 let enemyImages = [];
@@ -23,7 +23,10 @@ export function battlepreload(loader){
         loader.image(`monster${i}`,`assets/monster/monster${i}.png`);
     }
     //戦闘背景の読み込み
-    loader.image('battleback','assets/battleimg/vsback.png');
+    loader.image('grass','assets/battleimg/grassback.png');
+    loader.image('road','assets/battleimg/roadback.png');
+    loader.image('front','assets/battleimg/frontback.png');
+    loader.image('dungeon','assets/battleimg/dungeonback.png');
 }
 
 export async function battleupdate(scene,config,gameStatus,playerStatus,friends){
@@ -99,15 +102,21 @@ export async function battleupdate(scene,config,gameStatus,playerStatus,friends)
 
 //バトルスタート
 export async function battleStart(scene,config,bunrui,gameStatus,friends,playerStatus,itemList,friendList){
+    gameStatus.battleflg = true;
+    await waitEffect(scene,'encount1');
+    playEffect(scene,'encount2');
     let condition;
     if (bunrui === 1){
-        condition = 'battle';
+        if(playerStatus.map_id === 3 || playerStatus.map_id === 7){
+            playsound(scene,'battle');
+        }else if(playerStatus.map_id === 6 || playerStatus.map_id === 8){
+            playsound(scene,'battle2');
+        }
     }else if(bunrui === 2){
         condition = 'boss1';
     }else if(bunrui === 3){
         condition = 'boss2';
     }
-    playsound(scene,condition);
     friends.forEach(friend=>{
         if(friend.hp_nokori > 0){
             gameStatus.playerfight = false;
@@ -119,33 +128,39 @@ export async function battleStart(scene,config,bunrui,gameStatus,friends,playerS
     const enemy2 = {};
     const enemy3 = {};
     const camera = scene.cameras.main;
-    gameStatus.battleflg = true;
     let res;
+    let key;
     if(bunrui === 1 && playerStatus.map_id === 3){
         res = await fetch('get_zako1.php');
         enemies = await res.json();
+        key = 'grass';
     }else if(bunrui === 1 && playerStatus.map_id === 6){
         res = await fetch('get_zako2.php');
         enemies = await res.json();
+        key = 'road';
     }else if(bunrui === 1 && playerStatus.map_id === 7){
         res = await fetch('get_zako3.php');
         enemies = await res.json();
+        key = 'front';
     }else if(bunrui === 1 && playerStatus.map_id === 8){
         res = await fetch('get_zako4.php');
         enemies = await res.json();
+        key = 'dungeon';
     }else if(bunrui === 2){
         res = await fetch('tyuboss.php');
         enemies = await res.json();
+        key = 'dungeon';
     }else if(bunrui === 3){
         res = await fetch('boss.php');
         enemies = await res.json();
+        key = 'dungeon';
     }
     Object.assign(enemy1,enemies[0]);
     Object.assign(enemy2,enemies[1]);
     Object.assign(enemy3,enemies[2]);
 
 
-    back = scene.add.image(scene.cameras.main.worldView.x,scene.cameras.main.worldView.y,'battleback');//左上端っこに背景画像表示※後でカメラの座標をオブジェクトに入れてそれを持ってくる
+    back = scene.add.image(scene.cameras.main.worldView.x,scene.cameras.main.worldView.y,key);//左上端っこに背景画像表示※後でカメラの座標をオブジェクトに入れてそれを持ってくる
     back.setOrigin(0,0);
     back.setDisplaySize(config.width,config.height);//画像のサイズを画面のサイズに合わせる
     back.setDepth(10);
@@ -238,6 +253,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
     async function enemyaction(combatant){
         const result = Math.floor(Math.random() * 2) + 1;
         if(result === 1){
+            playEffect(scene,'attack');
             await displaymessage(scene,config,`敵の${combatant.name}の攻撃！`);
             if(gameStatus.playerfight){
                 let rannum = Math.floor(Math.random() * 100) + 1;
@@ -317,8 +333,9 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                 combatant.mp_nokori -= magicList[magicnumber].syouhi_mp;
                 let hit = Math.floor(Math.random() * 100) + 1;
                 if(hit <= magicList[magicnumber].hit_rate){
+                    playEffect(scene,'magic');
                     if(waza_bunrui !== 'HP回復' && waza_bunrui !== 'MP回復' && waza_bunrui !== '即死'){
-                        await displaymessage(scene,config,`${combatant.name}は攻撃魔法を使った！`);
+                        await displaymessage(scene,config,`敵の${combatant.name}は攻撃魔法を使った！`);
                         let damage = 0;
                         if(gameStatus.playerfight){
                             damage = Math.ceil(combatant.pow * (1+magicList[magicnumber].might / 10) - (playerStatus.def * 2));
@@ -376,10 +393,12 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                         await displaymessage(scene,config,'相手は手招きをしている(。-`ω-)');
                     }
                 }else{
+                    playEffect(scene,'miss');
                     await displaymessage(scene,config,'しかしまほうは失敗した');
                 }
             }else{
-                await displaymessage(scene,config,`${combatant.name}はまほうを使おうとしたが、MPが足りなかった！`);
+                playEffect(scene,'miss');
+                await displaymessage(scene,config,`敵の${combatant.name}はまほうを使おうとしたが、MPが足りなかったようだ！`);
             }
         }
         if(enemys[0].hp_nokori > 0 && playerStatus.hp_nokori === 0 || enemys[2].hp_nokori > 0 && playerStatus.hp_nokori === 0 || enemys[2].hp_nokori > 0 && playerStatus.hp_nokori === 0){
@@ -531,6 +550,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
         switch(action){
             case "こうげき":
                 //それぞれの敵に対してダメージ計算とHP減少を行う。会心も作成済み
+                playEffect(scene,'attack');
                 if(gameStatus.playerfight){
                     await displaymessage(scene,config,`味方の${combatant.account_name}の攻撃！`);
                 }else{
@@ -557,6 +577,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                 break;
             case "まほう":
                 if(gameStatus.playerfight){
+                    playEffect(scene,'miss');
                     await displaymessage(scene,config,`${playerStatus.account_name}は人間なので、まほうはつかえない！`);
                 }else{
                     magicList = [];
@@ -693,6 +714,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                             }
                         });
                     }else{
+                        playEffect(scene,'miss');
                         await displaymessage(scene,config,`${playerStatus.account_name}は何もアイテムを持っていないようだ・・・`)
                     }
                     break;
@@ -709,8 +731,10 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                     }
                 });
                 if(!friends[0]){
+                    playEffect(scene,'miss');
                     await displaymessage(scene,config,`しかし${playerStatus.account_name}に戦闘を任せられる仲間はいない！`);
                 }else if(!cans){
+                    playEffect(scene,'miss');
                     await displaymessage(scene,config,`${playerStatus.account_name}の味方は全員倒れていて交代することができない`);
                 }else{
                     gameStatus.playerfight = false;
@@ -762,6 +786,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
         let i = 0;
         if(combatant.mp_nokori >= magic.syouhi_mp){
             combatant.mp_nokori -= magic.syouhi_mp;
+            playEffect(scene,'magic');
             await displaymessage(scene,config,`味方の${combatant.monster_name}は${magic.waza_name}を使った！`);
             for (const enemy of enemys) {
                 // 命中判定
@@ -837,6 +862,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                     }
                 } else {
                     if(enemy.hp_nokori >= 1){
+                        playEffect(scene,'miss');
                         await displaymessage(scene, config, 'しかしまほうは失敗してしまった・・・');
                         break;
                     }
@@ -844,6 +870,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                 i++;
             }                
         }else{
+            playEffect(scene,'miss');
             await displaymessage(scene,config,'しかしMPが足りない！');
         }
     }
@@ -943,6 +970,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
 
             //指定していたお金ドロップの量を手持ち金額に追加して表示する
             playerStatus.money += enemy.drop_money;
+            playEffect(scene,'getmoney');
             const message2 = `${enemy.drop_money}チピチャパ（TP)を手に入れた！`;
             await displaymessage(scene,config,message2);
             //レベルアップ処理
@@ -1133,6 +1161,7 @@ async function displaymessage(scene, config, message) {
                     messagetext.text += message[currentCharIndex];
                     currentCharIndex++;
                     scene.time.delayedCall(50, next);
+                    playEffect(scene,'coment');
                 } else {
                     resolve();
                 }
