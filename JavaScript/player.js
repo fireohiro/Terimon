@@ -13,11 +13,14 @@ const StepToEncounter = 80;//バトル発生するまでの必要歩数
 let direction = "down"; // プレイヤーの向きを保持
 let interactionRange = 32; // 調べられる距離
 
+let graphics; // 範囲描画用のGraphicsオブジェクト
+
 export function playerpreload(loader){
     loader.spritesheet('playerImage','assets/character/terimon1.png', { frameWidth: 32, frameHeight: 32 });
 }
 
 export function playercreate(scene,playerStatus,gameStatus,layer){
+    graphics = scene.add.graphics(); // 範囲描画用のGraphicsオブジェクト
     //プレイヤーをセーブ地に出現させる
     player = scene.physics.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'playerimage');
     player.setScale(gameStatus.scale);
@@ -36,6 +39,7 @@ export function playercreate(scene,playerStatus,gameStatus,layer){
     // キーボード入力を設定
     scene.input.keyboard.on("keydown-E", () => {
         checkForInteraction();
+        drawInteractionArea();
     });
 
     //ここに大きさ調整だったりプレイヤーがいる層の設定をする
@@ -355,5 +359,15 @@ function getInteractionArea() {
     }
   }
 
+  //////////// デバッグ用
+  function drawInteractionArea() {
+    // 古い描画をクリア
+    graphics.clear();
+    // 範囲を取得
+    const area = getInteractionArea();
+    // 半透明の四角形を描画
+    graphics.fillStyle(0x00ff00, 0.3); // 緑色、30%透明
+    graphics.fillRect(area.x - area.width / 2, area.y - area.height / 2, area.width, area.height);
+  }
 
   
