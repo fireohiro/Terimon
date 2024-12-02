@@ -25,8 +25,8 @@ export async function saveGame(scene,config,gameStatus){
     const backtext = scene.add.text(config.width * 0.5 + 100,saveHeight / 2+80,'いいえ',{fontSize:'64px',fill:'#000'});
     backtext.setOrigin(0,0);
     //クリックイベント
-    savetext.setInteractive().on('pointerdown',()=>{
-        save();
+    savetext.setInteractive().on('pointerdown',async()=>{
+        await save();
     });
     savetext.setInteractive().on('pointerover', () => {
         if(!savetra){

@@ -6,56 +6,55 @@ let tilesets = [];
 let layersu;
 let previousMapId = null;
 let transitionLayer;
-let transitionTriggers = [];
+let transitionTriggers;
 let layer = [];
 let events = [];
-let imageGroup;
+let imageGroup=[];
 
 export function mappreload(loader){
     //主人公の家内
     loader.tilemapTiledJSON('houseMap','assets/tilemaps/house.json');
     for(let i = 1; i <= 9;i++){
-        loader.spritesheet(`house${i}`,`assets/tilesets/house${i}.png`, { frameWidth: 32, frameHeight: 32 });
+        loader.image(`house${i}`,`assets/tilesets/house${i}.png`);
     }
     //主人公の家外
     loader.tilemapTiledJSON('homeMap','assets/tilemaps/home.json');
-    loader.spritesheet('home1','assets/tilesets/home1.png', { frameWidth: 32, frameHeight: 32 });
+    loader.image('home1','assets/tilesets/home1.png');
     
     //草原
     loader.tilemapTiledJSON('grassMap','assets/tilemaps/grass.json');
     for(let i = 1; i <= 2; i++){
-        loader.spritesheet(`grass${i}`,`assets/tilesets/grass${i}.png`, { frameWidth: 32, frameHeight: 32 });
+        loader.image(`grass${i}`,`assets/tilesets/grass${i}.png`);
     }
     //町
     loader.tilemapTiledJSON('townMap','assets/tilemaps/town.json');
     for(let i = 1; i <= 15; i++){
-        loader.spritesheet(`town${i}`,`assets/tilesets/town${i}.png`, { frameWidth: 32, frameHeight: 32 });
+        loader.image(`town${i}`,`assets/tilesets/town${i}.png`);
     }
     
     //ガチャ
     loader.tilemapTiledJSON('gachaMap','assets/tilemaps/gacha.json');
-    loader.spritesheet('gacha1','assets/tilesets/gacha1.png', { frameWidth: 32, frameHeight: 32 });
+    loader.image('gacha1','assets/tilesets/gacha1.png');
 
     //ダンジョンまでの道
     loader.tilemapTiledJSON('roadMap','assets/tilemaps/dungeon_road.json');
     for(let i = 1; i <= 6; i++){
-        loader.spritesheet(`road${i}`,`assets/tilesets/dungeon_road${i}.png`, { frameWidth: 32, frameHeight: 32 });
+        loader.image(`road${i}`,`assets/tilesets/dungeon_road${i}.png`);
     }
 
     loader.tilemapTiledJSON('frontMap','assets/tilemaps/dungeon_front.json');
     for(let i = 1; i <= 6; i++){
-        loader.spritesheet(`front${i}`,`assets/tilesets/dungeon_front${i}.png`, { frameWidth: 32, frameHeight: 32 });
+        loader.image(`front${i}`,`assets/tilesets/dungeon_front${i}.png`);
     }
 
     //ダンジョン前
     loader.tilemapTiledJSON('dungeonMap','assets/tilemaps/dungeon.json');
     for(let i = 1; i <= 7; i++){
-        loader.spritesheet(`rock${i}`,`assets/tilesets/rock${i}.png`, { frameWidth: 32, frameHeight: 32 });
+        loader.image(`rock${i}`,`assets/tilesets/rock${i}.png`);
     }
 
     //牧場
     loader.tilemapTiledJSON('ranchMap','assets/tilemaps/ranch.json');
-
 }
 
 export function changeMap(scene,playerStatus,gameStatus,transition){
@@ -64,7 +63,6 @@ export function changeMap(scene,playerStatus,gameStatus,transition){
 }
 
 export function createMap(scene,playerStatus,gameStatus){
-    imageGroup=scene.add.group();
     if(map){
         map.destroy();
     }
@@ -101,7 +99,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`grass${i}`, `grass${i}`);
             tilesets.push(tileset);
         }
-        layersu = 3;
+        layersu = 2;
     }else if(map_id === 4){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'townMap'});
@@ -109,7 +107,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`town${i}`, `town${i}`);
             tilesets.push(tileset);
         }
-        layersu = 5;
+        layersu = 4;
     }else if(map_id === 5){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'gachaMap'});
@@ -117,7 +115,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`gacha${i}`, `gacha${i}`);
             tilesets.push(tileset);
         }
-        layersu = 3;
+        layersu = 2;
     }else if(map_id === 6){
         gameStatus.scale=2.0;
         map = scene.make.tilemap({key:'roadMap'});
@@ -141,7 +139,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`rock${i}`, `rock${i}`);
             tilesets.push(tileset);
         }
-        layersu = 4;
+        layersu = 3;
     }else if(map_id === 9){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'ranchMap'});
@@ -180,7 +178,6 @@ export function createMap(scene,playerStatus,gameStatus){
     }else if(playerStatus.map_id === 3){
         layer[0].setScale(gameStatus.scale,gameStatus.scale);
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
-        layer[2].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(2);
     }else if(playerStatus.map_id === 4){
@@ -188,7 +185,6 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
         layer[2].setScale(gameStatus.scale,gameStatus.scale);
         layer[3].setScale(gameStatus.scale,gameStatus.scale);
-        layer[4].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(1);
         layer[2].setDepth(3);
@@ -222,7 +218,6 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[0].setScale(gameStatus.scale,gameStatus.scale);
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
         layer[2].setScale(gameStatus.scale,gameStatus.scale);
-        layer[3].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(1);
         layer[2].setDepth(2);
@@ -276,15 +271,15 @@ export function createMap(scene,playerStatus,gameStatus){
     return null;
   }
 
-  // イベントレイヤーからオブジェクトを表示
-  function loadEventsFromLayer(scene,gameStatus) {
+
+  export function loadEventsFromLayer(scene) {
     events = [];
-    clearEventImages();
+    imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
     
     const EventLayer = map.getObjectLayer("EventLayer");
 
     if(EventLayer){
-      events = EventLayer.objects.map(obj => {
+        events = EventLayer.objects.map(obj => {
 
         const tileSetName = obj.properties.find(prop => prop.name === "tileSet")?.value;
   
@@ -298,17 +293,17 @@ export function createMap(scene,playerStatus,gameStatus){
   
         const event = {
           id: obj.id,
-          x: obj.x*gameStatus.scale,
-          y: obj.y*gameStatus.scale,
-          width: obj.width*gameStatus.scale,
-          height: obj.height*gameStatus.scale,
-          type: obj.type,
+          x: obj.x,
+          y: obj.y,
+          width: obj.width,
+          height: obj.height,
+          type: obj.properties.find(prop => prop.name === "type")?.value,
           data: obj.properties.find(prop => prop.name === "text")?.value,
           active: true,
         };
   
-        const adjustedX = event.x + event.width / 2;  // 中心補正
-        const adjustedY = event.y - event.height / 2; // 中心補正
+        const adjustedX = obj.x + obj.width / 2;  // 中心補正
+        const adjustedY = obj.y - obj.height / 2; // 中心補正
   
         // イメージをシーンに追加
         const addimage = scene.add.image(adjustedX, adjustedY, image, frame)
@@ -321,54 +316,4 @@ export function createMap(scene,playerStatus,gameStatus){
         return event;
       });
     }
-  }
-    
-  // 指定範囲内のイベントを検索（矩形の重なりを判定）
-  export function findEventAt(area) {
-    return events.find(event => {
-      const eventRect = {
-        x: event.x,
-        y: event.y,
-        width: event.width,
-        height: event.height,
-      };
-      return isRectOverlap(area, eventRect);
-    });
-  }
-
-  // 矩形同士が重なっているかを判定する関数
-  function isRectOverlap(rectA, rectB) {
-    return !(
-      rectA.x > rectB.x + rectB.width || // AがBの右側にある
-      rectA.x + rectA.width < rectB.x || // AがBの左側にある
-      rectA.y > rectB.y + rectB.height || // AがBの下側にある
-      rectA.y + rectA.height < rectB.y    // AがBの上側にある
-    );
-  }
-
-  export function triggerEvent(event, player) {
-    switch (event.type) {
-      case "dialog":
-        startDialog(event.data);
-        break;
-      case "item":
-        giveItemToPlayer(event.data, player);
-        break;
-      default:
-        console.warn("未対応のイベントタイプ:", event.type);
-    }
-  }
-
-  function startDialog(data) {
-    console.log("セリフイベント:", data);
-    // 実際のダイアログUI表示処理
-  }
-
-  function giveItemToPlayer(data, player) {
-    console.log("アイテムを取得:", data.itemName);
-    player.itemManager.addItem({ name: data.itemName });
-  }
-
-  function clearEventImages() {
-    imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
   }

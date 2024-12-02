@@ -6,14 +6,6 @@
     $result = $sql->fetchAll();
     $enemyData = [];
     foreach($result as $monster){
-        $wazaList = [4];
-        $sql=$pdo->prepare('SELECT waza_id FROM monster_waza WHERE monster_id = ? ORDER BY RAND() LIMIT 4');
-        $sql->execute([$monster['monster_id']]);
-        $i = 0;
-        while ($row = $sql->fetch(PDO::FETCH_ASSOC)) {
-            $wazaList[$i] = $row['waza_id'];
-            $i++;
-        }
         $maxhp = rand($monster['hp_kagen'],$monster['hp_zyougen']);
         $maxmp = rand($monster['mp_kagen'],$monster['mp_zyougen']);
         //モンスターのステータスを決めて格納します
@@ -21,6 +13,7 @@
             'id' => $monster['monster_id'],
             'name' => $monster['monster_name'],
             'level' => $monster['level'],
+            'gazou' => $monster['gazou'],
             'resist' => $monster['resist'],
             'hp' => $maxhp,
             'hp_nokori' => $maxhp,
@@ -32,10 +25,6 @@
             'luck' => $monster['luck'],
             'experience' => $monster['experience'],
             'drop_money' => $monster['drop_money'],
-            'waza_id1' => $wazaList[0],
-            'waza_id2' => $wazaList[1],
-            'waza_id3' => $wazaList[2],
-            'waza_id4' => $wazaList[3],
             'type' => 'enemy'
         ];
         $enemyData[] = $enemy;
