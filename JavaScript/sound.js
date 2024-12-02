@@ -4,6 +4,8 @@ export function soundpreload(loader){
     // loader.audio('town','assets/audio/town_music.mp3');
     loader.audio('battle','assets/audio/nomal_battle.mp3');
     loader.audio('battle2','assets/audio/battle2.mp3');
+    loader.audio('battle3','assets/audio/battle3.mp3');
+    loader.audio('battle4','assets/audio/battle4.mp3');
     loader.audio('dungeon','assets/audio/dungeon.mp3');
     loader.audio('boss1','assets/audio/boss.mp3');
     loader.audio('boss2','assets/audio/boss_final.mp3');
@@ -19,6 +21,7 @@ export function soundpreload(loader){
     loader.audio('getmoney','assets/audio/money.mp3');
     //主にポーズで使用
     loader.audio('open_pause','assets/audio/pause_open.mp3');
+    loader.audio('open','assets/audio/open.mp3');
     loader.audio('yes','assets/audio/yes.mp3');
     loader.audio('no','assets/audio/no.mp3');
 }
@@ -33,6 +36,7 @@ export function soundcreate(){
         miss:'miss',
         getmoney:'getmoney',
         pause:'open_pause',
+        open:'open',
         yes:'yes',
         no:'no',
     };
@@ -43,6 +47,8 @@ export function playsound(scene,condition){
         // 4 : 'town',
         battle : 'battle',
         battle2 : 'battle2',
+        battle3:'battle3',
+        battle4:'battle4',
         dungeon : 'dungeon',
         boss1 : 'boss1',
         boss2 : 'boss2',

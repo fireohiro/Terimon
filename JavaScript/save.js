@@ -1,9 +1,15 @@
 import {save} from './main.js';
+import { playEffect } from './sound.js';
 let saveContainer;
 let savetra = null;
 let backtra = null;
-export function saveEvent(gameStatus){
+export function saveEvent(gameStatus,scene){
     gameStatus.saveflg = !gameStatus.saveflg;
+    if(gameStatus.saveflg){
+        playEffect(scene,'open');
+    }else{
+        playEffect(scene,'no');
+    }
     saveContainer.setVisible(gameStatus.saveflg);
 }
 

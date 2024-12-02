@@ -1,3 +1,5 @@
+import { playEffect } from "./sound";
+
 export function statuspreload(loader) {
     loader.spritesheet('player','assets/character/terimon1.png', { frameWidth: 100, frameHeight: 100 })
     // 味方画像をプリロード
@@ -7,8 +9,13 @@ export function statuspreload(loader) {
 }
 
 let statusContainer;
-export function statusEvent(gameStatus){
+export function statusEvent(gameStatus,scene){
     gameStatus.statusflg = !gameStatus.statusflg;
+    if(gameStatus.statusflg){
+        playEffect(scene,'open');
+    }else{
+        playEffect(scene,'no');
+    }
     statusContainer.setVisible(gameStatus.statusflg);
 }
 
