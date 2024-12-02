@@ -56,25 +56,9 @@ export function mappreload(loader){
     //牧場
     loader.tilemapTiledJSON('ranchMap','assets/tilemaps/ranch.json');
 }
-//マップが切り替わったかを確認
-export function checkAndCreateMap(scene,playerStatus,gameStatus){
-    if(map_idHasChanged(playerStatus)){
-        createMap(scene,playerStatus,gameStatus);
-    }
-}
-
-function map_idHasChanged(playerStatus){
-    if(previousMapId !== playerStatus.map_id){
-        previousMapId = playerStatus.map_id;
-        return true;
-    }
-    return false;
-}
 
 export function changeMap(scene,playerStatus,gameStatus,transition){
     playerStatus.map_id=transition.targetMap;
-    playerStatus.savepoint_x=transition.targetX;
-    playerStatus.savepoint_y=transition.targetY;
     createMap(scene,playerStatus,gameStatus);
 }
 
@@ -109,7 +93,7 @@ export function createMap(scene,playerStatus,gameStatus){
         tilesets.push(tileset);
         layersu = 4;
     }else if(map_id === 3){
-        gameStatus.scale=1.5;
+        gameStatus.scale=2.5;
         map = scene.make.tilemap({key:'grassMap'});
         for(let i = 1; i <= 2; i++){
             let tileset = map.addTilesetImage(`grass${i}`, `grass${i}`);
@@ -133,7 +117,7 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 2;
     }else if(map_id === 6){
-        gameStatus.scale=1.5;
+        gameStatus.scale=2.0;
         map = scene.make.tilemap({key:'roadMap'});
         for(let i = 1; i <= 6; i++){
             let tileset = map.addTilesetImage(`dungeon_road${i}`, `road${i}`);
@@ -164,8 +148,8 @@ export function createMap(scene,playerStatus,gameStatus){
         layersu = 4;
     }
 
-    // // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
-    // transitionLayer = map.getObjectLayer('Transitions');
+    // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
+    const transitionLayer = map.getObjectLayer('Transitions');
 
     // // トリガーをマップのオブジェクトレイヤーから設定
     // transitionTriggers = transitionLayer.objects.map(obj => ({
