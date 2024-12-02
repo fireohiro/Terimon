@@ -81,7 +81,7 @@ export function playercreate(scene,playerStatus,gameStatus,layer){
     }else if(playerStatus.map_id === 5){
         player.setDepth(1);
     }else if(playerStatus.map_id === 6){
-        player.setDepth(3);
+        player.setDepth(2);
     }else if(playerStatus.map_id === 7){
         player.setDepth(2);
     }else if(playerStatus.map_id === 8){
