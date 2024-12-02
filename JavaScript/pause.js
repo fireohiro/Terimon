@@ -2,6 +2,7 @@
 import {createStatusScreen,statusEvent} from './status.js';
 import {saveEvent,saveGame} from './save.js';
 import{logoutmessage,logoutdisplay} from './logout.js';
+import { playEffect } from './sound.js';
 
 let itemtra = null;
 let geartra = null;
@@ -29,8 +30,10 @@ function pauseStart(scene,gameStatus){
 
     //ポーズ中の物理処理の停止と再稼働
     if(gameStatus.pauseflg){
+        playEffect(scene,'pause');
         scene.physics.world.pause();//停止
     }else{
+        playEffect(scene,'no');
         scene.physics.world.resume();//再稼働
         if(gameStatus.itemflg === true){
             //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -55,8 +58,8 @@ function pauseStart(scene,gameStatus){
 
 async function menuBar(scene,playerStatus,config,gameStatus){
     //メニューのサイズを設定
-    const menuWidth = config.width * 0.15+10;
-    const menuHeight = config.height * 0.50;
+    const menuWidth = 235;
+    const menuHeight = 365;
 
     // メニュー背景を作成し、左に少しスペースを開ける
     const menuBackground = scene.add.rectangle(menuWidth * 0.1-10, config.height * 0.08, menuWidth, menuHeight, 0xFFFFFF, 0.8);

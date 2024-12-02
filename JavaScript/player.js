@@ -98,33 +98,35 @@ export function dataMap(mapdata,scene,playerStatus,gameStatus,layer){
     playercreate(scene,playerStatus,gameStatus,layer);
 }
 
-export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemList){
+export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemList,friendList){
     isMoving = false;//最初は動いていないことにする
     if (cursors.up.isDown) {
         isMoving = true;
+        player.setVelocityX(0);
         player.setVelocityY(-playerStatus.speed*10);
         player.anims.play('playerup', true);
         direction="up";
     } else if (cursors.down.isDown) {
         isMoving = true;
+        player.setVelocityX(0);
         player.setVelocityY(playerStatus.speed*10);
         player.anims.play('playerdown', true);
         direction="down";
-    }else{
-        player.setVelocityY(0);
-    }
-    if (cursors.left.isDown) {
+    }else if (cursors.left.isDown) {
         isMoving = true;
+        player.setVelocityY(0);
         player.setVelocityX(-playerStatus.speed*10);
         player.anims.play('playerleft', true);
         direction="left";
     } else if (cursors.right.isDown) {
         isMoving = true;
+        player.setVelocityY(0);
         player.setVelocityX(playerStatus.speed*10);
         player.anims.play('playerright', true);
         direction="right";
     }else{
         player.setVelocityX(0);
+        player.setVelocityY(0);
     }
 
     //プレイヤーの現在地をリアルタイムに入れる
@@ -161,8 +163,25 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
                 let encountnum = Math.floor(Math.random() * 100) + 1;
                 if(encountnum <= battlerate){//2%の確率でバトル発生
                     playerstop();
+                    // キャラクターが最後に向いていた方向に応じた待機フレームを設定
+                    switch (player.anims.getName()) {
+                        case 'playerup':
+                            player.setTexture('playerImage', 9); 
+                            break;
+                        case 'playerdown':
+                            player.setTexture('playerImage', 0); 
+                            break;
+                        case 'playerleft':
+                            player.setTexture('playerImage', 3); 
+                            break;
+                        case 'playerright':
+                            player.setTexture('playerImage', 6); 
+                            break;
+                        default:
+                            player.setTexture('playerImage', 0); 
+                    }
                     //バトル発生、configの後の引数はそのバトル相手が雑魚なのか中ボスなのかボスなのかを判定（１＝雑魚、２＝中ボス、３＝ボス）カスタムも可
-                    battleStart(scene,config,1,gameStatus,friends,playerStatus,itemList);
+                    battleStart(scene,config,1,gameStatus,friends,playerStatus,itemList,friendList);
                 }
             }
         }else{

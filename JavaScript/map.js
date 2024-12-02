@@ -115,7 +115,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`grass${i}`, `grass${i}`);
             tilesets.push(tileset);
         }
-        layersu = 2;
+        layersu = 3;
     }else if(map_id === 4){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'townMap'});
@@ -123,7 +123,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`town${i}`, `town${i}`);
             tilesets.push(tileset);
         }
-        layersu = 4;
+        layersu = 5;
     }else if(map_id === 5){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'gachaMap'});
@@ -131,7 +131,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`gacha${i}`, `gacha${i}`);
             tilesets.push(tileset);
         }
-        layersu = 2;
+        layersu = 3;
     }else if(map_id === 6){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'roadMap'});
@@ -155,7 +155,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`rock${i}`, `rock${i}`);
             tilesets.push(tileset);
         }
-        layersu = 3;
+        layersu = 4;
     }else if(map_id === 9){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'ranchMap'});
@@ -210,6 +210,7 @@ export function createMap(scene,playerStatus,gameStatus){
     }else if(playerStatus.map_id === 3){
         layer[0].setScale(gameStatus.scale,gameStatus.scale);
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
+        layer[2].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(2);
     }else if(playerStatus.map_id === 4){
@@ -217,6 +218,7 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
         layer[2].setScale(gameStatus.scale,gameStatus.scale);
         layer[3].setScale(gameStatus.scale,gameStatus.scale);
+        layer[4].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(1);
         layer[2].setDepth(3);
@@ -250,6 +252,7 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[0].setScale(gameStatus.scale,gameStatus.scale);
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
         layer[2].setScale(gameStatus.scale,gameStatus.scale);
+        layer[3].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(1);
         layer[2].setDepth(2);
