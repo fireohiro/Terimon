@@ -150,22 +150,6 @@ export function createMap(scene,playerStatus,gameStatus){
         layersu = 4;
     }
 
-    // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
-    const transitionLayer = map.getObjectLayer('Transitions');
-
-    if(transitionLayer){
-    // トリガーをマップのオブジェクトレイヤーから設定
-    transitionTriggers = transitionLayer.objects.map(obj => ({
-        x: obj.x*gameStatus.scale,
-        y: obj.y*gameStatus.scale,
-        width: obj.width,
-        height: obj.height,
-        targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
-        targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
-        targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
-        }));
-    }
-
     //マップの情報をplayer.jsに送る
     layer = [];
     for(let i = 1; i <= layersu; i++){
@@ -248,7 +232,29 @@ export function createMap(scene,playerStatus,gameStatus){
     }
 
     loadEventsFromLayer(scene,gameStatus);
-    // setTransitionTriggers();
+
+    // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
+    const transitionLayer = map.getObjectLayer('Transitions');
+    // transitionLayer.setScale(gameStatus.scale,gameStatus.scale);
+    let graphicsA = scene.add.graphics();
+
+    if(transitionLayer){
+    // トリガーをマップのオブジェクトレイヤーから設定
+    transitionTriggers = transitionLayer.objects.map(obj => ({
+        x: obj.x*gameStatus.scale,
+        y: obj.y*gameStatus.scale,
+        width: obj.width,
+        height: obj.height,
+        targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
+        targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
+        targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
+        }));
+    }
+    for (const trigger of transitionTriggers) {
+        // 半透明の四角形を描画
+        graphicsA.fillStyle(0x00ff00, 0.3); // 緑色、30%透明
+        graphicsA.fillRect(trigger.x - trigger.width / 2, trigger.y - trigger.height / 2, trigger.width, trigger.height);
+    }
 
     dataMap(map,scene,playerStatus,gameStatus,layer);
     // マップの境界を設定
