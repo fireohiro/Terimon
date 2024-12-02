@@ -60,6 +60,16 @@ export function setupItemMenu(scene, config) {
  * アイテムボタンを生成
  */
 export function createItemButtons(scene, config, gameStatus, itemList) {
+    if(!scene){
+        console.log("sceneがemptyです");
+    }else if(!config){
+        console.log("configがemptyです");
+    }else if(!gameStatus){
+        console.log("gameStatusがemptyです");
+    }else if(!itemList){
+        console.log("itemListがemptyです");
+    }
+
     if (!scene || !config || !gameStatus || !Array.isArray(itemList)) {
         console.error("Invalid arguments passed to createItemButtons");
         return;
