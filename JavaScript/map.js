@@ -328,15 +328,15 @@ export function createMap(scene,playerStatus,gameStatus){
           id: obj.id,
           x: obj.x*gameStatus.scale,
           y: obj.y*gameStatus.scale,
-          width: obj.width,
-          height: obj.height,
+          width: obj.width*gameStatus.scale,
+          height: obj.height*gameStatus.scale,
           type: obj.type,
           data: obj.properties.find(prop => prop.name === "text")?.value,
           active: true,
         };
   
-        const adjustedX = obj.x*gameStatus.scale + obj.width / 2;  // 中心補正
-        const adjustedY = obj.y*gameStatus.scale - obj.height / 2; // 中心補正
+        const adjustedX = event.x + event.width / 2;  // 中心補正
+        const adjustedY = event.y - event.height / 2; // 中心補正
   
         // イメージをシーンに追加
         const addimage = scene.add.image(adjustedX, adjustedY, image, frame)
