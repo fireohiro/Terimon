@@ -57,25 +57,11 @@ export function mappreload(loader){
     loader.tilemapTiledJSON('ranchMap','assets/tilemaps/ranch.json');
 
 }
-//マップが切り替わったかを確認
-export function checkAndCreateMap(scene,playerStatus,gameStatus){
-    if(map_idHasChanged(playerStatus)){
-        createMap(scene,playerStatus,gameStatus);
-    }
-}
 
-function map_idHasChanged(playerStatus){
-    if(previousMapId !== playerStatus.map_id){
-        previousMapId = playerStatus.map_id;
-        return true;
-    }
-    return false;
+export function changeMap(scene,playerStatus,gameStatus,transition){
+    playerStatus.map_id=transition.targetMap;
+    createMap(scene,playerStatus,gameStatus);
 }
-
-// export function changeMap(scene,playerStatus,gameStatus,transition){
-//     playerStatus.map_id=transition.targetMap;
-//     createMap(scene,playerStatus,gameStatus);
-// }
 
 export function createMap(scene,playerStatus,gameStatus){
     imageGroup=scene.add.group();
@@ -165,7 +151,7 @@ export function createMap(scene,playerStatus,gameStatus){
     }
 
     // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
-    transitionLayer = map.getObjectLayer('Transitions');
+    const transitionLayer = map.getObjectLayer('Transitions');
 
     if(transitionLayer){
     // トリガーをマップのオブジェクトレイヤーから設定
@@ -271,41 +257,18 @@ export function createMap(scene,playerStatus,gameStatus){
     playsound(scene,playerStatus.map_id);
 }
 
-  // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
-  // function setTransitionTriggers() {
-  //   const transitionLayer = map.getObjectLayer('Transitions');
-
-  //   // transitionLayer が存在するか確認
-  //   if (!transitionLayer) {
-  //     console.warn('Transitionsレイヤーが見つかりません');
-  //     transitionTriggers = []; // トリガーを空にして終了
-  //     return;
-  //   }
-
-  //   // トリガーをマップのオブジェクトレイヤーから設定
-  //   transitionTriggers = transitionLayer.objects.map(obj => ({
-  //     x: obj.x,
-  //     y: obj.y,
-  //     width: obj.width,
-  //     height: obj.height,
-  //     targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
-  //     targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
-  //     targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
-  //   }));
-  // }
-
   // プレイヤーがトリガーに触れているかをチェック
-  // export function checkTransition(player) {
-  //   for (const trigger of transitionTriggers) {
-  //     if (
-  //     player.x >= trigger.x && player.x <= trigger.x + trigger.width &&
-  //     player.y >= trigger.y && player.y <= trigger.y + trigger.height
-  //     ) {
-  //       return trigger; // 移動対象のトリガー情報を返す
-  //     }
-  //   }
-  //   return null;
-  // }
+  export function checkTransition(player) {
+    for (const trigger of transitionTriggers) {
+      if (
+      player.x >= trigger.x && player.x <= trigger.x + trigger.width &&
+      player.y >= trigger.y && player.y <= trigger.y + trigger.height
+      ) {
+        return trigger; // 移動対象のトリガー情報を返す
+      }
+    }
+    return null;
+  }
 
   // イベントレイヤーからオブジェクトを表示
   function loadEventsFromLayer(scene,gameStatus) {
