@@ -58,8 +58,8 @@ function pauseStart(scene,gameStatus){
 
 async function menuBar(scene,playerStatus,config,gameStatus){
     //メニューのサイズを設定
-    const menuWidth = config.width * 0.15+10;
-    const menuHeight = config.height * 0.50;
+    const menuWidth = 235;
+    const menuHeight = 365;
 
     // メニュー背景を作成し、左に少しスペースを開ける
     const menuBackground = scene.add.rectangle(menuWidth * 0.1-10, config.height * 0.08, menuWidth, menuHeight, 0xFFFFFF, 0.8);
