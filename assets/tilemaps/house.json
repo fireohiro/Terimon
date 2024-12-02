@@ -64,7 +64,7 @@
          "encoding":"base64",
          "height":19,
          "id":9,
-         "name":"CollisionLayer",
+         "name":"layer5",
          "opacity":0,
          "type":"tilelayer",
          "visible":true,
