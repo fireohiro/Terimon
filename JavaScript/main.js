@@ -56,6 +56,8 @@ function userData() {
 
 //手持ちモンスターの情報格納
 export async function loadFriends(){
+    statuses = [];
+    friendList = [];
     gameStatus.newfriend = 0;
     const response = await fetch('get_temoti.php');
     const friends = await response.json();

@@ -23,10 +23,10 @@ export function battlepreload(loader){
         loader.image(`monster${i}`,`assets/monster/monster${i}.png`);
     }
     //戦闘背景の読み込み
-    loader.image('grass','assets/battleimg/grassback.png');
-    loader.image('road','assets/battleimg/roadback.png');
-    loader.image('front','assets/battleimg/frontback.png');
-    loader.image('dungeon','assets/battleimg/dungeonback.png');
+    loader.image('grass','assets/battleimg/grass.png');
+    loader.image('road','assets/battleimg/road.png');
+    loader.image('front','assets/battleimg/front.png');
+    loader.image('dungeon','assets/battleimg/dungeon.png');
 }
 
 export async function battleupdate(scene,config,gameStatus,playerStatus,friends){

@@ -94,7 +94,7 @@ export function createMap(scene,playerStatus,gameStatus){
 
     //マップidごとに表示させる
     if(map_id === 1){
-        gameStatus.scale=1.5;
+        gameStatus.scale=2.0;
         mapData = 'houseMap';
         map = scene.make.tilemap({key:'houseMap'});
         for(let i = 1; i <= 9; i++){
@@ -109,7 +109,7 @@ export function createMap(scene,playerStatus,gameStatus){
         tilesets.push(tileset);
         layersu = 4;
     }else if(map_id === 3){
-        gameStatus.scale=1.5;
+        gameStatus.scale=2.5;
         map = scene.make.tilemap({key:'grassMap'});
         for(let i = 1; i <= 2; i++){
             let tileset = map.addTilesetImage(`grass${i}`, `grass${i}`);
@@ -133,7 +133,7 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 3;
     }else if(map_id === 6){
-        gameStatus.scale=1.5;
+        gameStatus.scale=2.0;
         map = scene.make.tilemap({key:'roadMap'});
         for(let i = 1; i <= 6; i++){
             let tileset = map.addTilesetImage(`dungeon_road${i}`, `road${i}`);
