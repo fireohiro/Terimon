@@ -2,6 +2,7 @@
 import {createStatusScreen,statusEvent} from './status.js';
 import {saveEvent,saveGame} from './save.js';
 import{logoutmessage,logoutdisplay} from './logout.js';
+import { playEffect } from './sound.js';
 
 let itemtra = null;
 let geartra = null;
@@ -16,7 +17,7 @@ export function createPause(scene,gameStatus,playerStatus,config,friends,itemLis
             pauseStart(scene,gameStatus);
         }
     });
-    saveGame(scene,playerStatus,config,gameStatus,friends,itemList,gearList);
+    saveGame(scene,config,gameStatus);
     logoutmessage(scene,config,gameStatus);
     menuBar(scene,playerStatus,config,gameStatus);
     createStatusScreen(scene,gameStatus, playerStatus,friends,config);
@@ -29,8 +30,10 @@ function pauseStart(scene,gameStatus){
 
     //ポーズ中の物理処理の停止と再稼働
     if(gameStatus.pauseflg){
+        playEffect(scene,'pause');
         scene.physics.world.pause();//停止
     }else{
+        playEffect(scene,'no');
         scene.physics.world.resume();//再稼働
         if(gameStatus.itemflg === true){
             //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
