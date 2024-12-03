@@ -1,124 +1,146 @@
-let itemContainer = null; // アイテムメニューのコンテナ
-let itemPointer = null;   // ポインター用のテキスト
+import {itemUse} from './main.js';
+let itemContainer = null;
 
 /**
- * アイテムメニューの表示を切り替える
+ * アイテムメニューの表示切り替え
  */
 export function itemEvent(gameStatus) {
+    if (!gameStatus || typeof gameStatus !== "object") {
+        console.error("Invalid gameStatus:", gameStatus);
+        return;
+    }
+
     gameStatus.itemflg = !gameStatus.itemflg;
     if (itemContainer) {
         itemContainer.setVisible(gameStatus.itemflg);
     }
 }
 
-/**
- * アイテムメニューを初期化し、必要な描画要素を設定する
- */
-export async function setupItemMenu(scene, config, gameStatus) {
-    console.log("Setting up item menu...");
+export function initializeItemMenu(scene, config, gameStatus, itemList) {
+    if (!scene || !config || !gameStatus || !Array.isArray(itemList)) {
+        console.error("Invalid arguments passed to initializeItemMenu");
+        return;
+    }
 
-    // メニューサイズを設定
+    // メニュー全体の幅と高さを計算
     const itemWidth = config.width * 0.6;
     const itemHeight = config.height * 0.95;
 
-    // メニュー背景を作成
-    const itemback = scene.add.rectangle(config.width * 0.3 + 10, 10, itemWidth, itemHeight, 0xFFFFFF, 0.8);
-    itemback.setStrokeStyle(2,0x4169e1); // 緑枠
-    itemback.setOrigin(0,0);
+    // 背景を生成
+    const itemback = scene.add.rectangle(
+        config.width * 0.3,
+        0,
+        itemWidth,
+        itemHeight,
+        0xFFFFFF,
+        0.8
+    );
+    itemback.setStrokeStyle(2, 0x4169e1);
+    itemback.setOrigin(0, 0);
 
-    // ヘッダー項目の表示（例: アイテムと個数）
+    // ヘッダーを生成
     const headerItem = scene.add.text(
-        config.width * 0.3 + 140,
-        itemHeight / 8,
+        config.width * 0.35,
+        20,
         "アイテム",
         { fontSize: "20px", fill: "#000" }
     );
     const headerCount = scene.add.text(
-        config.width * 0.3 + 700,
-        itemHeight / 8,
+        config.width * 0.75,
+        20,
         "個数",
         { fontSize: "20px", fill: "#000" }
     );
 
-    // コンテナに要素をまとめる
+    // アイテムメニューコンテナを作成
     itemContainer = scene.add.container(0, 0, [itemback, headerItem, headerCount]);
     itemContainer.setVisible(false); // 初期状態は非表示
-    itemContainer.setDepth(7); // メニューを前面に表示
+    itemContainer.setDepth(7);
+
+    // アイテムボタンの間隔と配置
+    const buttonSpacing = 40;
+    const startX = config.width * 0.35;
+    let startY = 60;
+
+    // アイテムリストからボタンを生成
+    itemList.forEach((item, index) => {
+        const itemText = `${item.item_name}`;
+        const countText = `${item.su}`;
+
+        // アイテムボタンを作成
+        const itemButton = createButton(
+            scene,
+            startX,
+            startY + index * buttonSpacing,
+            itemText,
+            () => {
+                console.log(`アイテム選択: ${item.item_name}`);
+                useItem(scene, config, gameStatus, item);
+            }
+        );
+
+        // 個数表示用のテキストを作成
+        const countDisplay = scene.add.text(
+            config.width * 0.75,
+            startY + index * buttonSpacing,
+            countText,
+            { fontSize: "18px", fill: "#000" }
+        );
+
+        // ボタンと個数表示をコンテナに追加
+        itemContainer.add([itemButton, countDisplay]);
+        console.log("ボタン生成:", itemButton);
+    });
+
+    console.log("アイテムメニュー初期化完了:", itemContainer);
+}
+
+
+/**
+ * ボタン生成用のユーティリティ関数
+ */
+function createButton(scene, x, y, text, callback) {
+    const button = scene.add.text(x, y, text, {
+        fontSize: "18px",
+        backgroundColor: "#FFFFFF",
+        color: "#000",
+        padding: { left: 10, right: 10, top: 5, bottom: 5 },
+    });
+    button.setInteractive();
+    button.on("pointerdown", callback);
+    button.on("pointerover", () => button.setStyle({ backgroundColor: "#E0E0E0" }));
+    button.on("pointerout", () => button.setStyle({ backgroundColor: "#FFFFFF" }));
+    return button;
 }
 
 /**
- * データベースからアイテムデータを取得してボタンを生成する
+ * アイテム使用処理
  */
-export async function createItemButtons(scene, config, itemList, playerStatus, friends) {
-    console.log("Creating item buttons...");
-
-    const buttonSpacing = 40;
-    let posY = config.height / 2 - itemList.length * buttonSpacing / 2;
-
-    // アイテムデータが空の場合のハンドリング
-    if (!itemList || itemList.length === 0) {
-        console.warn("アイテムリストが空です。");
+export function useItem(scene, config, gameStatus, item, playerStatus, friends) {
+    if (!scene || !config || !gameStatus || !item) {
+        console.error("Invalid arguments passed to useItem");
         return;
     }
 
-    // 既存のボタンがあれば削除（リセットのため）
-    if (itemContainer) {
-        itemContainer.removeAll(true); // コンテナ内のすべての要素を削除
+    console.log(`Using item: ${item.item_name}`);
+    // アイテム使用処理を実装
+    if(item.bunrui == "HP回復"){
+        itemUse(item.item_id);
+        console.log("消費確認用1");
+    }else if(item.bunrui == "MP回復"){
+        itemUse(item.item_id);
+        console.log("消費確認用2");
+    }else{
+        console.log("消費確認用3");
     }
-
-    itemList.forEach((item, index) => {
-        const itemText = `${item.item_name}    ${item.su}`;
-        const itemButton = scene.add.text(
-            config.width * 0.3 + 10,
-            posY + index * buttonSpacing,
-            itemText,
-            { fontSize: '15px', color: '#000', backgroundColor: '#FFFFFF' }
-        );
-
-        // ボタンをインタラクティブに設定
-        itemButton.setInteractive();
-
-        // ボタンクリック時のイベント処理
-        itemButton.on('pointerdown', () => {
-            console.log(`Selected item: ${item.item_name}`);
-            // 必要に応じて以下の関数を呼び出し
-            // selectConsumer(item, friends, scene, config, playerStatus, friends);
-            itemRole(item, playerStatus, friends, scene); // 必要な引数を渡して itemRole を呼び出し
-            itemUse(item);  // アイテムの数を減らす（itemList を更新するロジックを追加）
-            useItem(scene, config, gameStatus, itemList);
-        });
-
-        // ボタンをアイテムコンテナに追加
-        itemContainer.add(itemButton);
-    });
-
-    // アイテムコンテナを可視化
-    itemContainer.setVisible(true);
 }
-
-
-export function useItem(scene, config, gameStatus, itemList) {
-    // 関数の実装
-    console.log("useItem function called");
-    // アイテム使用処理を記述
-}
-
 
 /**
- * アイテムメニューの更新処理（カメラ追従用）
+ * アイテムメニューの更新（カメラ追従）
  */
 export function updateItemMenu(scene) {
     const camera = scene.cameras.main;
-    const menuX = camera.worldView.x + camera.worldView.width / 2;
-    const menuY = camera.worldView.y + camera.worldView.height / 2;
-
-    // アイテムメニューをカメラ位置に追従させる
     if (itemContainer) {
-        itemContainer.setPosition(menuX - itemContainer.width / 2, menuY - itemContainer.height / 2);
-    }
-
-    // ポインターもカメラ位置に追従
-    if (itemPointer) {
-        itemPointer.setPosition(menuX - 50, menuY - 50);
+        itemContainer.setPosition(camera.scrollX, camera.scrollY);
     }
 }
