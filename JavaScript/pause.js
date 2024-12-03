@@ -58,19 +58,25 @@ function pauseStart(scene,gameStatus){
 
 async function menuBar(scene,playerStatus,config,gameStatus){
     //メニューのサイズを設定
-    const menuWidth = 235;
-    const menuHeight = 365;
+    const menuWidth = config.width * 0.16;
+    const menuHeight = config.height * 0.50;
 
     // メニュー背景を作成し、左に少しスペースを開ける
     const menuBackground = scene.add.rectangle(menuWidth * 0.1-10, config.height * 0.08, menuWidth, menuHeight, 0xFFFFFF, 0.8);
     menuBackground.setStrokeStyle(4, 0x4169e1); // 緑枠
 
+    const takasa = menuBackground.y - menuHeight / 2 + 10;
     //テキスト（ボタンを設定）の例
-    const itemtext = scene.add.text(menuWidth*-0.5/2+15,menuHeight / -6 - 30,'アイテム',{fontSize:'32px',fill:'#000'});
-    const geartext = scene.add.text(menuWidth*-0.5/2+40,menuHeight / -6 + 40,'装備',{fontSize:'32px',fill:'#000'});
-    const statustext = scene.add.text(menuWidth*-0.5/2,menuHeight / -6 + 110,'ステータス',{fontSize:'32px',fill:'#000'});
-    const savetext = scene.add.text(menuWidth*-0.5/2+20,menuHeight / -6 + 180,'セーブ',{fontSize:'32px',fill:'#000'});
-    const logouttext = scene.add.text(menuWidth*-0.5/2+15,menuHeight / -6 + 250,'タイトル',{fontSize:'32px',fill:'#000'});
+    const itemtext = scene.add.text(10,takasa + menuHeight / 11 * 1,'アイテム',{fontSize:'32px',fill:'#000'});
+    itemtext.setOrigin(0.5,0.5);
+    const geartext = scene.add.text(10,takasa + menuHeight / 11 * 3,'装備',{fontSize:'32px',fill:'#000'});
+    geartext.setOrigin(0.5,0.5);
+    const statustext = scene.add.text(10,takasa + menuHeight / 11 * 5,'ステータス',{fontSize:'32px',fill:'#000'});
+    statustext.setOrigin(0.5,0.5);
+    const savetext = scene.add.text(10,takasa + menuHeight / 11 * 7,'セーブ',{fontSize:'32px',fill:'#000'});
+    savetext.setOrigin(0.5,0.5);
+    const logouttext = scene.add.text(10,takasa + menuHeight / 11 * 9,'タイトル',{fontSize:'32px',fill:'#000'});
+    logouttext.setOrigin(0.5,0.5);
 
     //クリックイベント
     itemtext.setInteractive().on('pointerdown',()=>{
@@ -93,7 +99,7 @@ async function menuBar(scene,playerStatus,config,gameStatus){
     });
     itemtext.setInteractive().on('pointerover', () => {
         if(!itemtra){
-            itemtra = scene.add.text(menuWidth*0.5/2+15,menuHeight / 6-5,'▶',{fontSize:'32px',fill:'#000'});
+            itemtra = scene.add.text(itemtext.x - 20,itemtext.y,'▶',{fontSize:'32px',fill:'#000'});
             itemtra.setDepth(8);
         }
     });
@@ -245,19 +251,21 @@ async function menuBar(scene,playerStatus,config,gameStatus){
 
     //所持金のテキスト
     const timeismoney = scene.add.text(
-        Moneybar.x - Moneybar.displayWidth/2+60,
-        Moneybar.y-Moneybar.displayHeight/2+15,
+        0,
+        Moneybar.y - goldBarHeight / 2 + goldBarHeight / 4,
         '所持金',
         {fontSize:'32px',fill:'#000'}
     );
+    timeismoney.setOrigin(0.5,0.5);
     moneytext = scene.add.text(
         //文字の設定兼表示内容
-        Moneybar.x-Moneybar.displayWidth/2+55,
-        Moneybar.y-Moneybar.displayHeight/2+90,//表示位置ｘとｙ
+        0,
+        Moneybar.y,//表示位置ｘとｙ
         //表示文字と文字の設定
         `${playerStatus.money}TP`,
         {fontSize:'32px',fill:'#000'}
     );
+    moneytext.setOrigin(0.5,0.5);
 
     //メニュー要素をコンテナにまとめる
     menuContainer = scene.add.container(0,0,[menuBackground,itemtext,geartext,statustext,savetext,logouttext,Moneybar,timeismoney,moneytext]);
@@ -278,18 +286,18 @@ export function updatepause(scene,playerStatus){
     //メニューをカメラ中心に配置し、少し左にずらす
     menuContainer.setPosition(menuX,menuY);
     if(itemtra){
-        itemtra.setPosition(menuX-85,menuY-95);
+        itemtra.setPosition(menuX-85,menuY-113);
     }
     if(geartra){
-        geartra.setPosition(menuX-60,menuY-20);
+        geartra.setPosition(menuX-60,menuY-35);
     }
     if(stattra){
-        stattra.setPosition(menuX-100,menuY+50);
+        stattra.setPosition(menuX-100,menuY+45);
     }
     if(savetra){
-        savetra.setPosition(menuX-73,menuY+120);
+        savetra.setPosition(menuX-73,menuY+125);
     }
     if(logotra){
-        logotra.setPosition(menuX-85,menuY+190);
+        logotra.setPosition(menuX-85,menuY+208);
     }
 }
