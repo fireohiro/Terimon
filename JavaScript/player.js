@@ -229,7 +229,7 @@ function getInteractionArea() {
   }
 
 //////////// デバッグ用
-function drawInteractionArea() {
+ function drawInteractionArea() {
     // 古い描画をクリア
     graphics.clear();
     // 範囲を取得
@@ -239,3 +239,6 @@ function drawInteractionArea() {
     graphics.fillRect(area.x - area.width / 2, area.y - area.height / 2, area.width, area.height);
   }
   
+  export function getplayer(){
+    return player;
+  }

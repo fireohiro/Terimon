@@ -1,4 +1,4 @@
-import {dataMap,playerupdate} from './player.js';
+import {dataMap,playerupdate,getplayer} from './player.js';
 import { playsound } from './sound.js';
 let map;
 let mapData;
@@ -60,16 +60,13 @@ export function mappreload(loader){
 
 export function changeMap(scene,playerStatus,gameStatus,transition){
     playerStatus.map_id = transition.targetMap;
+    destroy(scene);
     createMap(scene,playerStatus,gameStatus);
 }
 
 export function createMap(scene,playerStatus,gameStatus){
-    imageGroup=scene.add.group();
-    if(map){
-        map.destroy();
-    }
-    tilesets = [];
-    layersu = 0;
+  imageGroup=scene.add.group();
+  
     let map_id = playerStatus.map_id;
 
     if(map_id === 3 || map_id === 6 || map_id === 7){
@@ -235,7 +232,6 @@ export function createMap(scene,playerStatus,gameStatus){
 
     // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
     const transitionLayer = map.getObjectLayer('Transitions');
-    // transitionLayer.setScale(gameStatus.scale,gameStatus.scale);
     let graphicsA = scene.add.graphics();
 
     if(transitionLayer){
@@ -253,7 +249,7 @@ export function createMap(scene,playerStatus,gameStatus){
     for (const trigger of transitionTriggers) {
         // 半透明の四角形を描画
         graphicsA.fillStyle(0x00ff00, 0.3); // 緑色、30%透明
-        graphicsA.fillRect(trigger.x - trigger.width / 2, trigger.y - trigger.height / 2, trigger.width, trigger.height);
+        graphicsA.fillRect(trigger.x, trigger.y, trigger.width, trigger.height);
     }
     
     dataMap(map,scene,playerStatus,gameStatus,layer);
@@ -279,7 +275,6 @@ export function createMap(scene,playerStatus,gameStatus){
   // イベントレイヤーからオブジェクトを表示
   function loadEventsFromLayer(scene,gameStatus) {
     events = [];
-    clearEventImages();
     
     const EventLayer = map.getObjectLayer("EventLayer");
 
@@ -372,3 +367,55 @@ export function createMap(scene,playerStatus,gameStatus){
   function clearEventImages() {
     imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
   }
+
+  // Arcade版リソース破棄関数
+  function destroy(scene, player) {
+    imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
+
+    // プレイヤーオブジェクトを取得
+    player = getplayer();
+
+    // プレイヤーが存在しない場合のエラーチェック
+    if (!player || !player.body) {
+        console.error("Player object or body is not defined.");
+        return;
+    }
+
+    // プレイヤー以外のゲームオブジェクトを削除
+    scene.children.each(child => {
+        if (child !== player) {
+            if (child.body) {
+                child.body.destroy(); // 物理ボディを破棄
+            }
+            child.destroy(); // ゲームオブジェクトを破棄
+        }
+    });
+
+    // 世界の物理エンジンをリセット
+    // scene.physics.world.shutdown();
+    // scene.physics.world = new Phaser.Physics.Arcade.World(scene);
+
+    // プレイヤーの物理設定を再登録
+    // scene.physics.add.existing(player);
+    // player.body.setCollideWorldBounds(true);
+
+    // マップ関連のリソースを破棄
+    // if (collisionLayer) {
+    //     collisionLayer.destroy();
+    //     collisionLayer = null;
+    // }
+
+    if (map) {
+        layer.forEach(layer => layer.destroy());
+        map.destroy();
+        map = null;
+    }
+
+    tilesets = [];
+    layersu = 0;
+    layer = [];
+
+    // collisionObjects = null;
+
+    transitionTriggers = [];
+}
