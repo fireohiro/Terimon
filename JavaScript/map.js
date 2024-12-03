@@ -242,8 +242,8 @@ export function createMap(scene,playerStatus,gameStatus){
         width: obj.width*gameStatus.scale,
         height: obj.height*gameStatus.scale,
         targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
-        targetX: obj.properties.find(prop => prop.name === 'targetX')?.value*gameStatus.scale,
-        targetY: obj.properties.find(prop => prop.name === 'targetY')?.value*gameStatus.scale
+        targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
+        targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
         }));
     }
     for (const trigger of transitionTriggers) {
