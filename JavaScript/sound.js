@@ -1,5 +1,4 @@
 let currentMusic;
-let effectMap;
 export function soundpreload(loader){
     // loader.audio('town','assets/audio/town_music.mp3');
     loader.audio('battle','assets/audio/nomal_battle.mp3');
@@ -27,19 +26,6 @@ export function soundpreload(loader){
 }
 export function soundcreate(){
     currentMusic = null;
-    effectMap = {
-        encount1:'encount1',
-        encount2:'encount2',
-        coment:'coment',
-        attack:'attack',
-        magic:'magic',
-        miss:'miss',
-        getmoney:'getmoney',
-        pause:'open_pause',
-        open:'open',
-        yes:'yes',
-        no:'no',
-    };
 }
 
 export function playsound(scene,condition){
@@ -69,7 +55,22 @@ export function playsound(scene,condition){
 }
 
 export function playEffect(scene,condition){
+    const effectMap = {
+        encount1:'encount1',
+        encount2:'encount2',
+        coment:'coment',
+        attack:'attack',
+        magic:'magic',
+        miss:'miss',
+        getmoney:'getmoney',
+        pause:'open_pause',
+        open:'open',
+        yes:'yes',
+        no:'no',
+    };
     const effectKey = effectMap[condition];
+    console.log(condition);
+    console.log(effectMap);
     if(!effectKey){
         console.log(`条件${condition}に該当する音楽は見つかりませんでした。`);
     }else{
@@ -80,6 +81,19 @@ export function playEffect(scene,condition){
 
 export function waitEffect(scene,condition) {
     return new Promise((resolve) => {
+        const effectMap = {
+            encount1:'encount1',
+            encount2:'encount2',
+            coment:'coment',
+            attack:'attack',
+            magic:'magic',
+            miss:'miss',
+            getmoney:'getmoney',
+            pause:'open_pause',
+            open:'open',
+            yes:'yes',
+            no:'no',
+        };
         const effectKey = effectMap[condition];
         if(!effectKey){
             console.log(`条件${condition}に該当する音楽は見つかりませんでした。`);
