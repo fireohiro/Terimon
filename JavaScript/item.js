@@ -1,3 +1,4 @@
+import {itemUse} from './main.js';
 let itemContainer = null;
 
 /**
@@ -115,7 +116,7 @@ function createButton(scene, x, y, text, callback) {
 /**
  * アイテム使用処理
  */
-export function useItem(scene, config, gameStatus, item) {
+export function useItem(scene, config, gameStatus, item, playerStatus, friends) {
     if (!scene || !config || !gameStatus || !item) {
         console.error("Invalid arguments passed to useItem");
         return;
@@ -123,6 +124,15 @@ export function useItem(scene, config, gameStatus, item) {
 
     console.log(`Using item: ${item.item_name}`);
     // アイテム使用処理を実装
+    if(item.bunrui == "HP回復"){
+        itemUse(item.item_id);
+        console.log("消費確認用1");
+    }else if(item.bunrui == "MP回復"){
+        itemUse(item.item_id);
+        console.log("消費確認用2");
+    }else{
+        console.log("消費確認用3");
+    }
 }
 
 /**
