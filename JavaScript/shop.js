@@ -25,7 +25,7 @@ export function shopEvent(gameStatus){
         shopContainer.setVisible(gameStatus.shopflg);
         console.log(`shopContainer の表示状態: ${shopContainer.visible}`);
     } else {
-        console.error('shopContainer が見つかりません！');
+        console.error('shopContainer が見つかりません！'); 
     }
 }
 
