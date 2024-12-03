@@ -57,25 +57,11 @@ export function mappreload(loader){
     loader.tilemapTiledJSON('ranchMap','assets/tilemaps/ranch.json');
 
 }
-//マップが切り替わったかを確認
-export function checkAndCreateMap(scene,playerStatus,gameStatus){
-    if(map_idHasChanged(playerStatus)){
-        createMap(scene,playerStatus,gameStatus);
-    }
-}
 
-function map_idHasChanged(playerStatus){
-    if(previousMapId !== playerStatus.map_id){
-        previousMapId = playerStatus.map_id;
-        return true;
-    }
-    return false;
+export function changeMap(scene,playerStatus,gameStatus,transition){
+    playerStatus.map_id = transition.targetMap;
+    createMap(scene,playerStatus,gameStatus);
 }
-
-// export function changeMap(scene,playerStatus,gameStatus,transition){
-//     playerStatus.map_id=transition.targetMap;
-//     createMap(scene,playerStatus,gameStatus);
-// }
 
 export function createMap(scene,playerStatus,gameStatus){
     imageGroup=scene.add.group();
@@ -94,7 +80,7 @@ export function createMap(scene,playerStatus,gameStatus){
 
     //マップidごとに表示させる
     if(map_id === 1){
-        gameStatus.scale=1.5;
+        gameStatus.scale=2.0;
         mapData = 'houseMap';
         map = scene.make.tilemap({key:'houseMap'});
         for(let i = 1; i <= 9; i++){
@@ -109,7 +95,7 @@ export function createMap(scene,playerStatus,gameStatus){
         tilesets.push(tileset);
         layersu = 4;
     }else if(map_id === 3){
-        gameStatus.scale=1.5;
+        gameStatus.scale=2.5;
         map = scene.make.tilemap({key:'grassMap'});
         for(let i = 1; i <= 2; i++){
             let tileset = map.addTilesetImage(`grass${i}`, `grass${i}`);
@@ -133,7 +119,7 @@ export function createMap(scene,playerStatus,gameStatus){
         }
         layersu = 3;
     }else if(map_id === 6){
-        gameStatus.scale=1.5;
+        gameStatus.scale=2.0;
         map = scene.make.tilemap({key:'roadMap'});
         for(let i = 1; i <= 6; i++){
             let tileset = map.addTilesetImage(`dungeon_road${i}`, `road${i}`);
@@ -162,22 +148,6 @@ export function createMap(scene,playerStatus,gameStatus){
         let tileset = map.addTilesetImage('town2', 'town2');
         tilesets.push(tileset);
         layersu = 4;
-    }
-
-    // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
-    transitionLayer = map.getObjectLayer('Transitions');
-
-    if(transitionLayer){
-    // トリガーをマップのオブジェクトレイヤーから設定
-    transitionTriggers = transitionLayer.objects.map(obj => ({
-        x: obj.x*gameStatus.scale,
-        y: obj.y*gameStatus.scale,
-        width: obj.width,
-        height: obj.height,
-        targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
-        targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
-        targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
-        }));
     }
 
     //マップの情報をplayer.jsに送る
@@ -262,8 +232,30 @@ export function createMap(scene,playerStatus,gameStatus){
     }
 
     loadEventsFromLayer(scene,gameStatus);
-    // setTransitionTriggers();
 
+    // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
+    const transitionLayer = map.getObjectLayer('Transitions');
+    // transitionLayer.setScale(gameStatus.scale,gameStatus.scale);
+    let graphicsA = scene.add.graphics();
+
+    if(transitionLayer){
+    // トリガーをマップのオブジェクトレイヤーから設定
+    transitionTriggers = transitionLayer.objects.map(obj => ({
+        x: obj.x*gameStatus.scale,
+        y: obj.y*gameStatus.scale,
+        width: obj.width,
+        height: obj.height,
+        targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
+        targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
+        targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
+        }));
+    }
+    for (const trigger of transitionTriggers) {
+        // 半透明の四角形を描画
+        graphicsA.fillStyle(0x00ff00, 0.3); // 緑色、30%透明
+        graphicsA.fillRect(trigger.x - trigger.width / 2, trigger.y - trigger.height / 2, trigger.width, trigger.height);
+    }
+    
     dataMap(map,scene,playerStatus,gameStatus,layer);
     // マップの境界を設定
     scene.physics.world.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
@@ -271,41 +263,18 @@ export function createMap(scene,playerStatus,gameStatus){
     playsound(scene,playerStatus.map_id);
 }
 
-  // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
-  // function setTransitionTriggers() {
-  //   const transitionLayer = map.getObjectLayer('Transitions');
-
-  //   // transitionLayer が存在するか確認
-  //   if (!transitionLayer) {
-  //     console.warn('Transitionsレイヤーが見つかりません');
-  //     transitionTriggers = []; // トリガーを空にして終了
-  //     return;
-  //   }
-
-  //   // トリガーをマップのオブジェクトレイヤーから設定
-  //   transitionTriggers = transitionLayer.objects.map(obj => ({
-  //     x: obj.x,
-  //     y: obj.y,
-  //     width: obj.width,
-  //     height: obj.height,
-  //     targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
-  //     targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
-  //     targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
-  //   }));
-  // }
-
   // プレイヤーがトリガーに触れているかをチェック
-  // export function checkTransition(player) {
-  //   for (const trigger of transitionTriggers) {
-  //     if (
-  //     player.x >= trigger.x && player.x <= trigger.x + trigger.width &&
-  //     player.y >= trigger.y && player.y <= trigger.y + trigger.height
-  //     ) {
-  //       return trigger; // 移動対象のトリガー情報を返す
-  //     }
-  //   }
-  //   return null;
-  // }
+  export function checkTransition(player) {
+    for (const trigger of transitionTriggers) {
+      if (
+      player.x >= trigger.x && player.x <= trigger.x + trigger.width &&
+      player.y >= trigger.y && player.y <= trigger.y + trigger.height
+      ) {
+        return trigger; // 移動対象のトリガー情報を返す
+      }
+    }
+    return null;
+  }
 
   // イベントレイヤーからオブジェクトを表示
   function loadEventsFromLayer(scene,gameStatus) {
@@ -331,15 +300,15 @@ export function createMap(scene,playerStatus,gameStatus){
           id: obj.id,
           x: obj.x*gameStatus.scale,
           y: obj.y*gameStatus.scale,
-          width: obj.width,
-          height: obj.height,
+          width: obj.width*gameStatus.scale,
+          height: obj.height*gameStatus.scale,
           type: obj.type,
           data: obj.properties.find(prop => prop.name === "text")?.value,
           active: true,
         };
   
-        const adjustedX = obj.x*gameStatus.scale + obj.width / 2;  // 中心補正
-        const adjustedY = obj.y*gameStatus.scale - obj.height / 2; // 中心補正
+        const adjustedX = event.x + event.width / 2;  // 中心補正
+        const adjustedY = event.y - event.height / 2; // 中心補正
   
         // イメージをシーンに追加
         const addimage = scene.add.image(adjustedX, adjustedY, image, frame)

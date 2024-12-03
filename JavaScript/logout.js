@@ -1,8 +1,15 @@
+import { playEffect } from "./sound";
+
 let logoutContainer;
 let logotra = null;
 let backtra = null;
-export function logoutdisplay(gameStatus){
+export function logoutdisplay(gameStatus,scene){
     gameStatus.logoutflg = !gameStatus.logoutflg;
+    if(gameStatus.logoutflg){
+        playEffect(scene,'open');
+    }else{
+        playEffect(scene,'no');
+    }
     logoutContainer.setVisible(gameStatus.logoutflg);
 }
 

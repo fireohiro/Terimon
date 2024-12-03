@@ -1,5 +1,5 @@
 import {battleStart} from './battle.js';
-import {checkAndCreateMap,findEventAt,triggerEvent} from './map.js';
+import {findEventAt,triggerEvent,checkTransition,changeMap} from './map.js';
 import { shopEvent,createShop } from './shop.js';
 
 const battlerate = 2;
@@ -13,11 +13,14 @@ const StepToEncounter = 80;//バトル発生するまでの必要歩数
 let direction = "down"; // プレイヤーの向きを保持
 let interactionRange = 32; // 調べられる距離
 
+let graphics;//範囲描画用のGraphicsオブジェクト
+
 export function playerpreload(loader){
     loader.spritesheet('playerImage','assets/character/terimon1.png', { frameWidth: 32, frameHeight: 32 });
 }
 
 export function playercreate(scene,playerStatus,gameStatus,layer){
+    graphics = scene.add.graphics(); // 範囲描画用のGraphicsオブジェクト
     //プレイヤーをセーブ地に出現させる
     player = scene.physics.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'playerimage');
     player.setScale(gameStatus.scale);
@@ -36,6 +39,7 @@ export function playercreate(scene,playerStatus,gameStatus,layer){
     // キーボード入力を設定
     scene.input.keyboard.on("keydown-E", () => {
         checkForInteraction();
+        drawInteractionArea();
     });
 
     //ここに大きさ調整だったりプレイヤーがいる層の設定をする
@@ -77,7 +81,7 @@ export function playercreate(scene,playerStatus,gameStatus,layer){
     }else if(playerStatus.map_id === 5){
         player.setDepth(1);
     }else if(playerStatus.map_id === 6){
-        player.setDepth(3);
+        player.setDepth(2);
     }else if(playerStatus.map_id === 7){
         player.setDepth(2);
     }else if(playerStatus.map_id === 8){
@@ -98,29 +102,31 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
     isMoving = false;//最初は動いていないことにする
     if (cursors.up.isDown) {
         isMoving = true;
+        player.setVelocityX(0);
         player.setVelocityY(-playerStatus.speed*10);
         player.anims.play('playerup', true);
         direction="up";
     } else if (cursors.down.isDown) {
         isMoving = true;
+        player.setVelocityX(0);
         player.setVelocityY(playerStatus.speed*10);
         player.anims.play('playerdown', true);
         direction="down";
-    }else{
-        player.setVelocityY(0);
-    }
-    if (cursors.left.isDown) {
+    }else if (cursors.left.isDown) {
         isMoving = true;
+        player.setVelocityY(0);
         player.setVelocityX(-playerStatus.speed*10);
         player.anims.play('playerleft', true);
         direction="left";
     } else if (cursors.right.isDown) {
         isMoving = true;
+        player.setVelocityY(0);
         player.setVelocityX(playerStatus.speed*10);
         player.anims.play('playerright', true);
         direction="right";
     }else{
         player.setVelocityX(0);
+        player.setVelocityY(0);
     }
 
     //プレイヤーの現在地をリアルタイムに入れる
@@ -183,142 +189,11 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
         }
     }
      // マップ切り替えのトリガーをチェック
-    //  const transition = checkTransition(player);
-    //  if (transition) {
-    //     changeMap(scene,playerStatus,gameStatus,transition);
-    //     player.setPosition(transition.targetX*gameStatus.scale, transition.targetY*gameStatus.scale);
-    //  }
-
-    //それぞれのマップごとにマップが切り替わるポイントを指定
-    // house
-    if(playerStatus.map_id === 1){
-        if((177*gameStatus.scale <= player.x && player.x <= (177+57)*gameStatus.scale ) 
-            && ( 497*gameStatus.scale <= player.y && player.y <= (497+28)*gameStatus.scale)){
-            playerStatus.map_id = 2;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(915*gameStatus.scale, 285*gameStatus.scale);
-        }
-    // home
-    }else if(playerStatus.map_id === 2){
-        if((894*gameStatus.scale <= player.x && player.x <= (894+34)*gameStatus.scale ) 
-            && ( 194*gameStatus.scale <= player.y && player.y <= (194+65)*gameStatus.scale)){
-            playerStatus.map_id = 1;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(205*gameStatus.scale, 490*gameStatus.scale);
-        }
-        if((0*gameStatus.scale <= player.x && player.x <= (0+17)*gameStatus.scale ) 
-            && ( 507*gameStatus.scale <= player.y && player.y <= (507+255)*gameStatus.scale)){
-            playerStatus.map_id = 3;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(758*gameStatus.scale, 210*gameStatus.scale);
-        }
-    // grass
-    }else if(playerStatus.map_id === 3){
-        if((781*gameStatus.scale <= player.x && player.x <= (781+17)*gameStatus.scale ) 
-            && ( 94*gameStatus.scale <= player.y && player.y <= (94+256)*gameStatus.scale)){
-            playerStatus.map_id = 2;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(20*gameStatus.scale, 635*gameStatus.scale);
-        }
-        if((0*gameStatus.scale <= player.x && player.x <= (0+17)*gameStatus.scale ) 
-            && ( 545*gameStatus.scale <= player.y && player.y <= (545+157)*gameStatus.scale)){
-            playerStatus.map_id = 6;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(937*gameStatus.scale, 496*gameStatus.scale);
-        }
-    // town
-    }else if(playerStatus.map_id === 4){
-        if((1260*gameStatus.scale <= player.x && player.x <= (1260+17)*gameStatus.scale ) 
-            && ( 540*gameStatus.scale <= player.y && player.y <= (540+292)*gameStatus.scale)){
-            playerStatus.map_id = 6;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(20*gameStatus.scale, 480*gameStatus.scale);
-        }
-        if((623*gameStatus.scale <= player.x && player.x <= (623+34)*gameStatus.scale )
-             && ( 586*gameStatus.scale <= player.y && player.y <= (586+54)*gameStatus.scale)){
-            if (!gameStatus.shopflg) { // ショップが開いていない場合のみ処理
-                createShop(scene, playerStatus, config, gameStatus);
-                shopEvent(gameStatus);
-            }else{
-                player.setPosition(player.x,player.y+32);
-            }
-        }
-    // gacha
-    }else if(playerStatus.map_id === 5){
-        if((0*gameStatus.scale <= player.x && player.x <= (0+800)*gameStatus.scale ) 
-            && ( 780*gameStatus.scale <= player.y && player.y <= (780+17)*gameStatus.scale)){
-            playerStatus.map_id = 6;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(461*gameStatus.scale, 20*gameStatus.scale);
-        }
-    // entry
-    }else if(playerStatus.map_id === 6){
-        // 右
-        if((941*gameStatus.scale <= player.x && player.x <= (941+17)*gameStatus.scale ) 
-            && ( 351*gameStatus.scale <= player.y && player.y <= (351+289)*gameStatus.scale)){
-            playerStatus.map_id = 3;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(20*gameStatus.scale, 623*gameStatus.scale);
-        }
-        // 上
-        if((317*gameStatus.scale <= player.x && player.x <= (317+289)*gameStatus.scale ) 
-            && ( 0*gameStatus.scale <= player.y && player.y <= (0+17)*gameStatus.scale)){
-            playerStatus.map_id = 5;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(775*gameStatus.scale, 400*gameStatus.scale);
-        }
-        // 左
-        if((0*gameStatus.scale <= player.x && player.x <= (0+17)*gameStatus.scale ) 
-            && ( 319*gameStatus.scale <= player.y && player.y <= (319+320)*gameStatus.scale)){
-            playerStatus.map_id = 4;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(1250*gameStatus.scale, 642*gameStatus.scale);
-        }
-        // 下
-        if((288*gameStatus.scale <= player.x && player.x <= (288+320)*gameStatus.scale ) 
-            && ( 941*gameStatus.scale <= player.y && player.y <= (941+17)*gameStatus.scale)){
-            playerStatus.map_id = 8;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(174*gameStatus.scale, 52*gameStatus.scale);
-        }
-        // 階段
-        if((192*gameStatus.scale <= player.x && player.x <= (192+32)*gameStatus.scale ) 
-            && ( 157*gameStatus.scale <= player.y && player.y <= (157+32)*gameStatus.scale)){
-            playerStatus.map_id = 7;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(638*gameStatus.scale, 920*gameStatus.scale);
-        }
-    // dungeon
-    }else if(playerStatus.map_id === 7){
-        if((601*gameStatus.scale <= player.x && player.x <= (601+74)*gameStatus.scale ) 
-            && ( 925*gameStatus.scale <= player.y && player.y <= (925+32)*gameStatus.scale)){
-            playerStatus.map_id = 6;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(208*gameStatus.scale, 200*gameStatus.scale);
-        }
-    // ranch
-    }else if(playerStatus.map_id === 8){
-        if((0*gameStatus.scale <= player.x && player.x <= (0+800)*gameStatus.scale ) 
-            && ( 0*gameStatus.scale <= player.y && player.y <= (0+17)*gameStatus.scale)){
-            playerStatus.map_id = 6;//map_idと書いているが、どのidがどのマップを表しているかは未定
-            //再びcreate処理を行わせるための処理(必要ないかもなので、実行できるようになった際に試す)
-            checkAndCreateMap(scene,playerStatus,gameStatus);
-            player.setPosition(448*gameStatus.scale, 935*gameStatus.scale);
-        }
-    }
+     const transition = checkTransition(player);
+     if (transition) {
+        changeMap(scene,playerStatus,gameStatus,transition);
+        player.setPosition(transition.targetX*gameStatus.scale, transition.targetY*gameStatus.scale);
+     }
 }
 export function playerstop(){
     player.setVelocityX(0);
@@ -353,5 +228,14 @@ function getInteractionArea() {
     }
   }
 
-
+//////////// デバッグ用
+function drawInteractionArea() {
+    // 古い描画をクリア
+    graphics.clear();
+    // 範囲を取得
+    const area = getInteractionArea();
+    // 半透明の四角形を描画
+    graphics.fillStyle(0x00ff00, 0.3); // 緑色、30%透明
+    graphics.fillRect(area.x - area.width / 2, area.y - area.height / 2, area.width, area.height);
+  }
   

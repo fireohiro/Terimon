@@ -23,10 +23,10 @@ export function battlepreload(loader){
         loader.image(`monster${i}`,`assets/monster/monster${i}.png`);
     }
     //戦闘背景の読み込み
-    loader.image('grass','assets/battleimg/grassback.png');
-    loader.image('road','assets/battleimg/roadback.png');
-    loader.image('front','assets/battleimg/frontback.png');
-    loader.image('dungeon','assets/battleimg/dungeonback.png');
+    loader.image('grass','assets/battleimg/grass.png');
+    loader.image('road','assets/battleimg/road.png');
+    loader.image('front','assets/battleimg/front.png');
+    loader.image('dungeon','assets/battleimg/dungeon.png');
 }
 
 export async function battleupdate(scene,config,gameStatus,playerStatus,friends){
@@ -105,12 +105,15 @@ export async function battleStart(scene,config,bunrui,gameStatus,friends,playerS
     gameStatus.battleflg = true;
     await waitEffect(scene,'encount1');
     playEffect(scene,'encount2');
-    let condition;
     if (bunrui === 1){
-        if(playerStatus.map_id === 3 || playerStatus.map_id === 7){
+        if(playerStatus.map_id === 3){
             playsound(scene,'battle');
-        }else if(playerStatus.map_id === 6 || playerStatus.map_id === 8){
+        }else if(playerStatus.map_id === 6){
             playsound(scene,'battle2');
+        }else if(playerStatus.map_id === 7){
+            playsound(scene,'battle3');
+        }else{
+            playsound(scene,'battle4');
         }
     }else if(bunrui === 2){
         condition = 'boss1';
