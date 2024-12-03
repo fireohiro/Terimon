@@ -243,8 +243,8 @@ export function createMap(scene,playerStatus,gameStatus){
     transitionTriggers = transitionLayer.objects.map(obj => ({
         x: obj.x*gameStatus.scale,
         y: obj.y*gameStatus.scale,
-        width: obj.width,
-        height: obj.height,
+        width: obj.width*gameStatus.scale,
+        height: obj.height*gameStatus.scale,
         targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
         targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
         targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
