@@ -100,28 +100,34 @@ export function dataMap(mapdata,scene,playerStatus,gameStatus,layer){
 
 export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemList,friendList){
     isMoving = false;//最初は動いていないことにする
+    let speed = playerStatus.speed * 5;
+    if(speed < 250){
+        speed = 250;
+    }else if(speed > 1000){
+        speed = 1000;
+    }
     if (cursors.up.isDown) {
         isMoving = true;
         player.setVelocityX(0);
-        player.setVelocityY(-playerStatus.speed*10);
+        player.setVelocityY(-speed);
         player.anims.play('playerup', true);
         direction="up";
     } else if (cursors.down.isDown) {
         isMoving = true;
         player.setVelocityX(0);
-        player.setVelocityY(playerStatus.speed*10);
+        player.setVelocityY(speed);
         player.anims.play('playerdown', true);
         direction="down";
     }else if (cursors.left.isDown) {
         isMoving = true;
         player.setVelocityY(0);
-        player.setVelocityX(-playerStatus.speed*10);
+        player.setVelocityX(-speed);
         player.anims.play('playerleft', true);
         direction="left";
     } else if (cursors.right.isDown) {
         isMoving = true;
         player.setVelocityY(0);
-        player.setVelocityX(playerStatus.speed*10);
+        player.setVelocityX(speed);
         player.anims.play('playerright', true);
         direction="right";
     }else{
@@ -163,6 +169,8 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
                 let encountnum = Math.floor(Math.random() * 100) + 1;
                 if(encountnum <= battlerate){//2%の確率でバトル発生
                     playerstop();
+                    player.anims.stop();  // 現在のアニメーションを停止
+
                     // キャラクターが最後に向いていた方向に応じた待機フレームを設定
                     switch (player.anims.getName()) {
                         case 'playerup':

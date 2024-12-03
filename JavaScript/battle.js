@@ -102,9 +102,10 @@ export async function battleupdate(scene,config,gameStatus,playerStatus,friends)
 
 //バトルスタート
 export async function battleStart(scene,config,bunrui,gameStatus,friends,playerStatus,itemList,friendList){
-    gameStatus.battleflg = true;
+    gameStatus.fadeflg = true;
     await waitEffect(scene,'encount1');
     playEffect(scene,'encount2');
+    await fadeOut(scene,250);
     if (bunrui === 1){
         if(playerStatus.map_id === 3){
             playsound(scene,'battle');
@@ -167,6 +168,9 @@ export async function battleStart(scene,config,bunrui,gameStatus,friends,playerS
     back.setOrigin(0,0);
     back.setDisplaySize(config.width,config.height);//画像のサイズを画面のサイズに合わせる
     back.setDepth(10);
+    fadeIn(scene,500);
+    gameStatus.fadeflg = false;
+    gameStatus.battleflg = true;
 
     //モンスターを中央に並べて表示
     enemys = [enemy1,enemy2,enemy3];
@@ -622,10 +626,10 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
 
                     // テキストをフレーム内に配置
                     let textY = config.height - frameHeight - offsetY + 20;
-                    const wazatext1 = scene.add.text(offsetX + 10, textY, `${magicList[0].waza_name}　　　MP:${magicList[0].syouhi_mp}　　　分類：${magicList[0].naiyou}　　　威力：${magicList[0].might}　　　命中：${magicList[0].hit_rate}`, { fontSize: '24px', fill: '#000000' });
-                    const wazatext2 = scene.add.text(offsetX + 10, textY + 20, `${magicList[1].waza_name}　　　MP:${magicList[1].syouhi_mp}　　　分類：${magicList[1].naiyou}　　　威力：${magicList[1].might}　　　命中：${magicList[1].hit_rate}`, { fontSize: '24px', fill: '#000000' });
-                    const wazatext3 = scene.add.text(offsetX + 10, textY + 40, `${magicList[2].waza_name}　　　MP:${magicList[2].syouhi_mp}　　　分類：${magicList[2].naiyou}　　　威力：${magicList[2].might}　　　命中：${magicList[2].hit_rate}`, { fontSize: '24px', fill: '#000000' });
-                    const wazatext4 = scene.add.text(offsetX + 10, textY + 60, `${magicList[3].waza_name}　　　MP:${magicList[3].syouhi_mp}　　　分類：${magicList[3].naiyou}　　　威力：${magicList[3].might}　　　命中：${magicList[3].hit_rate}`, { fontSize: '24px', fill: '#000000' });
+                    const wazatext1 = scene.add.text(offsetX + 10, textY, `${magicList[0].waza_name}　　　MP:${magicList[0].syouhi_mp}　　　分類：${magicList[0].naiyou}　　　威力：${magicList[0].might}　　　成功率：${magicList[0].hit_rate}`, { fontSize: '24px', fill: '#000000' });
+                    const wazatext2 = scene.add.text(offsetX + 10, textY + 20, `${magicList[1].waza_name}　　　MP:${magicList[1].syouhi_mp}　　　分類：${magicList[1].naiyou}　　　威力：${magicList[1].might}　　　成功率：${magicList[1].hit_rate}`, { fontSize: '24px', fill: '#000000' });
+                    const wazatext3 = scene.add.text(offsetX + 10, textY + 40, `${magicList[2].waza_name}　　　MP:${magicList[2].syouhi_mp}　　　分類：${magicList[2].naiyou}　　　威力：${magicList[2].might}　　　成功率：${magicList[2].hit_rate}`, { fontSize: '24px', fill: '#000000' });
+                    const wazatext4 = scene.add.text(offsetX + 10, textY + 60, `${magicList[3].waza_name}　　　MP:${magicList[3].syouhi_mp}　　　分類：${magicList[3].naiyou}　　　威力：${magicList[3].might}　　　成功率：${magicList[3].hit_rate}`, { fontSize: '24px', fill: '#000000' });
 
                     // テキストをまとめてコンテナに追加
                     [wazatext1, wazatext2, wazatext3, wazatext4].forEach(text => {
@@ -792,7 +796,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
             playEffect(scene,'magic');
             await displaymessage(scene,config,`味方の${combatant.monster_name}は${magic.waza_name}を使った！`);
             for (const enemy of enemys) {
-                // 命中判定
+                // 成功判定
                 randnum = Math.floor(Math.random() * 100) + 1;
                 if (randnum <= magic.hit_rate) {
                     // 即死
@@ -1196,6 +1200,21 @@ async function displaymessage(scene, config, message) {
 
     await displayNextChar(); // 文字表示を待つ
     await displayEndMarker(); // エンドマーカーの表示を待つ
+}
+
+async function fadeOut(scene,duration){
+    return new Promise((resolve)=>{
+        const camera = scene.cameras.main;
+        camera.fadeOut(duration,0,0,0);//黒色のフェードアウト
+        camera.once('camerafadeoutcomplete',()=>{
+                resolve();//フェードインが完了したらPromiseを解決
+        });
+    });
+}
+
+function fadeIn(scene,duration){
+    const camera = scene.cameras.main;
+    camera.fadeIn(duration,0,0,0);
 }
 
 async function battleEnd(scene,config,gameStatus,winflg,playerStatus,friends){

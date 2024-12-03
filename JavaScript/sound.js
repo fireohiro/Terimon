@@ -69,8 +69,6 @@ export function playEffect(scene,condition){
         no:'no',
     };
     const effectKey = effectMap[condition];
-    console.log(condition);
-    console.log(effectMap);
     if(!effectKey){
         console.log(`条件${condition}に該当する音楽は見つかりませんでした。`);
     }else{

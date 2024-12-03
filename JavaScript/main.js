@@ -33,7 +33,7 @@ const config = {
 //ゲームのインスタンスを作成
 const game = new Phaser.Game(config);
 //ポーズのbooleanをオブジェクトで管理することで、他プログラムで中身を同期できる
-const gameStatus = {pauseflg:false,battleflg:false,temotisu:0,playerfight:true,itemflg:false,gearflg:false,statusflg:false,saveflg:false,logoutflg:false,encountflg:false,shopflg:false,scale:1,newfriend:0};
+const gameStatus = {pauseflg:false,battleflg:false,temotisu:0,playerfight:true,itemflg:false,gearflg:false,statusflg:false,saveflg:false,logoutflg:false,encountflg:false,shopflg:false,scale:1,newfriend:0,fadeflg:false};
 const playerStatus = {};//プレイヤーの各種情報を格納
 const friend1Status ={};//手持ち１情報
 const friend2Status ={};//手持ち２情報
@@ -162,7 +162,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
 }
 //ゲームの更新処理
 function update(){
-    if(!createok){
+    if(!createok || gameStatus.fadeflg){
         return;
     }
     if(gameStatus.battleflg){
