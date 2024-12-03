@@ -105,7 +105,7 @@ export async function battleStart(scene,config,bunrui,gameStatus,friends,playerS
     gameStatus.fadeflg = true;
     await waitEffect(scene,'encount1');
     playEffect(scene,'encount2');
-    await fadeOut(scene,250);
+    await fadeOut(scene,100);
     if (bunrui === 1){
         if(playerStatus.map_id === 3){
             playsound(scene,'battle');

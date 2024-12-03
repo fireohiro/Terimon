@@ -102,6 +102,7 @@ async function menuBar(scene,playerStatus,config,gameStatus){
             itemtra = scene.add.text(itemtext.x - 20,itemtext.y,'▶',{fontSize:'32px',fill:'#000'});
             itemtra.setDepth(8);
         }
+        itemtext.y += 10;
     });
     // カーソルがアイテムテキストから外れたときの処理
     itemtext.setInteractive().on('pointerout', () => {
@@ -110,6 +111,7 @@ async function menuBar(scene,playerStatus,config,gameStatus){
             itemtra.destroy();
             itemtra = null;  // 破棄後は再度nullに設定
         }
+        itemtext.y -= 10;
     });
     //装備
     geartext.setInteractive().on('pointerdown',()=>{
