@@ -71,17 +71,17 @@
                         {
                          "name":"targetMap",
                          "type":"int",
-                         "value":6
+                         "value":7
                         }, 
                         {
                          "name":"targetX",
                          "type":"int",
-                         "value":208
+                         "value":210
                         }, 
                         {
                          "name":"targetY",
                          "type":"int",
-                         "value":200
+                         "value":109
                         }],
                  "rotation":0,
                  "type":"",
@@ -97,7 +97,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":2,
+ "nextobjectid":3,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

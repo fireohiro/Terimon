@@ -45,9 +45,74 @@
          "width":25,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":10,
+         "name":"Transition",
+         "objects":[
+                {
+                 "height":255.003706449222,
+                 "id":10,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"targetMap",
+                         "type":"int",
+                         "value":2
+                        }, 
+                        {
+                         "name":"targetX",
+                         "type":"int",
+                         "value":48
+                        }, 
+                        {
+                         "name":"targetY",
+                         "type":"int",
+                         "value":622
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":13.8374104274771,
+                 "x":782.802075611565,
+                 "y":94.885100074129
+                }, 
+                {
+                 "height":154.18828762046,
+                 "id":11,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"targetMap",
+                         "type":"int",
+                         "value":4
+                        }, 
+                        {
+                         "name":"targetX",
+                         "type":"int",
+                         "value":1244
+                        }, 
+                        {
+                         "name":"targetY",
+                         "type":"int",
+                         "value":607
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":16.8025698047937,
+                 "x":0,
+                 "y":543.612552508031
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":10,
- "nextobjectid":10,
+ "nextlayerid":11,
+ "nextobjectid":13,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

@@ -112,25 +112,29 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
         player.setVelocityY(-speed);
         player.anims.play('playerup', true);
         direction="up";
-    } else if (cursors.down.isDown) {
+    } 
+    if (cursors.down.isDown) {
         isMoving = true;
         player.setVelocityX(0);
         player.setVelocityY(speed);
         player.anims.play('playerdown', true);
         direction="down";
-    }else if (cursors.left.isDown) {
+    }
+    if (cursors.left.isDown) {
         isMoving = true;
         player.setVelocityY(0);
         player.setVelocityX(-speed);
         player.anims.play('playerleft', true);
         direction="left";
-    } else if (cursors.right.isDown) {
+    }
+    if (cursors.right.isDown) {
         isMoving = true;
         player.setVelocityY(0);
         player.setVelocityX(speed);
         player.anims.play('playerright', true);
         direction="right";
-    }else{
+    }
+    if(!isMoving){
         player.setVelocityX(0);
         player.setVelocityY(0);
     }
