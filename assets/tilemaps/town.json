@@ -225,12 +225,12 @@
                         {
                          "name":"targetX",
                          "type":"int",
-                         "value":31
+                         "value":36
                         }, 
                         {
                          "name":"targetY",
                          "type":"int",
-                         "value":614
+                         "value":652
                         }],
                  "rotation":0,
                  "type":"",
@@ -257,7 +257,7 @@
                         {
                          "name":"targetY",
                          "type":"int",
-                         "value":767
+                         "value":776
                         }],
                  "rotation":0,
                  "type":"",
@@ -279,12 +279,12 @@
                         {
                          "name":"targetX",
                          "type":"int",
-                         "value":1117
+                         "value":1109
                         }, 
                         {
                          "name":"targetY",
                          "type":"int",
-                         "value":540
+                         "value":579
                         }],
                  "rotation":0,
                  "type":"",

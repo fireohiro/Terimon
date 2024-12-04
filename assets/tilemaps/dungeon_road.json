@@ -103,12 +103,12 @@
                         {
                          "name":"targetX",
                          "type":"int",
-                         "value":41
+                         "value":34
                         }, 
                         {
                          "name":"targetY",
                          "type":"int",
-                         "value":480
+                         "value":502
                         }],
                  "rotation":0,
                  "type":"",
