@@ -1,4 +1,4 @@
-// import{itemEvent,useItem} from './item.js';
+import {itemEvent, initializeItemMenu} from './item.js';
 import {createStatusScreen,statusEvent} from './status.js';
 import {saveEvent,saveGame} from './save.js';
 import{logoutmessage,logoutdisplay} from './logout.js';
@@ -14,7 +14,7 @@ export function createPause(scene,gameStatus,playerStatus,config,friends,itemLis
     saveGame(scene,config,gameStatus);
     logoutmessage(scene,config,gameStatus);
     createStatusScreen(scene,gameStatus, playerStatus,friends,config);
-    // useItem(loader,playerStatus,config,gameStatus,friend1Status,friend2Status,friend3Status);
+    initializeItemMenu(scene, config, gameStatus, itemList);
 }
 
 function pauseStart(scene,gameStatus,config,playerStatus){
