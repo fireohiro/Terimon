@@ -49,7 +49,7 @@
         {
          "draworder":"topdown",
          "id":10,
-         "name":"Transition",
+         "name":"Transitions",
          "objects":[
                 {
                  "height":255.003706449222,
@@ -91,7 +91,7 @@
                         {
                          "name":"targetX",
                          "type":"int",
-                         "value":1244
+                         "value":1245
                         }, 
                         {
                          "name":"targetY",

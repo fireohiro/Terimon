@@ -90,7 +90,7 @@ async function menuBar(scene,playerStatus,config,gameStatus){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
             logoutdisplay(gameStatus,scene);
         }
-        // itemEvent(gameStatus);
+        itemEvent(gameStatus);
     });
     itemtext.setInteractive().on('pointerover', () => {
         itemtext.y += 5;

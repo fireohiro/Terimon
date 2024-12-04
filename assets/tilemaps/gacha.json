@@ -100,17 +100,17 @@
                         {
                          "name":"targetMap",
                          "type":"int",
-                         "value":6
+                         "value":4
                         }, 
                         {
                          "name":"targetX",
                          "type":"int",
-                         "value":461
+                         "value":672
                         }, 
                         {
                          "name":"targetY",
                          "type":"int",
-                         "value":20
+                         "value":33
                         }],
                  "rotation":0,
                  "type":"",
