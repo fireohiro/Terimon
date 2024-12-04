@@ -32,6 +32,7 @@ function pauseStart(scene,gameStatus,config,playerStatus){
         scene.physics.world.resume();//再稼働
         if(gameStatus.itemflg === true){
             //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            itemEvent(gameStatus,scene);
         }
         if(gameStatus.gearflg === true){
             //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -90,7 +91,7 @@ async function menuBar(scene,playerStatus,config,gameStatus){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
             logoutdisplay(gameStatus,scene);
         }
-        itemEvent(gameStatus);
+        itemEvent(gameStatus,scene);
     });
     itemtext.setInteractive().on('pointerover', () => {
         itemtext.y += 5;
@@ -104,6 +105,7 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         //装備用のプログラムの関数を呼び出す
         if(gameStatus.itemflg === true){
             //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            itemEvent(gameStatus,scene);
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -154,6 +156,7 @@ async function menuBar(scene,playerStatus,config,gameStatus){
     savetext.setInteractive().on('pointerdown',()=>{
         if(gameStatus.itemflg === true){
             //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            itemEvent(gameStatus,scene);
         }
         if(gameStatus.gearflg === true){
             //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -181,6 +184,7 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         //ログアウト用のプログラムの関数を呼び出す
         if(gameStatus.itemflg === true){
             //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            itemEvent(gameStatus,scene);
         }
         if(gameStatus.gearflg === true){
             //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
