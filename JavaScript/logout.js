@@ -3,14 +3,17 @@ import { playEffect } from "./sound";
 let logoutContainer;
 let logotra = null;
 let backtra = null;
-export function logoutdisplay(gameStatus,scene){
+export function logoutdisplay(gameStatus,scene,config){
     gameStatus.logoutflg = !gameStatus.logoutflg;
     if(gameStatus.logoutflg){
         playEffect(scene,'open');
+        logoutmessage(scene,config,gameStatus);
     }else{
         playEffect(scene,'no');
+        if(logoutContainer){
+            logoutContainer.destroy();
+        }
     }
-    logoutContainer.setVisible(gameStatus.logoutflg);
 }
 
 export function logoutmessage(scene,config,gameStatus){
@@ -79,7 +82,6 @@ export function logoutmessage(scene,config,gameStatus){
         }
     });
     logoutContainer = scene.add.container(0,0,[logoutback,logoutsetumei,logouttext,backtext]);
-    logoutContainer.setVisible(false);
     logoutContainer.setDepth(7);
 }
 export function logoutupdate(scene){

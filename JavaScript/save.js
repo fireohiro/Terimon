@@ -5,14 +5,17 @@ let saveContainer;
 let savetra = null;
 let backtra = null;
  
-export function saveEvent(gameStatus,scene){
+export function saveEvent(gameStatus,scene,config){
     gameStatus.saveflg = !gameStatus.saveflg;
     if(gameStatus.saveflg){
         playEffect(scene,'open');
+        saveGame(scene,config,gameStatus);
     }else{
         playEffect(scene,'no');
+        if(saveContainer){
+            saveContainer.destroy();
+        }
     }
-    saveContainer.setVisible(gameStatus.saveflg);
 }
  
 export async function saveGame(scene,config,gameStatus){
@@ -75,7 +78,7 @@ export async function saveGame(scene,config,gameStatus){
     });
  
     backtext.setInteractive().on('pointerdown',()=>{
-         saveEvent(gameStatus,scene);
+         saveEvent(gameStatus,scene,config);
     });
     backtext.setInteractive().on('pointerover', () => {
         if(!backtra){
@@ -98,7 +101,6 @@ export async function saveGame(scene,config,gameStatus){
     });
  
     saveContainer = scene.add.container(0,0,[saveback,savesetumei,savetext,backtext]);
-    saveContainer.setVisible(false);
     saveContainer.setDepth(7);
 }
  
