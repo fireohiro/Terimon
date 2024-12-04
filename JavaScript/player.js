@@ -108,35 +108,29 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
     }
     if (cursors.up.isDown) {
         isMoving = true;
-        player.setVelocityX(0);
         player.setVelocityY(-speed);
         player.anims.play('playerup', true);
         direction="up";
-    } 
-    if (cursors.down.isDown) {
+    } else if (cursors.down.isDown) {
         isMoving = true;
-        player.setVelocityX(0);
         player.setVelocityY(speed);
         player.anims.play('playerdown', true);
         direction="down";
+    }else{
+        player.setVelocityY(0);
     }
     if (cursors.left.isDown) {
         isMoving = true;
-        player.setVelocityY(0);
         player.setVelocityX(-speed);
         player.anims.play('playerleft', true);
         direction="left";
-    }
-    if (cursors.right.isDown) {
+    }else if(cursors.right.isDown) {
         isMoving = true;
-        player.setVelocityY(0);
         player.setVelocityX(speed);
         player.anims.play('playerright', true);
         direction="right";
-    }
-    if(!isMoving){
+    }else{
         player.setVelocityX(0);
-        player.setVelocityY(0);
     }
 
     //プレイヤーの現在地をリアルタイムに入れる
