@@ -104,12 +104,12 @@
                         {
                          "name":"targetX",
                          "type":"int",
-                         "value":32
+                         "value":44
                         }, 
                         {
                          "name":"targetY",
                          "type":"int",
-                         "value":640
+                         "value":649
                         }],
                  "rotation":0,
                  "type":"",
@@ -136,7 +136,7 @@
                         {
                          "name":"targetY",
                          "type":"int",
-                         "value":895
+                         "value":921
                         }],
                  "rotation":0,
                  "type":"",
@@ -152,7 +152,7 @@
          "y":0
         }],
  "nextlayerid":16,
- "nextobjectid":3,
+ "nextobjectid":4,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

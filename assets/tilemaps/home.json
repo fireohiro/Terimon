@@ -70,7 +70,6 @@
         {
          "draworder":"topdown",
          "id":6,
-         "locked":true,
          "name":"Transitions",
          "objects":[
                 {
@@ -86,12 +85,12 @@
                         {
                          "name":"targetX",
                          "type":"int",
-                         "value":207
+                         "value":129
                         }, 
                         {
                          "name":"targetY",
                          "type":"int",
-                         "value":460
+                         "value":470
                         }],
                  "rotation":0,
                  "type":"",
@@ -113,12 +112,12 @@
                         {
                          "name":"targetX",
                          "type":"int",
-                         "value":750
+                         "value":745
                         }, 
                         {
                          "name":"targetY",
                          "type":"int",
-                         "value":210
+                         "value":245
                         }],
                  "rotation":0,
                  "type":"",

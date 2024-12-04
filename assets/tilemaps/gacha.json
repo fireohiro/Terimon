@@ -67,7 +67,7 @@
                  "visible":true,
                  "width":245.334,
                  "x":416.667,
-                 "y":538.667
+                 "y":537.667
                 }, 
                 {
                  "gid":863,
@@ -105,12 +105,12 @@
                         {
                          "name":"targetX",
                          "type":"int",
-                         "value":461
+                         "value":673
                         }, 
                         {
                          "name":"targetY",
                          "type":"int",
-                         "value":20
+                         "value":73
                         }],
                  "rotation":0,
                  "type":"",
