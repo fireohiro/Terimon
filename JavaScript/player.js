@@ -19,7 +19,7 @@ export function playerpreload(loader){
     loader.spritesheet('playerImage','assets/character/terimon1.png', { frameWidth: 32, frameHeight: 32 });
 }
 
-export function playercreate(scene,playerStatus,gameStatus,layer){
+export function playercreate(scene,playerStatus,gameStatus,layer, config){
     graphics = scene.add.graphics(); // 範囲描画用のGraphicsオブジェクト
     //プレイヤーをセーブ地に出現させる
     player = scene.physics.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'playerimage');
@@ -38,7 +38,7 @@ export function playercreate(scene,playerStatus,gameStatus,layer){
 
     // キーボード入力を設定
     scene.input.keyboard.on("keydown-E", () => {
-        checkForInteraction();
+        checkForInteraction(scene, playerStatus, config, gameStatus);
         drawInteractionArea();
     });
 
@@ -89,13 +89,13 @@ export function playercreate(scene,playerStatus,gameStatus,layer){
     }
 }
 
-export function dataMap(mapdata,scene,playerStatus,gameStatus,layer){
+export function dataMap(mapdata,scene,playerStatus,gameStatus,layer,config){
     map = mapdata;
     //playerにデータが入っていた場合、それを消す
     if(player){
         player.destroy();
     }
-    playercreate(scene,playerStatus,gameStatus,layer);
+    playercreate(scene,playerStatus,gameStatus,layer,config);
 }
 
 export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemList,friendList){
@@ -197,7 +197,7 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
      // マップ切り替えのトリガーをチェック
      const transition = checkTransition(player);
      if (transition) {
-        changeMap(scene,playerStatus,gameStatus,transition);
+        changeMap(scene,playerStatus,gameStatus,transition,config);
         player.setPosition(transition.targetX*gameStatus.scale, transition.targetY*gameStatus.scale);
      }
 }
@@ -206,12 +206,12 @@ export function playerstop(){
     player.setVelocityY(0);
 }
 
-function checkForInteraction(){
+function checkForInteraction(scene, playerStatus, config, gameStatus){
     const interactionArea = getInteractionArea();
     // イベントの範囲チェック
     const event = findEventAt(interactionArea);
     if (event) {
-        triggerEvent(event, player);
+        triggerEvent(event, player,scene, playerStatus, config, gameStatus);
     } else {
         console.log("何も見つかりませんでした");
     }

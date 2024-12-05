@@ -1,6 +1,6 @@
 import {dataMap,playerupdate,getplayer} from './player.js';
 import { playsound } from './sound.js';
-import { createShop } from './shop.js';
+import { createShop,shopEvent } from './shop.js';
 let map;
 let mapData;
 let tilesets = [];
@@ -57,15 +57,17 @@ export function mappreload(loader){
     //牧場
     loader.tilemapTiledJSON('ranchMap','assets/tilemaps/ranch.json');
 
+    loader.spritesheet('shopman','assets/event/shopMan.png', { frameWidth: 32, frameHeight: 32 });
+
 }
 
-export function changeMap(scene,playerStatus,gameStatus,transition){
+export function changeMap(scene,playerStatus,gameStatus,transition,config){
     playerStatus.map_id = transition.targetMap;
     destroy(scene);
-    createMap(scene,playerStatus,gameStatus);
+    createMap(scene,playerStatus,gameStatus,config);
 }
 
-export function createMap(scene,playerStatus,gameStatus){
+export function createMap(scene,playerStatus,gameStatus,config){
   imageGroup=scene.add.group();
   
     let map_id = playerStatus.map_id;
@@ -253,7 +255,7 @@ export function createMap(scene,playerStatus,gameStatus){
         graphicsA.fillRect(trigger.x, trigger.y, trigger.width, trigger.height);
     }
     
-    dataMap(map,scene,playerStatus,gameStatus,layer);
+    dataMap(map,scene,playerStatus,gameStatus,layer,config);
     // マップの境界を設定
     scene.physics.world.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
     scene.cameras.main.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
@@ -282,37 +284,48 @@ export function createMap(scene,playerStatus,gameStatus){
     if(EventLayer){
       events = EventLayer.objects.map(obj => {
 
-        const tileSetName = obj.properties.find(prop => prop.name === "tileSet")?.value;
-  
-        const tileSet = map.getTileset(tileSetName); // タイルセット名
-  
-        const gid = obj.gid;
-        const tileIndex = gid - tileSet.firstgid;
-  
-        const image = tileSet.name; // タイルセットの名前を参照
-        const frame = tileIndex;   // タイルのフレーム番号
-  
         const event = {
-          id: obj.id,
-          x: obj.x*gameStatus.scale,
-          y: obj.y*gameStatus.scale,
-          width: obj.width*gameStatus.scale,
-          height: obj.height*gameStatus.scale,
-          type: obj.type,
-          data: obj.properties.find(prop => prop.name === "text")?.value,
-          active: true,
-        };
-  
+            id: obj.properties.find(prop => prop.name === "eventId")?.value,
+            x: obj.x*gameStatus.scale,
+            y: obj.y*gameStatus.scale,
+            width: obj.width*gameStatus.scale,
+            height: obj.height*gameStatus.scale,
+            type: obj.type,
+            active: true,
+          };
+
         const adjustedX = event.x + event.width / 2;  // 中心補正
         const adjustedY = event.y - event.height / 2; // 中心補正
-  
-        // イメージをシーンに追加
-        const addimage = scene.add.image(adjustedX, adjustedY, image, frame)
-          .setOrigin(0.5, 0.5) // 必要に応じてオリジンを調整
-          .setDepth(10)   // 深度を設定して他のオブジェクトとの重なりを調整
-          .setDisplaySize(event.width, event.height);
 
-        imageGroup.add(addimage); // グループに追加
+        
+        const tileSetName = obj.properties.find(prop => prop.name === "tileSet")?.value;
+
+        if(tileSetName){
+            //タイルセットを利用したイベントの場合
+            const tileSet = map.getTileset(tileSetName); // タイルセット名
+  
+            const gid = obj.gid;
+            const tileIndex = gid - tileSet.firstgid;
+      
+            const image = tileSet.name; // タイルセットの名前を参照
+            const frame = tileIndex;   // タイルのフレーム番号
+
+            // イメージをシーンに追加
+            const addimage = scene.add.image(adjustedX, adjustedY, image, frame)
+            .setOrigin(0.5, 0.5) // 必要に応じてオリジンを調整
+            .setDepth(10)   // 深度を設定して他のオブジェクトとの重なりを調整
+            .setDisplaySize(event.width, event.height);
+
+            imageGroup.add(addimage); // グループに追加
+        }else{
+            //propaty("image")を利用したイベントの場合
+            const imageName = obj.properties.find(prop => prop.name === "image")?.value;
+            const addimage = scene.add.image(adjustedX, adjustedY, imageName)
+            .setOrigin(0.5, 0.5) // 必要に応じてオリジンを調整
+            .setDepth(10)   // 深度を設定して他のオブジェクトとの重なりを調整
+            .setDisplaySize(event.width, event.height);
+            imageGroup.add(addimage); // グループに追加
+        }
   
         return event;
       });
@@ -342,7 +355,7 @@ export function createMap(scene,playerStatus,gameStatus){
     );
   }
 
-  export function triggerEvent(event, player) {
+  export function triggerEvent(event, player,scene, playerStatus, config, gameStatus) {
     switch (event.type) {
       case "dialog":
         startDialog(event.data);
@@ -351,7 +364,7 @@ export function createMap(scene,playerStatus,gameStatus){
         giveItemToPlayer(event.data, player);
         break;
     case "shop":
-        shopOpen();
+        shopOpen(scene, playerStatus, config, gameStatus);
         break;
       default:
         console.warn("未対応のイベントタイプ:", event.type);
@@ -368,7 +381,7 @@ export function createMap(scene,playerStatus,gameStatus){
     player.itemManager.addItem({ name: data.itemName });
   }
 
-  function shopOpen() {
+  function shopOpen(scene, playerStatus, config, gameStatus) {
     if (!gameStatus.shopflg) { // ショップが開いていない場合のみ処理
         createShop(scene, playerStatus, config, gameStatus);
         shopEvent(gameStatus);

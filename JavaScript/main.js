@@ -148,7 +148,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     await loadFriends();
     await fetchItems();
     await fetchGear();
-    createMap(this,playerStatus,gameStatus);
+    createMap(this,playerStatus,gameStatus,config);
     createPause(this,gameStatus,playerStatus,config,statuses,itemList,gearList);
     createShop(this, playerStatus, config, gameStatus);
 

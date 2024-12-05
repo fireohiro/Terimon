@@ -92,6 +92,11 @@
                          "name":"text",
                          "type":"string",
                          "value":"test"
+                        }, 
+                        {
+                         "name":"tileSet",
+                         "type":"string",
+                         "value":"house3"
                         }],
                  "rotation":0,
                  "type":"dialog",
