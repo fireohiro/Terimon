@@ -67,7 +67,8 @@ export async function battleupdate(scene,config,gameStatus,playerStatus,friends)
         statusDisplay = scene.add.text(textX, textY, statusText, {
             fontSize: '28px',
             fill: '#000000',
-            wordWrap: { width: statusWidth - 20 }
+            wordWrap: { width: statusWidth - 20 },
+            padding:{top:10,bottom:10}
         });
         statusDisplay.setOrigin(0, 0);
         statusContainer.add(statusDisplay);
@@ -82,7 +83,8 @@ export async function battleupdate(scene,config,gameStatus,playerStatus,friends)
             statusDisplay = scene.add.text(textX, textY, statusText, {
                 fontSize: '28px',
                 fill: '#000000',
-                wordWrap: { width: statusWidth - 20 }
+                wordWrap: { width: statusWidth - 20 },
+                padding:{top:10,bottom:10}
             });
             statusDisplay.setOrigin(0, 0);
             statusContainer.add(statusDisplay);
@@ -475,12 +477,12 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
         const actBox = scene.add.rectangle(actX, actY, actWidth, actHeight, 0xFFFFFF);
         actBox.setStrokeStyle(2, 0x000000);
 
-        const attacktext = scene.add.text(actX - 125, actY - 50, 'こうげき', { fontSize: '24px', fill: '#000000' });
-        const itemtext = scene.add.text(actX + 20, actY - 50, 'アイテム', { fontSize: '24px', fill: '#000000' });
-        const magictext = scene.add.text(actX - 125, actY + 20, 'まほう', { fontSize: '24px', fill: '#000000' });
+        const attacktext = scene.add.text(actX - 125, actY - 50, 'こうげき', { fontSize: '24px', fill: '#000000',padding:{top:10,bottom:10}});
+        const itemtext = scene.add.text(actX + 20, actY - 50, 'アイテム', { fontSize: '24px', fill: '#000000',padding:{top:10,bottom:10}});
+        const magictext = scene.add.text(actX - 125, actY + 20, 'まほう', { fontSize: '24px', fill: '#000000',padding:{top:10,bottom:10}});
 
         if (gameStatus.playerfight) {
-            const backtext = scene.add.text(actX + 20, actY + 20, 'やっぱ引く', { fontSize: '24px', fill: '#000000' });
+            const backtext = scene.add.text(actX + 20, actY + 20, 'やっぱ引く', { fontSize: '24px', fill: '#000000',padding:{top:10,bottom:10}});
             actionContainer.add([actBox, attacktext, itemtext, magictext, backtext]);
             actionContainer.setDepth(12);
 
@@ -499,7 +501,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
             // オプションの選択を待つ
             await waitselect(attacktext, itemtext, magictext, backtext, combatant);
         } else {
-            const fronttext = scene.add.text(actX + 20, actY + 20, '俺が出る', { fontSize: '24px', fill: '#000000' });
+            const fronttext = scene.add.text(actX + 20, actY + 20, '俺が出る', { fontSize: '24px', fill: '#000000',padding:{top:10,bottom:10}});
             actionContainer.add([actBox, attacktext, itemtext, magictext, fronttext]);
             actionContainer.setDepth(12);
 
@@ -626,10 +628,10 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
 
                     // テキストをフレーム内に配置
                     let textY = config.height - frameHeight - offsetY + 20;
-                    const wazatext1 = scene.add.text(offsetX + 10, textY, `${magicList[0].waza_name}　　　MP:${magicList[0].syouhi_mp}　　　分類：${magicList[0].naiyou}　　　威力：${magicList[0].might}　　　成功率：${magicList[0].hit_rate}`, { fontSize: '24px', fill: '#000000' });
-                    const wazatext2 = scene.add.text(offsetX + 10, textY + 20, `${magicList[1].waza_name}　　　MP:${magicList[1].syouhi_mp}　　　分類：${magicList[1].naiyou}　　　威力：${magicList[1].might}　　　成功率：${magicList[1].hit_rate}`, { fontSize: '24px', fill: '#000000' });
-                    const wazatext3 = scene.add.text(offsetX + 10, textY + 40, `${magicList[2].waza_name}　　　MP:${magicList[2].syouhi_mp}　　　分類：${magicList[2].naiyou}　　　威力：${magicList[2].might}　　　成功率：${magicList[2].hit_rate}`, { fontSize: '24px', fill: '#000000' });
-                    const wazatext4 = scene.add.text(offsetX + 10, textY + 60, `${magicList[3].waza_name}　　　MP:${magicList[3].syouhi_mp}　　　分類：${magicList[3].naiyou}　　　威力：${magicList[3].might}　　　成功率：${magicList[3].hit_rate}`, { fontSize: '24px', fill: '#000000' });
+                    const wazatext1 = scene.add.text(offsetX + 10, textY, `${magicList[0].waza_name}　　　MP:${magicList[0].syouhi_mp}　　　分類：${magicList[0].naiyou}　　　威力：${magicList[0].might}　　　成功率：${magicList[0].hit_rate}`, { fontSize: '24px', fill: '#000000',padding:{top:10,bottom:10}});
+                    const wazatext2 = scene.add.text(offsetX + 10, textY + 20, `${magicList[1].waza_name}　　　MP:${magicList[1].syouhi_mp}　　　分類：${magicList[1].naiyou}　　　威力：${magicList[1].might}　　　成功率：${magicList[1].hit_rate}`, { fontSize: '24px', fill: '#000000',padding:{top:10,bottom:10}});
+                    const wazatext3 = scene.add.text(offsetX + 10, textY + 40, `${magicList[2].waza_name}　　　MP:${magicList[2].syouhi_mp}　　　分類：${magicList[2].naiyou}　　　威力：${magicList[2].might}　　　成功率：${magicList[2].hit_rate}`, { fontSize: '24px', fill: '#000000',padding:{top:10,bottom:10}});
+                    const wazatext4 = scene.add.text(offsetX + 10, textY + 60, `${magicList[3].waza_name}　　　MP:${magicList[3].syouhi_mp}　　　分類：${magicList[3].naiyou}　　　威力：${magicList[3].might}　　　成功率：${magicList[3].hit_rate}`, { fontSize: '24px', fill: '#000000',padding:{top:10,bottom:10}});
 
                     // テキストをまとめてコンテナに追加
                     [wazatext1, wazatext2, wazatext3, wazatext4].forEach(text => {
@@ -686,7 +688,8 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                                 `${item.item_name}　　　分類：${item.bunrui}　　${item.setumei}　　所持数：${item.su}個`,
                                 {
                                     fontSize: '24px',
-                                    color: '#000000'
+                                    color: '#000000',
+                                    padding:{top:10,bottom:10}
                                 }
                             );
                             itemContainer.add(textitem);
@@ -1143,7 +1146,7 @@ async function displaymessage(scene, config, message) {
         messageX - messageWidth / 2 + 20,
         messageY - messageHeight / 2 + 30,
         '',
-        { fontSize: '24px', fill: '#000000', wordWrap: { width: messageWidth - 40 } }
+        { fontSize: '24px', fill: '#000000', wordWrap: { width: messageWidth - 40 } ,padding:{top:10,bottom:10}}
     );
     messagetext.setDepth(13);
 
@@ -1182,7 +1185,7 @@ async function displaymessage(scene, config, message) {
             messageX + messageWidth / 2 - 30,
             messageY + messageHeight / 2 - 40,
             '▾',
-            { fontSize: '24px', fill: '#000000' }
+            { fontSize: '24px', fill: '#000000',padding:{top:10,bottom:10}}
         );
         await waitForEnter(marker);
     }

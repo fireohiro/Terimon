@@ -71,7 +71,5 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
 
 export function statusUpdate(scene){
     const camera = scene.cameras.main;
-    let saveX = camera.worldView.x + camera.worldView.width / 2;
-    let saveY = camera.worldView.y + camera.worldView.height / 2;
     statusContainer.setPosition(camera.worldView.x,camera.worldView.y);
 }

@@ -1,8 +1,6 @@
 import { playEffect } from "./sound";
 
 let logoutContainer;
-let logotra = null;
-let backtra = null;
 export function logoutdisplay(gameStatus,scene,config){
     gameStatus.logoutflg = !gameStatus.logoutflg;
     if(gameStatus.logoutflg){
@@ -27,12 +25,12 @@ export function logoutmessage(scene,config,gameStatus){
     logoutback.setOrigin(0,0);
 
     //テキスト（ボタンを設定）の例
-    const logoutsetumei = scene.add.text(config.width * 0.3 + 70,logoutHeight / 4,'本当にタイトルに戻りますか？',{fontSize:'60px',fill:'#000'});
-    logoutsetumei.setOrigin(0,0);
-    const backtext = scene.add.text(config.width * 0.5+100,logoutHeight / 2,'いいえ',{fontSize:'64px',fill:'#000'});
-    backtext.setOrigin(0,0);
-    const logouttext = scene.add.text(config.width * 0.5+100,logoutHeight / 2 + 80,'はい',{fontSize:'64px',fill:'#000'});
-    logouttext.setOrigin(0,0);
+    const logoutsetumei = scene.add.text(logoutback.x + logoutback.width / 2,logoutHeight / 4,'本当にタイトルに戻りますか？',{fontSize:'60px',fill:'#000',lineHeight:64,padding:{top:10,bottom:10}});
+    logoutsetumei.setOrigin(0.5,0.5);
+    const backtext = scene.add.text(logoutback.x + logoutback.width / 2,logoutHeight / 2,'いいえ',{fontSize:'64px',fill:'#000'});
+    backtext.setOrigin(0.5,0.5);
+    const logouttext = scene.add.text(logoutback.x + logoutback.width / 2,logoutHeight / 2 + 80,'はい',{fontSize:'64px',fill:'#000'});
+    logouttext.setOrigin(0.5,0.5);
     //クリックイベント
     logouttext.setInteractive().on('pointerdown',async()=>{
         //セッションのリセット
@@ -51,48 +49,26 @@ export function logoutmessage(scene,config,gameStatus){
         window.location.href='sorce/login.php';
     });
     logouttext.setInteractive().on('pointerover', () => {
-        if(!logotra){
-            logotra = scene.add.text(config.width * 0.5,logoutHeight / 2+80,'▶',{fontSize:'64px',fill:'#000'});
-            logotra.setDepth(8);
-        }
+        logouttext.y += 5;
     });
     // カーソルがアイテムテキストから外れたときの処理
     logouttext.setInteractive().on('pointerout', () => {
-        // logotraが存在していれば非表示にし、破棄
-        if (logotra) {
-            logotra.destroy();
-            logotra = null;  // 破棄後は再度nullに設定
-        }
+        logouttext.y -= 5;
     });
     backtext.setInteractive().on('pointerdown',()=>{
          logoutdisplay(gameStatus);
     });
     backtext.setInteractive().on('pointerover', () => {
-        if(!backtra){
-            backtra = scene.add.text(config.width * 0.5,logoutHeight / 2,'▶',{fontSize:'64px',fill:'#000'});
-            backtra.setDepth(8);
-        }
+        backtext.y += 5;
     });
     // カーソルがアイテムテキストから外れたときの処理
     backtext.setInteractive().on('pointerout', () => {
-        // backtraが存在していれば非表示にし、破棄
-        if (backtra) {
-            backtra.destroy();
-            backtra = null;  // 破棄後は再度nullに設定
-        }
+        backtext.y -= 5;
     });
     logoutContainer = scene.add.container(0,0,[logoutback,logoutsetumei,logouttext,backtext]);
     logoutContainer.setDepth(7);
 }
 export function logoutupdate(scene){
     const camera = scene.cameras.main;
-    let logoX = camera.worldView.x + camera.worldView.width / 2;
-    let logoY = camera.worldView.y + camera.worldView.height / 2;
     logoutContainer.setPosition(camera.worldView.x,camera.worldView.y);
-    if(backtra){
-        backtra.setPosition(logoX,logoY - 50);
-    }
-    if(logotra){
-        logotra.setPosition(logoX,logoY + 22);
-    }
 }

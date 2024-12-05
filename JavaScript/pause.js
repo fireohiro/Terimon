@@ -60,15 +60,15 @@ async function menuBar(scene,playerStatus,config,gameStatus,friends){
 
     const takasa = menuBackground.y - menuHeight / 2 + 10;
     //テキスト（ボタンを設定）の例
-    const itemtext = scene.add.text(10,takasa + menuHeight / 11 * 1,'アイテム',{fontSize:'32px',fill:'#000'});
+    const itemtext = scene.add.text(10,takasa + menuHeight / 11 * 1,'アイテム',{fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}});
     itemtext.setOrigin(0.5,0.5);
-    const geartext = scene.add.text(10,takasa + menuHeight / 11 * 3,'装備',{fontSize:'32px',fill:'#000'});
+    const geartext = scene.add.text(10,takasa + menuHeight / 11 * 3,'装備',{fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}});
     geartext.setOrigin(0.5,0.5);
-    const statustext = scene.add.text(10,takasa + menuHeight / 11 * 5,'ステータス',{fontSize:'32px',fill:'#000'});
+    const statustext = scene.add.text(10,takasa + menuHeight / 11 * 5,'ステータス',{fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}});
     statustext.setOrigin(0.5,0.5);
-    const savetext = scene.add.text(10,takasa + menuHeight / 11 * 7,'セーブ',{fontSize:'32px',fill:'#000'});
+    const savetext = scene.add.text(10,takasa + menuHeight / 11 * 7,'セーブ',{fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}});
     savetext.setOrigin(0.5,0.5);
-    const logouttext = scene.add.text(10,takasa + menuHeight / 11 * 9,'タイトル',{fontSize:'32px',fill:'#000'});
+    const logouttext = scene.add.text(10,takasa + menuHeight / 11 * 9,'タイトル',{fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}});
     logouttext.setOrigin(0.5,0.5);
 
     //クリックイベント
@@ -215,7 +215,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friends){
         0,
         Moneybar.y - goldBarHeight / 2 + goldBarHeight / 4,
         '所持金',
-        {fontSize:'32px',fill:'#000'}
+        {fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}}
     );
     timeismoney.setOrigin(0.5,0.5);
     moneytext = scene.add.text(
@@ -224,7 +224,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friends){
         Moneybar.y,//表示位置ｘとｙ
         //表示文字と文字の設定
         `${playerStatus.money}TP`,
-        {fontSize:'32px',fill:'#000'}
+        {fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}}
     );
     moneytext.setOrigin(0.5,0.5);
 
