@@ -21,6 +21,14 @@
     } else {
         echo "Error: 該当する職業が見つかりません。";
     }
+    $sql = $pdo->prepare('delete from temoti where account_id = ?');
+    $sql->execute([$_SESSION['user']['account_id']]);
+    $sql = $pdo->prepare('delete from friends where account_id = ?');
+    $sql->execute([$_SESSION['user']['account_id']]);
+    $sql = $pdo->prepare('delete from get_item where account_id = ?');
+    $sql->execute([$_SESSION['user']['account_id']]);
+    $sql = $pdo->prepare('delete from get_gear where account_id = ?');
+    $sql->execute([$_SESSION['user']['account_id']]);
 
     $sql = $pdo->prepare('UPDATE account SET level = ? ,experience = ?, hp = ?, hp_nokori = ?, mp = ?, mp_nokori = ?, pow = ?, def = ?, speed = ?, luck = ?, money = default, gear_id = default, map_id = default, savepoint_x = default, savepoint_y = default ,event_flg = default where account_id = ?');
     $sql->execute([1, 0, $hp, $hp, $mp, $mp, $pow, $def, $speed, $luck,$id]);

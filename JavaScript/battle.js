@@ -662,67 +662,126 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                 break;
                 case "アイテム":
                     if(itemList){
-                        // 定数を定義（左下のオフセット）
-                        const offsetX = 20; // 左端からの距離
-                        const offsetY = 20; // 下端からの距離
-                        const frameWidth = config.width * 0.7;
-                        const frameHeight = config.height * 0.3;
-
-                        // itemContainerを初期化
-                        itemContainer = scene.add.container(0, 0);
-                        itemContainer.setDepth(12);
-
-                        // マスクを作成
-                        const maskShape = scene.add.graphics();
-                        maskShape.fillStyle(0xffffff);
-                        maskShape.fillRect(0, 0, frameWidth, frameHeight);
-                        maskShape.setDepth(11);
-                        itemContainer.setMask(maskShape.createGeometryMask());
-
-                        // アイテムリストを描画
-                        let index = 0;
-                        for (const item of itemList) {
-                            const textitem = scene.add.text(
-                                0,
-                                index * 20,
-                                `${item.item_name}　　　分類：${item.bunrui}　　${item.setumei}　　所持数：${item.su}個`,
-                                {
-                                    fontSize: '24px',
-                                    color: '#000000',
-                                    padding:{top:10,bottom:10}
-                                }
-                            );
-                            itemContainer.add(textitem);
-                            index += 1;
-                            // 左下固定ロジック
-                            scene.events.on('postupdate', () => {
-                                const cameraScrollX = camera.scrollX;
-                                const cameraScrollY = camera.scrollY;
-
-                                // itemContainerを画面左下に配置
-                                itemContainer.x = cameraScrollX + offsetX;
-                                itemContainer.y = cameraScrollY + config.height - frameHeight - offsetY;
-
-                                // マスクも同様に移動
-                                maskShape.x = itemContainer.x;
-                                maskShape.y = itemContainer.y;
-                            });
-                            await selectitem(textitem, item, maskShape, combatant);
-                        }
-
-                        // スクロールロジックを追加
-                        const maxScrollY = 0;
-                        const minScrollY = -Math.max(0, itemList.length * 20 - frameHeight); // 下方向の限界
-                        scene.input.on('wheel', (pointer, deltaX, deltaY) => {
-                            const scrollAmount = 10;
-                            itemContainer.y += deltaY > 0 ? -scrollAmount : scrollAmount;
-
-                            if (itemContainer.y > maxScrollY) {
-                                itemContainer.y = maxScrollY;
-                            } else if (itemContainer.y < minScrollY) {
-                                itemContainer.y = minScrollY;
+                        console.log(itemList);
+                        //回復アイテムを持っているのかの確認
+                        let itemflg = false;
+                        let itemnum = new Array(4);
+                        let i = 0;
+                        itemList.forEach(item =>{
+                            if(item.item_id === 2 && item.su >= 1){
+                                itemnum[0] = i;
+                                itemflg = true;
+                            }else if(item.item_id === 3 && item.su >= 1){
+                                itemnum[1] = i;
+                                itemflg = true;
+                            }else if(item.item_id === 6 && item.su >= 1){
+                                itemnum[2] = i;
+                                itemflg = true;
+                            }else if(item.item_id === 8 && item.su >= 1){
+                                itemnum[3] = i;
+                                itemflg = true;
                             }
+                            i++;
                         });
+                        if(!itemflg){
+                            playEffect(scene,'miss');
+                            await displaymessage(scene,config,'回復アイテムを持っていなかった');
+                        }else{
+                            const camera = scene.cameras.main;
+                            const frameWidth = config.width * 0.7;
+                            const frameHeight = config.height * 0.3;
+                            const framex = camera.scrollX + config.width / 5 * 4;
+                            const framey = camera.scrollY + config.width / 5 * 4;
+
+                            const itemback = scene.add.rectangle(framex,framey,frameWidth,frameHeight,0xffffff);
+                            itemback.setStrokeStyle(2,0x000000);
+                            itemback.setOrigin(0,0);
+                            itemback.setDepth(11);
+
+                            let i = 1;
+                            let kusa;
+                            let zyoukusa;
+                            let sizuku;
+                            let zyousizuku;
+                            if(itemnum[0] || itemnum[0] === 0){
+                                let item = itemList[itemnum[0]];
+                                kusa = scene.add.text(10,frameHeight / 10 * 2 * i,
+                                    `${item.item_name}　　　${item.setumei}　　所持数：${item.su}個`,
+                                    {fontSize:'24px',fill:'0#000000',padding:{top:10,bottom:10}}
+                                );
+                                i++;
+                            }
+                            if(itemnum[1] || itemnum[1] === 0){
+                                let item = itemList[itemnum[1]];
+                                zyoukusa = scene.add.text(10,frameHeight / 10 * 2 * i,
+                                    `${item.item_name}　　　${item.setumei}　　所持数：${item.su}個`,
+                                    {fontSize:'24px',fill:'0x000000',padding:{top:10,bottom:10}}
+                                );
+                                i++
+                            }
+                            if(itemnum[2] || itemnum[2] === 0){
+                                let item = itemList[itemnum[2]];
+                                sizuku = scene.add.text(10,frameHeight / 10 * 2 * i,
+                                    `${item.item_name}　　　${item.setumei}　　所持数：${item.su}個`,
+                                    {fontSize:'24px',fill:'0x000000',padding:{top:10,bottom:10}}
+                                );
+                                i++;
+                            }
+                            if(itemnum[3] || itemnum[3] === 0){
+                                let item = itemList[itemnum[3]];
+                                zyousizuku = scene.add.text(10,frameHeight / 10 * 2 * i,
+                                    `${item.item_name}　　　${item.setumei}　　所持数：${item.su}個`,
+                                    {fontSize:'24px',fill:'0x000000',padding:{top:10,bottom:10}}
+                                );
+                            }
+                            itemContainer = scene.add.container(0,0);
+                            itemContainer.add(itemback);
+                            if(kusa){
+                                itemContainer.add(kusa);
+                                kusa.setDepth(12);
+                            }
+                            if(zyoukusa){
+                                itemContainer.add(zyoukusa);
+                                zyoukusa.setDepth(12);
+                            }
+                            if(sizuku){
+                                itemContainer.add(sizuku);
+                                sizuku.setDepth(12);
+                            }
+                            if(zyousizuku){
+                                itemContainer.add(zyousizuku);
+                                zyousizuku.setDepth(12);
+                            }
+                            itemContainer.setDepth(12);
+
+                            scene.events.on('postupdate',()=>{
+                                const scrollX = camera.scrollX;
+                                const scrollY = camera.scrollY;
+
+                                const frameNewX = scrollX + config.width * 0.05;
+                                const frameNewY = scrollY + config.height - frameHeight - config.height * 0.07;
+                                itemback.setPosition(frameNewX,frameNewY);
+
+                                let i = 0;
+                                let textNewY = frameNewY + 10;
+                                if(kusa){
+                                    kusa.setPosition(frameNewX + 20,textNewY + 50 * i);
+                                    i++;
+                                }
+                                if(zyoukusa){
+                                    zyoukusa.setPosition(frameNewX + 20,textNewY + 50 * i);
+                                    i++;
+                                }
+                                if(sizuku){
+                                    sizuku.setPosition(frameNewX+20,textNewY + 50 * i);
+                                    i++;
+                                }
+                                if(zyousizuku){
+                                    zyousizuku.setPosition(frameNewX+20,textNewY + 50 * i);
+                                }
+                            });
+                            await selectitem(kusa,zyoukusa,sizuku,zyousizuku,itemnum,combatant);
+                        }
                     }else{
                         playEffect(scene,'miss');
                         await displaymessage(scene,config,`${playerStatus.account_name}は何もアイテムを持っていないようだ・・・`)
@@ -754,15 +813,36 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                 break;
         }
     }
-    function selectitem(textitem,item,maskShape,combatant){
+    function selectitem(kusa,zyoukusa,sizuku,zyousizuku,itemnum,combatant){
         return new Promise(resolve=>{
-            itemContainer.setDepth(12);
-            textitem.setInteractive().on('pointerdown',async()=>{
-                itemContainer.destroy();
-                maskShape.destroy();
-                await itemRole(item,combatant);
-                resolve();
-            });
+            if(kusa){
+                kusa.setInteractive().on('pointerdown',async()=>{
+                    itemContainer.destroy();
+                    await itemRole(itemList[itemnum[0]],combatant);
+                    resolve();
+                });
+            }
+            if(zyoukusa){
+                zyoukusa.setInteractive().on('pointerdown',async()=>{
+                    itemContainer.destroy();
+                    await itemRole(itemList[itemnum[1]],combatant);
+                    resolve();
+                });
+            }
+            if(sizuku){
+                sizuku.setInteractive().on('pointerdown',async()=>{
+                    itemContainer.destroy();
+                    await itemRole(itemList[itemnum[2]],combatant);
+                    resolve();
+                });
+            }
+            if(zyousizuku){
+                zyousizuku.setInteractive().on('pointerdown',async()=>{
+                    itemContainer.destroy();
+                    await itemRole(itemList[itemnum[3]],combatant);
+                    resolve();
+                });
+            }
         });
     }
     function magicselect(wazatext1,wazatext2,wazatext3,wazatext4,combatant){
@@ -1132,7 +1212,7 @@ async function displaymessage(scene, config, message) {
     if(messageContainer){
         messageContainer.destroy();
     }
-    const messageWidth = config.width * 0.9;
+    const messageWidth = config.width * 0.7;
     const messageHeight = config.height * 0.3;
     const camera = scene.cameras.main;
     let messageX = camera.centerX; //変更予定

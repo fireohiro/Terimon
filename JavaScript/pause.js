@@ -128,6 +128,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friends){
         //ステータス表示用のプログラムの関数を呼び出す
         if(gameStatus.itemflg === true){
             //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
+            itemEvent(gameStatus,scene);
         }
         if(gameStatus.gearflg === true){
             //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
