@@ -4,7 +4,7 @@ let itemContainer = null;
 /**
  * アイテムメニューの表示切り替え
  */
-export function itemEvent(gameStatus) {
+export function itemEvent(gameStatus,scene) {
     if (!gameStatus || typeof gameStatus !== "object") {
         console.error("Invalid gameStatus:", gameStatus);
         return;
@@ -123,14 +123,17 @@ export function useItem(scene, config, gameStatus, item, playerStatus, friends) 
     }
 
     console.log(`Using item: ${item.item_name}`);
+    const item_id = item.item_id;
+    console.log(item_id + "を送れてるか確認");
     // アイテム使用処理を実装
     if(item.bunrui == "HP回復"){
-        itemUse(item.item_id);
+        itemUse(item_id);
         console.log("消費確認用1");
     }else if(item.bunrui == "MP回復"){
         itemUse(item.item_id);
         console.log("消費確認用2");
     }else{
+        itemUse(item.item_id);
         console.log("消費確認用3");
     }
 }
