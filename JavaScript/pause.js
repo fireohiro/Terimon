@@ -1,6 +1,6 @@
 import {itemEvent, initializeItemMenu} from './item.js';
-import {createStatusScreen,statusEvent} from './status.js';
-import {saveEvent,saveGame} from './save.js';
+import {statusEvent} from './status.js';
+import {saveEvent} from './save.js';
 import{logoutmessage,logoutdisplay} from './logout.js';
 import { playEffect } from './sound.js';
 let menuContainer;
@@ -8,22 +8,19 @@ let moneytext;
 export function createPause(scene,gameStatus,playerStatus,config,friends,itemList,gearList){
     scene.input.keyboard.on('keydown',(event) => {
         if(event.key === 'Escape'){
-            pauseStart(scene,gameStatus,config,playerStatus);
+            pauseStart(scene,gameStatus,config,playerStatus,friends);
         }
     });
-    saveGame(scene,config,gameStatus);
-    logoutmessage(scene,config,gameStatus);
-    createStatusScreen(scene,gameStatus, playerStatus,friends,config);
     initializeItemMenu(scene, config, gameStatus, itemList);
 }
 
-function pauseStart(scene,gameStatus,config,playerStatus){
+function pauseStart(scene,gameStatus,config,playerStatus,friends){
     gameStatus.pauseflg = !gameStatus.pauseflg;
     //ポーズ中の物理処理の停止と再稼働
     if(gameStatus.pauseflg){
         playEffect(scene,'pause');
         scene.physics.world.pause();//停止
-        menuBar(scene,playerStatus,config,gameStatus);
+        menuBar(scene,playerStatus,config,gameStatus,friends);
     }else{
         if(menuContainer){
             menuContainer.destroy();
@@ -39,20 +36,20 @@ function pauseStart(scene,gameStatus,config,playerStatus){
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            statusEvent(gameStatus,scene);
+            statusEvent(gameStatus,scene,config,playerStatus,friends);
         }
         if(gameStatus.saveflg === true){
             //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            saveEvent(gameStatus,scene);
+            saveEvent(gameStatus,scene,config);
         }
         if(gameStatus.logoutflg === true){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            logoutdisplay(gameStatus,scene);
+            logoutdisplay(gameStatus,scene,config);
         }
     }
 }
 
-async function menuBar(scene,playerStatus,config,gameStatus){
+async function menuBar(scene,playerStatus,config,gameStatus,friends){
     //メニューのサイズを設定
     const menuWidth = config.width * 0.16;
     const menuHeight = config.height * 0.50;
@@ -63,15 +60,15 @@ async function menuBar(scene,playerStatus,config,gameStatus){
 
     const takasa = menuBackground.y - menuHeight / 2 + 10;
     //テキスト（ボタンを設定）の例
-    const itemtext = scene.add.text(10,takasa + menuHeight / 11 * 1,'アイテム',{fontSize:'32px',fill:'#000'});
+    const itemtext = scene.add.text(10,takasa + menuHeight / 11 * 1,'アイテム',{fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}});
     itemtext.setOrigin(0.5,0.5);
-    const geartext = scene.add.text(10,takasa + menuHeight / 11 * 3,'装備',{fontSize:'32px',fill:'#000'});
+    const geartext = scene.add.text(10,takasa + menuHeight / 11 * 3,'装備',{fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}});
     geartext.setOrigin(0.5,0.5);
-    const statustext = scene.add.text(10,takasa + menuHeight / 11 * 5,'ステータス',{fontSize:'32px',fill:'#000'});
+    const statustext = scene.add.text(10,takasa + menuHeight / 11 * 5,'ステータス',{fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}});
     statustext.setOrigin(0.5,0.5);
-    const savetext = scene.add.text(10,takasa + menuHeight / 11 * 7,'セーブ',{fontSize:'32px',fill:'#000'});
+    const savetext = scene.add.text(10,takasa + menuHeight / 11 * 7,'セーブ',{fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}});
     savetext.setOrigin(0.5,0.5);
-    const logouttext = scene.add.text(10,takasa + menuHeight / 11 * 9,'タイトル',{fontSize:'32px',fill:'#000'});
+    const logouttext = scene.add.text(10,takasa + menuHeight / 11 * 9,'タイトル',{fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}});
     logouttext.setOrigin(0.5,0.5);
 
     //クリックイベント
@@ -81,15 +78,15 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            statusEvent(gameStatus,scene);
+            statusEvent(gameStatus,scene,config,playerStatus,friends);
         }
         if(gameStatus.saveflg === true){
             //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            saveEvent(gameStatus,scene);
+            saveEvent(gameStatus,scene,config);
         }
         if(gameStatus.logoutflg === true){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            logoutdisplay(gameStatus,scene);
+            logoutdisplay(gameStatus,scene,config);
         }
         itemEvent(gameStatus,scene);
     });
@@ -109,15 +106,15 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            statusEvent(gameStatus,scene);
+            statusEvent(gameStatus,scene,config,playerStatus,friends);
         }
         if(gameStatus.saveflg === true){
             //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            saveEvent(gameStatus,scene);
+            saveEvent(gameStatus,scene,config);
         }
         if(gameStatus.logoutflg === true){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            logoutdisplay(gameStatus,scene);
+            logoutdisplay(gameStatus,scene,config);
         }
     });
     geartext.setInteractive().on('pointerover', () => {
@@ -137,13 +134,13 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         }
         if(gameStatus.saveflg === true){
             //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            saveEvent(gameStatus,scene);
+            saveEvent(gameStatus,scene,config);
         }
         if(gameStatus.logoutflg === true){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            logoutdisplay(gameStatus,scene);
+            logoutdisplay(gameStatus,scene,config);
         }
-        statusEvent(gameStatus,scene);
+        statusEvent(gameStatus,scene,config,playerStatus,friends);
     });
     statustext.setInteractive().on('pointerover', () => {
         statustext.y += 5;
@@ -163,14 +160,14 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            statusEvent(gameStatus,scene);
+            statusEvent(gameStatus,scene,config,playerStatus,friends);
         }
         if(gameStatus.logoutflg === true){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            logoutdisplay(gameStatus,scene);
+            logoutdisplay(gameStatus,scene,config);
         }
         //セーブの表示と非表示
-        saveEvent(gameStatus,scene);
+        saveEvent(gameStatus,scene,config);
     });
     savetext.setInteractive().on('pointerover', () => {
         savetext.y += 5;
@@ -191,14 +188,14 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            statusEvent(gameStatus,scene);
+            statusEvent(gameStatus,scene,config,playerStatus,friends);
         }
         if(gameStatus.saveflg === true){
             //gameStatus.saveflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            saveEvent(gameStatus,scene);
+            saveEvent(gameStatus,scene,config);
         }
         //ログアウトウィンドウ表示
-        logoutdisplay(gameStatus,scene);
+        logoutdisplay(gameStatus,scene,config);
     });
     logouttext.setInteractive().on('pointerover', () => {
         logouttext.y += 5;
@@ -218,7 +215,7 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         0,
         Moneybar.y - goldBarHeight / 2 + goldBarHeight / 4,
         '所持金',
-        {fontSize:'32px',fill:'#000'}
+        {fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}}
     );
     timeismoney.setOrigin(0.5,0.5);
     moneytext = scene.add.text(
@@ -227,7 +224,7 @@ async function menuBar(scene,playerStatus,config,gameStatus){
         Moneybar.y,//表示位置ｘとｙ
         //表示文字と文字の設定
         `${playerStatus.money}TP`,
-        {fontSize:'32px',fill:'#000'}
+        {fontSize:'32px',fill:'#000',padding:{top:10,bottom:10}}
     );
     moneytext.setOrigin(0.5,0.5);
 

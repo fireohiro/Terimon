@@ -1,4 +1,5 @@
 import { playEffect } from "./sound";
+let statusContainer;
 
 export function statuspreload(loader) {
     loader.spritesheet('player','assets/character/terimon1.png', { frameWidth: 100, frameHeight: 100 })
@@ -7,22 +8,20 @@ export function statuspreload(loader) {
         loader.image(`monster${i}`, `assets/monster/monster${i}.png`);
     }
 }
-
-let statusContainer;
-export function statusEvent(gameStatus,scene){
+export function statusEvent(gameStatus,scene,config,playerStatus,friends){
     gameStatus.statusflg = !gameStatus.statusflg;
     if(gameStatus.statusflg){
         playEffect(scene,'open');
+        createStatusScreen(scene,gameStatus,playerStatus,friends,config);
     }else{
         playEffect(scene,'no');
+        if(statusContainer){
+            statusContainer.destroy();
+        }
     }
-    statusContainer.setVisible(gameStatus.statusflg);
 }
 
 export function createStatusScreen(scene,gameStatus, playerStatus,friends, config) {
-    if(statusContainer){
-        statusContainer.destroy();
-    }
     const statusWidth = config.width * 0.6;
     const statusHeight = config.height * 0.8;
 
@@ -67,13 +66,10 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
         });
     }
     statusContainer=scene.add.container(0,0,[statusBackground,playerImage,playerInfo,attributes,...friendElements]);//,friendimage
-    statusContainer.setVisible(false);
     statusContainer.setDepth(7);
 }
 
 export function statusUpdate(scene){
     const camera = scene.cameras.main;
-    let saveX = camera.worldView.x + camera.worldView.width / 2;
-    let saveY = camera.worldView.y + camera.worldView.height / 2;
     statusContainer.setPosition(camera.worldView.x,camera.worldView.y);
 }
