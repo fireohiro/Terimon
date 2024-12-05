@@ -209,6 +209,29 @@
         }, 
         {
          "draworder":"topdown",
+         "id":8,
+         "name":"EventLayer",
+         "objects":[
+                {
+                 "height":0,
+                 "id":5,
+                 "name":"",
+                 "point":true,
+                 "rotation":0,
+                 "type":"shop",
+                 "visible":true,
+                 "width":0,
+                 "x":640,
+                 "y":640
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":6,
          "name":"Transitions",
          "objects":[
@@ -299,8 +322,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":8,
- "nextobjectid":5,
+ "nextlayerid":9,
+ "nextobjectid":6,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.0",

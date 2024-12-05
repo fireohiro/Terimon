@@ -1,5 +1,6 @@
 import {dataMap,playerupdate,getplayer} from './player.js';
 import { playsound } from './sound.js';
+import { createShop } from './shop.js';
 let map;
 let mapData;
 let tilesets = [];
@@ -349,6 +350,9 @@ export function createMap(scene,playerStatus,gameStatus){
       case "item":
         giveItemToPlayer(event.data, player);
         break;
+    case "shop":
+        shopOpen();
+        break;
       default:
         console.warn("未対応のイベントタイプ:", event.type);
     }
@@ -362,6 +366,15 @@ export function createMap(scene,playerStatus,gameStatus){
   function giveItemToPlayer(data, player) {
     console.log("アイテムを取得:", data.itemName);
     player.itemManager.addItem({ name: data.itemName });
+  }
+
+  function shopOpen() {
+    if (!gameStatus.shopflg) { // ショップが開いていない場合のみ処理
+        createShop(scene, playerStatus, config, gameStatus);
+        shopEvent(gameStatus);
+    }else{
+        
+    }
   }
 
   function clearEventImages() {

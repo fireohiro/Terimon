@@ -75,7 +75,7 @@
         {
          "draworder":"topdown",
          "id":6,
-         "name":"Event",
+         "name":"EventLayer",
          "objects":[
                 {
                  "gid":501,
@@ -87,9 +87,14 @@
                          "name":"eventId",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"text",
+                         "type":"string",
+                         "value":"test"
                         }],
                  "rotation":0,
-                 "type":"event",
+                 "type":"dialog",
                  "visible":true,
                  "width":28,
                  "x":134,
