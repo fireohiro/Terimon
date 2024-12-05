@@ -13,8 +13,8 @@ import {soundpreload, soundcreate} from './sound.js';
 //Phaserの設定
 const config = {
     type:Phaser.AUTO,//自動的に適切なレンダラー？を選択
-    width:1500,//ゲームの横幅
-    height:730,//ゲームの縦幅
+    width:window.innerWidth,//ゲームの横幅
+    height:window.innerHeight,//ゲームの縦幅
     physics:{
         default:'arcade',
         arcade:{
@@ -33,15 +33,16 @@ const config = {
 //ゲームのインスタンスを作成
 const game = new Phaser.Game(config);
 //ポーズのbooleanをオブジェクトで管理することで、他プログラムで中身を同期できる
-const gameStatus = {pauseflg:false,battleflg:false,temotisu:0,playerfight:true,itemflg:false,gearflg:false,statusflg:false,saveflg:false,logoutflg:false,encountflg:false,shopflg:false,scale:1};
-const playerStatus = {};
-const friend1Status ={};
-const friend2Status ={};
-const friend3Status ={};
-let itemList=[];
-let gearList=[];
-let createok = false;
-let statuses=[];
+const gameStatus = {pauseflg:false,battleflg:false,temotisu:0,playerfight:true,itemflg:false,gearflg:false,statusflg:false,saveflg:false,logoutflg:false,encountflg:false,shopflg:false,scale:1,newfriend:0,fadeflg:false};
+const playerStatus = {};//プレイヤーの各種情報を格納
+const friend1Status ={};//手持ち１情報
+const friend2Status ={};//手持ち２情報
+const friend3Status ={};//手持ち３情報
+let itemList= [];//所持品情報
+let gearList= [];//所持装備
+let createok = false;//create関数が完了したかの判断材料
+let statuses= [];//手持ちモンスター３体分の情報を入れる箱
+let friendList = [];//仲間モンスターの情報(連れていないモンスターの情報、牧場で使える)
 
 function userData() {
     return fetch('get_playersession.php')
@@ -78,6 +79,14 @@ export async function loadFriends(){
         gameStatus.temotisu = friends.length;
     }else{
         gameStatus.temotisu=0;
+    }
+    const listres = await fetch('get_friends.php');
+    const lists = await listres.json();
+    if(lists !== null){
+        lists.forEach(friende=>{
+            friendList.push(friende);
+        });
+        console.log(friendList);
     }
 }
 
@@ -153,7 +162,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
 }
 //ゲームの更新処理
 function update(){
-    if(!createok){
+    if(!createok || gameStatus.fadeflg){
         return;
     }
     if(gameStatus.battleflg){
@@ -182,7 +191,7 @@ function update(){
         shopUpdate(this);
     }
     //バトルでもポーズでもないときの処理↓
-    playerupdate(this,config,gameStatus,playerStatus,statuses,itemList);
+    playerupdate(this,config,gameStatus,playerStatus,statuses,itemList,friendList);
 }
 
 export function itemUse(item_id){
@@ -193,12 +202,26 @@ export function itemUse(item_id){
     });
 }
 
-export function itemGet(item_id){
+export function itemGet(items,su){
+    let newflg = true;
     itemList.forEach(item=>{
-        if(item.item_id === item_id){
-            item.su++;
+        if(item.item_id === items.item_id){
+            item.su+=su;
+            newflg =false;
         }
-    })
+    });
+    if(newflg){
+        const newItem = {
+            item_id:items.item_id,
+            item_name:items.item_name,
+            bunrui:items.bunrui,
+            setumei:items.setumei,
+            naiyou:items.naiyou,
+            price:items.price,
+            su:su
+        };
+        itemList.push(newItem);
+    }
 }
 
 export function gearGet(get_gear){
@@ -215,11 +238,11 @@ export async function save(){
         body:JSON.stringify(playerStatus),//saveDataオブジェクトをJSON形式の文字列に変換し、送信
     });
     if(!response.ok){
-        throw new Error(`HTTP error! Status:${response.status}`);
+        throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const result = await response.json();
     //モンスターの更新
-    if(statuses){
+    if(gameStatus.temotisu !== 0){
         const payload = {statuses:statuses};
         const monsterres = await fetch('save_monster.php',{
             method:'POST',
@@ -233,7 +256,22 @@ export async function save(){
         }
         const monres = await monsterres.json();
         console.log('Monster data saved:',monres);
+        loadFriends();
     }
+    //連れていないモンスターの更新
+    if(friendList.length > 0){
+        const payload = {statuses:friendList};
+        const friendres = await fetch('save_friends.php',{
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(payload)
+        });
+        const frires = await friendres.json();
+        console.log('Monster data saved:',frires);
+    }
+    //アイテムの更新
     if(itemList){
         const itemload =  {itemList:itemList};
         const itemres = await fetch('save_item.php',{
@@ -249,6 +287,7 @@ export async function save(){
         const iteres = await itemres.json();
         console.log('Item data saved:',iteres);
     }
+    //装備品の更新
     if(gearList){
         const gearload =  {gearList:gearList};
         const gearres = await fetch('save_gear.php',{
@@ -258,7 +297,7 @@ export async function save(){
             },
             body:JSON.stringify(gearload)
         });
-        if(!itemres.ok){
+        if(!gearres.ok){
             throw new Error(`HTTP error! Status:${gearres.status}`);
         }
         const geares = await gearres.json();

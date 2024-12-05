@@ -1,73 +1,73 @@
-import {dataMap,playerupdate} from './player.js';
+import {dataMap,playerupdate,getplayer} from './player.js';
 import { playsound } from './sound.js';
+import { createShop } from './shop.js';
 let map;
 let mapData;
 let tilesets = [];
 let layersu;
 let previousMapId = null;
 let transitionLayer;
-let transitionTriggers;
+let transitionTriggers = [];
 let layer = [];
 let events = [];
-let imageGroup=[];
+let imageGroup;
 
 export function mappreload(loader){
     //主人公の家内
     loader.tilemapTiledJSON('houseMap','assets/tilemaps/house.json');
     for(let i = 1; i <= 9;i++){
-        loader.image(`house${i}`,`assets/tilesets/house${i}.png`);
+        loader.spritesheet(`house${i}`,`assets/tilesets/house${i}.png`, { frameWidth: 32, frameHeight: 32 });
     }
     //主人公の家外
     loader.tilemapTiledJSON('homeMap','assets/tilemaps/home.json');
-    loader.image('home1','assets/tilesets/home1.png');
+    loader.spritesheet('home1','assets/tilesets/home1.png', { frameWidth: 32, frameHeight: 32 });
     
     //草原
     loader.tilemapTiledJSON('grassMap','assets/tilemaps/grass.json');
     for(let i = 1; i <= 2; i++){
-        loader.image(`grass${i}`,`assets/tilesets/grass${i}.png`);
+        loader.spritesheet(`grass${i}`,`assets/tilesets/grass${i}.png`, { frameWidth: 32, frameHeight: 32 });
     }
     //町
     loader.tilemapTiledJSON('townMap','assets/tilemaps/town.json');
     for(let i = 1; i <= 15; i++){
-        loader.image(`town${i}`,`assets/tilesets/town${i}.png`);
+        loader.spritesheet(`town${i}`,`assets/tilesets/town${i}.png`, { frameWidth: 32, frameHeight: 32 });
     }
     
     //ガチャ
     loader.tilemapTiledJSON('gachaMap','assets/tilemaps/gacha.json');
-    loader.image('gacha1','assets/tilesets/gacha1.png');
+    loader.spritesheet('gacha1','assets/tilesets/gacha1.png', { frameWidth: 32, frameHeight: 32 });
 
     //ダンジョンまでの道
     loader.tilemapTiledJSON('roadMap','assets/tilemaps/dungeon_road.json');
     for(let i = 1; i <= 6; i++){
-        loader.image(`road${i}`,`assets/tilesets/dungeon_road${i}.png`);
+        loader.spritesheet(`road${i}`,`assets/tilesets/dungeon_road${i}.png`, { frameWidth: 32, frameHeight: 32 });
     }
 
     loader.tilemapTiledJSON('frontMap','assets/tilemaps/dungeon_front.json');
     for(let i = 1; i <= 6; i++){
-        loader.image(`front${i}`,`assets/tilesets/dungeon_front${i}.png`);
+        loader.spritesheet(`front${i}`,`assets/tilesets/dungeon_front${i}.png`, { frameWidth: 32, frameHeight: 32 });
     }
 
     //ダンジョン前
     loader.tilemapTiledJSON('dungeonMap','assets/tilemaps/dungeon.json');
     for(let i = 1; i <= 7; i++){
-        loader.image(`rock${i}`,`assets/tilesets/rock${i}.png`);
+        loader.spritesheet(`rock${i}`,`assets/tilesets/rock${i}.png`, { frameWidth: 32, frameHeight: 32 });
     }
 
     //牧場
     loader.tilemapTiledJSON('ranchMap','assets/tilemaps/ranch.json');
+
 }
 
 export function changeMap(scene,playerStatus,gameStatus,transition){
-    playerStatus.map_id=transition.targetMap;
+    playerStatus.map_id = transition.targetMap;
+    destroy(scene);
     createMap(scene,playerStatus,gameStatus);
 }
 
 export function createMap(scene,playerStatus,gameStatus){
-    if(map){
-        map.destroy();
-    }
-    tilesets = [];
-    layersu = 0;
+  imageGroup=scene.add.group();
+  
     let map_id = playerStatus.map_id;
 
     if(map_id === 3 || map_id === 6 || map_id === 7){
@@ -78,7 +78,7 @@ export function createMap(scene,playerStatus,gameStatus){
 
     //マップidごとに表示させる
     if(map_id === 1){
-        gameStatus.scale=1.5;
+        gameStatus.scale=2.0;
         mapData = 'houseMap';
         map = scene.make.tilemap({key:'houseMap'});
         for(let i = 1; i <= 9; i++){
@@ -99,7 +99,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`grass${i}`, `grass${i}`);
             tilesets.push(tileset);
         }
-        layersu = 2;
+        layersu = 3;
     }else if(map_id === 4){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'townMap'});
@@ -107,7 +107,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`town${i}`, `town${i}`);
             tilesets.push(tileset);
         }
-        layersu = 4;
+        layersu = 5;
     }else if(map_id === 5){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'gachaMap'});
@@ -115,7 +115,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`gacha${i}`, `gacha${i}`);
             tilesets.push(tileset);
         }
-        layersu = 2;
+        layersu = 3;
     }else if(map_id === 6){
         gameStatus.scale=2.0;
         map = scene.make.tilemap({key:'roadMap'});
@@ -139,7 +139,7 @@ export function createMap(scene,playerStatus,gameStatus){
             let tileset = map.addTilesetImage(`rock${i}`, `rock${i}`);
             tilesets.push(tileset);
         }
-        layersu = 3;
+        layersu = 4;
     }else if(map_id === 9){
         gameStatus.scale=1.5;
         map = scene.make.tilemap({key:'ranchMap'});
@@ -178,6 +178,7 @@ export function createMap(scene,playerStatus,gameStatus){
     }else if(playerStatus.map_id === 3){
         layer[0].setScale(gameStatus.scale,gameStatus.scale);
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
+        layer[2].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(2);
     }else if(playerStatus.map_id === 4){
@@ -185,6 +186,7 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
         layer[2].setScale(gameStatus.scale,gameStatus.scale);
         layer[3].setScale(gameStatus.scale,gameStatus.scale);
+        layer[4].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(1);
         layer[2].setDepth(3);
@@ -218,6 +220,7 @@ export function createMap(scene,playerStatus,gameStatus){
         layer[0].setScale(gameStatus.scale,gameStatus.scale);
         layer[1].setScale(gameStatus.scale,gameStatus.scale);
         layer[2].setScale(gameStatus.scale,gameStatus.scale);
+        layer[3].setScale(gameStatus.scale,gameStatus.scale);
         layer[0].setDepth(0);
         layer[1].setDepth(1);
         layer[2].setDepth(2);
@@ -230,7 +233,6 @@ export function createMap(scene,playerStatus,gameStatus){
 
     // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
     const transitionLayer = map.getObjectLayer('Transitions');
-    // transitionLayer.setScale(gameStatus.scale,gameStatus.scale);
     let graphicsA = scene.add.graphics();
 
     if(transitionLayer){
@@ -238,8 +240,8 @@ export function createMap(scene,playerStatus,gameStatus){
     transitionTriggers = transitionLayer.objects.map(obj => ({
         x: obj.x*gameStatus.scale,
         y: obj.y*gameStatus.scale,
-        width: obj.width,
-        height: obj.height,
+        width: obj.width*gameStatus.scale,
+        height: obj.height*gameStatus.scale,
         targetMap: obj.properties.find(prop => prop.name === 'targetMap')?.value,
         targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
         targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
@@ -248,9 +250,9 @@ export function createMap(scene,playerStatus,gameStatus){
     for (const trigger of transitionTriggers) {
         // 半透明の四角形を描画
         graphicsA.fillStyle(0x00ff00, 0.3); // 緑色、30%透明
-        graphicsA.fillRect(trigger.x - trigger.width / 2, trigger.y - trigger.height / 2, trigger.width, trigger.height);
+        graphicsA.fillRect(trigger.x, trigger.y, trigger.width, trigger.height);
     }
-
+    
     dataMap(map,scene,playerStatus,gameStatus,layer);
     // マップの境界を設定
     scene.physics.world.setBounds(0, 0, map.widthInPixels*gameStatus.scale, map.heightInPixels*gameStatus.scale);
@@ -271,15 +273,14 @@ export function createMap(scene,playerStatus,gameStatus){
     return null;
   }
 
-
-  export function loadEventsFromLayer(scene) {
+  // イベントレイヤーからオブジェクトを表示
+  function loadEventsFromLayer(scene,gameStatus) {
     events = [];
-    imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
     
     const EventLayer = map.getObjectLayer("EventLayer");
 
     if(EventLayer){
-        events = EventLayer.objects.map(obj => {
+      events = EventLayer.objects.map(obj => {
 
         const tileSetName = obj.properties.find(prop => prop.name === "tileSet")?.value;
   
@@ -293,17 +294,17 @@ export function createMap(scene,playerStatus,gameStatus){
   
         const event = {
           id: obj.id,
-          x: obj.x,
-          y: obj.y,
-          width: obj.width,
-          height: obj.height,
-          type: obj.properties.find(prop => prop.name === "type")?.value,
+          x: obj.x*gameStatus.scale,
+          y: obj.y*gameStatus.scale,
+          width: obj.width*gameStatus.scale,
+          height: obj.height*gameStatus.scale,
+          type: obj.type,
           data: obj.properties.find(prop => prop.name === "text")?.value,
           active: true,
         };
   
-        const adjustedX = obj.x + obj.width / 2;  // 中心補正
-        const adjustedY = obj.y - obj.height / 2; // 中心補正
+        const adjustedX = event.x + event.width / 2;  // 中心補正
+        const adjustedY = event.y - event.height / 2; // 中心補正
   
         // イメージをシーンに追加
         const addimage = scene.add.image(adjustedX, adjustedY, image, frame)
@@ -317,3 +318,117 @@ export function createMap(scene,playerStatus,gameStatus){
       });
     }
   }
+    
+  // 指定範囲内のイベントを検索（矩形の重なりを判定）
+  export function findEventAt(area) {
+    return events.find(event => {
+      const eventRect = {
+        x: event.x,
+        y: event.y,
+        width: event.width,
+        height: event.height,
+      };
+      return isRectOverlap(area, eventRect);
+    });
+  }
+
+  // 矩形同士が重なっているかを判定する関数
+  function isRectOverlap(rectA, rectB) {
+    return !(
+      rectA.x > rectB.x + rectB.width || // AがBの右側にある
+      rectA.x + rectA.width < rectB.x || // AがBの左側にある
+      rectA.y > rectB.y + rectB.height || // AがBの下側にある
+      rectA.y + rectA.height < rectB.y    // AがBの上側にある
+    );
+  }
+
+  export function triggerEvent(event, player) {
+    switch (event.type) {
+      case "dialog":
+        startDialog(event.data);
+        break;
+      case "item":
+        giveItemToPlayer(event.data, player);
+        break;
+    case "shop":
+        shopOpen();
+        break;
+      default:
+        console.warn("未対応のイベントタイプ:", event.type);
+    }
+  }
+
+  function startDialog(data) {
+    console.log("セリフイベント:", data);
+    // 実際のダイアログUI表示処理
+  }
+
+  function giveItemToPlayer(data, player) {
+    console.log("アイテムを取得:", data.itemName);
+    player.itemManager.addItem({ name: data.itemName });
+  }
+
+  function shopOpen() {
+    if (!gameStatus.shopflg) { // ショップが開いていない場合のみ処理
+        createShop(scene, playerStatus, config, gameStatus);
+        shopEvent(gameStatus);
+    }else{
+        
+    }
+  }
+
+  function clearEventImages() {
+    imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
+  }
+
+  // Arcade版リソース破棄関数
+  function destroy(scene, player) {
+    imageGroup.clear(true, true); // グループ内の全てのオブジェクトを削除
+
+    // プレイヤーオブジェクトを取得
+    player = getplayer();
+
+    // プレイヤーが存在しない場合のエラーチェック
+    if (!player || !player.body) {
+        console.error("Player object or body is not defined.");
+        return;
+    }
+
+    // プレイヤー以外のゲームオブジェクトを削除
+    scene.children.each(child => {
+        if (child !== player) {
+            if (child.body) {
+                child.body.destroy(); // 物理ボディを破棄
+            }
+            child.destroy(); // ゲームオブジェクトを破棄
+        }
+    });
+
+    // 世界の物理エンジンをリセット
+    // scene.physics.world.shutdown();
+    // scene.physics.world = new Phaser.Physics.Arcade.World(scene);
+
+    // プレイヤーの物理設定を再登録
+    // scene.physics.add.existing(player);
+    // player.body.setCollideWorldBounds(true);
+
+    // マップ関連のリソースを破棄
+    // if (collisionLayer) {
+    //     collisionLayer.destroy();
+    //     collisionLayer = null;
+    // }
+
+    if (map) {
+        layer.forEach(layer => layer.destroy());
+        map.destroy();
+        map = null;
+    }
+
+    tilesets = [];
+    layersu = 0;
+    layer = [];
+
+    // collisionObjects = null;
+
+    transitionTriggers = [];
+}

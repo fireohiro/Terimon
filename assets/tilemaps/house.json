@@ -64,7 +64,7 @@
          "encoding":"base64",
          "height":19,
          "id":9,
-         "name":"CollisionLayer",
+         "name":"layer5",
          "opacity":0,
          "type":"tilelayer",
          "visible":true,
@@ -75,7 +75,7 @@
         {
          "draworder":"topdown",
          "id":6,
-         "name":"Event",
+         "name":"EventLayer",
          "objects":[
                 {
                  "gid":501,
@@ -87,9 +87,14 @@
                          "name":"eventId",
                          "type":"int",
                          "value":1
+                        }, 
+                        {
+                         "name":"text",
+                         "type":"string",
+                         "value":"test"
                         }],
                  "rotation":0,
-                 "type":"event",
+                 "type":"dialog",
                  "visible":true,
                  "width":28,
                  "x":134,
@@ -318,7 +323,7 @@
                         {
                          "name":"targetX",
                          "type":"int",
-                         "value":912
+                         "value":896
                         }, 
                         {
                          "name":"targetY",

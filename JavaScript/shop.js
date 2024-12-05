@@ -25,7 +25,7 @@ export function shopEvent(gameStatus){
         shopContainer.setVisible(gameStatus.shopflg);
         console.log(`shopContainer の表示状態: ${shopContainer.visible}`);
     } else {
-        console.error('shopContainer が見つかりません！');
+        console.error('shopContainer が見つかりません！'); 
     }
 }
 
@@ -39,9 +39,6 @@ export async function createShop(scene, playerStatus, config,gameStatus){
         console.error('アイテムリストが取得できませんでした');
         return;
     }
-    console.log(`shopContainer: ${!!shopContainer}, shopflg: ${gameStatus.shopflg}`);
-    console.log(shopItems);
-    console.log(playerStatus);
     // 背景を表示（画面の中央に配置）
     const background = scene.add.image(620, 300, 'shopBackground').setScale(1.3);
 

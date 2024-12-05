@@ -4,7 +4,7 @@
     $pdo=new PDO($connect,USER,PASS);
 
     $sql = $pdo->prepare('
-        SELECT f.*, m.monster_name , m.gazou AS name
+        SELECT f.*, m.monster_name , m.resist
         FROM friends f
         JOIN monster m ON f.monster_id = m.monster_id
         WHERE f.account_id = ? 

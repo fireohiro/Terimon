@@ -7,20 +7,22 @@ let player;
 let isMoving = false;//動いているのかの確認
 let map;
 let cursors;
-let lastDirection = 'down';
 let step = 0;
 const StepToEncounter = 80;//バトル発生するまでの必要歩数
 
 let direction = "down"; // プレイヤーの向きを保持
 let interactionRange = 32; // 調べられる距離
 
+let graphics;//範囲描画用のGraphicsオブジェクト
+
 export function playerpreload(loader){
     loader.spritesheet('playerImage','assets/character/terimon1.png', { frameWidth: 32, frameHeight: 32 });
 }
 
 export function playercreate(scene,playerStatus,gameStatus,layer){
+    graphics = scene.add.graphics(); // 範囲描画用のGraphicsオブジェクト
     //プレイヤーをセーブ地に出現させる
-    player = scene.physics.add.sprite(playerStatus.savepoint_x.scale,playerStatus.savepoint_y,'playerimage');
+    player = scene.physics.add.sprite(playerStatus.savepoint_x,playerStatus.savepoint_y,'playerimage');
     player.setScale(gameStatus.scale);
     scene.physics.add.existing(player);
     player.setCollideWorldBounds(true);
@@ -37,6 +39,7 @@ export function playercreate(scene,playerStatus,gameStatus,layer){
     // キーボード入力を設定
     scene.input.keyboard.on("keydown-E", () => {
         checkForInteraction();
+        drawInteractionArea();
     });
 
     //ここに大きさ調整だったりプレイヤーがいる層の設定をする
@@ -95,16 +98,22 @@ export function dataMap(mapdata,scene,playerStatus,gameStatus,layer){
     playercreate(scene,playerStatus,gameStatus,layer);
 }
 
-export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemList){
+export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemList,friendList){
     isMoving = false;//最初は動いていないことにする
+    let speed = playerStatus.speed * 5;
+    if(speed < 250){
+        speed = 250;
+    }else if(speed > 1000){
+        speed = 1000;
+    }
     if (cursors.up.isDown) {
         isMoving = true;
-        player.setVelocityY(-playerStatus.speed*10);
+        player.setVelocityY(-speed);
         player.anims.play('playerup', true);
         direction="up";
     } else if (cursors.down.isDown) {
         isMoving = true;
-        player.setVelocityY(playerStatus.speed*10);
+        player.setVelocityY(speed);
         player.anims.play('playerdown', true);
         direction="down";
     }else{
@@ -112,18 +121,21 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
     }
     if (cursors.left.isDown) {
         isMoving = true;
-        player.setVelocityX(-playerStatus.speed*10);
+        player.setVelocityX(-speed);
         player.anims.play('playerleft', true);
         direction="left";
-    } else if (cursors.right.isDown) {
+    }else if(cursors.right.isDown) {
         isMoving = true;
-        player.setVelocityX(playerStatus.speed*10);
+        player.setVelocityX(speed);
         player.anims.play('playerright', true);
         direction="right";
     }else{
         player.setVelocityX(0);
     }
 
+    //プレイヤーの現在地をリアルタイムに入れる
+    playerStatus.savepoint_x = player.x;
+    playerStatus.savepoint_y = player.y;
     // 動いていない場合に待機アニメーションを再生
     if (!isMoving) {
         player.anims.stop();  // 現在のアニメーションを停止
@@ -155,15 +167,34 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
                 let encountnum = Math.floor(Math.random() * 100) + 1;
                 if(encountnum <= battlerate){//2%の確率でバトル発生
                     playerstop();
+                    player.anims.stop();  // 現在のアニメーションを停止
+
+                    // キャラクターが最後に向いていた方向に応じた待機フレームを設定
+                    switch (player.anims.getName()) {
+                        case 'playerup':
+                            player.setTexture('playerImage', 9); 
+                            break;
+                        case 'playerdown':
+                            player.setTexture('playerImage', 0); 
+                            break;
+                        case 'playerleft':
+                            player.setTexture('playerImage', 3); 
+                            break;
+                        case 'playerright':
+                            player.setTexture('playerImage', 6); 
+                            break;
+                        default:
+                            player.setTexture('playerImage', 0); 
+                    }
                     //バトル発生、configの後の引数はそのバトル相手が雑魚なのか中ボスなのかボスなのかを判定（１＝雑魚、２＝中ボス、３＝ボス）カスタムも可
-                    battleStart(scene,config,1,gameStatus,friends,playerStatus,itemList);
+                    battleStart(scene,config,1,gameStatus,friends,playerStatus,itemList,friendList);
                 }
             }
         }else{
             step = 0;
         }
     }
-    //  マップ切り替えのトリガーをチェック
+     // マップ切り替えのトリガーをチェック
      const transition = checkTransition(player);
      if (transition) {
         changeMap(scene,playerStatus,gameStatus,transition);
@@ -180,7 +211,7 @@ function checkForInteraction(){
     // イベントの範囲チェック
     const event = findEventAt(interactionArea);
     if (event) {
-        triggerEvent(event, this.player);
+        triggerEvent(event, player);
     } else {
         console.log("何も見つかりませんでした");
     }
@@ -203,12 +234,17 @@ function getInteractionArea() {
     }
   }
 
-  // 指定範囲内のイベントを検索
-  function findEventAt(area) {
-    return events.find(event =>
-      area.x >= event.x && area.x <= event.x + event.width &&
-      area.y >= event.y && area.y <= event.y + event.height
-    );
+//////////// デバッグ用
+ function drawInteractionArea() {
+    // 古い描画をクリア
+    graphics.clear();
+    // 範囲を取得
+    const area = getInteractionArea();
+    // 半透明の四角形を描画
+    graphics.fillStyle(0x00ff00, 0.3); // 緑色、30%透明
+    graphics.fillRect(area.x - area.width / 2, area.y - area.height / 2, area.width, area.height);
   }
-
   
+  export function getplayer(){
+    return player;
+  }
