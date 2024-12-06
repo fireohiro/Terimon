@@ -925,7 +925,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                             if (friend.hp_nokori === 0) {
                                 let randnum2 = Math.floor(Math.random() * 100) + 1;
                                 friend.hp_nokori = friend.hp / 2;
-                                await displaymessage(scene, config, `${friend.monster_name}は${combatant.name}のまほうによって復活した！`);
+                                await displaymessage(scene, config, `${friend.monster_name}は${combatant.monster_name}のまほうによって復活した！`);
                             } else {
                                 await displaymessage(scene, config, `${friend.monster_name}には効果がなかった・・・`);
                             }
@@ -939,13 +939,46 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                             if (randnum2 <= combatant.luck) {
                                 damage = damage * 2;
                                 await displaymessage(scene, config, '会心の一撃！');
+                                if(magic.naiyou === 'MP吸収'){
+                                    let drainmp =Math.ceil(damage * 0.1);
+                                    if(drainmp < 1){
+                                        drainmp = 1;
+                                    }
+                                    await displaymessage(scene,config,`味方の${combatant.monster_name}は敵からMPを${drainmp}吸収した`);
+                                    combatant.mp_nokori += drainmp;
+                                    if(combatant.mp_nokori > combatant.mp){
+                                        combatant.mp_nokori = combatant.mp;
+                                    }
+                                }
                                 await attack(enemy, damage, i);
                             } else if (magic.naiyou === enemy.resist) {
                                 damage = Math.ceil(damage / 3);
                                 await displaymessage(scene, config, `敵の${enemy.name}の耐性が${combatant.monster_name}の${magic.waza_name}のダメージを激減させた！`);
+                                if(magic.naiyou === 'MP吸収'){
+                                    let drainmp =Math.ceil(damage * 0.1);
+                                    if(drainmp < 1){
+                                        drainmp = 1;
+                                    }
+                                    await displaymessage(scene,config,`味方の${combatant.monster_name}は敵からMPを${drainmp}吸収した`);
+                                    combatant.mp_nokori += drainmp;
+                                    if(combatant.mp_nokori > combatant.mp){
+                                        combatant.mp_nokori = combatant.mp;
+                                    }
+                                }
                                 await attack(enemy, damage, i);
                             } else {
                                 damage -= enemy.def / 2;
+                                if(magic.naiyou === 'MP吸収'){
+                                    let drainmp =Math.ceil(damage * 0.1);
+                                    if(drainmp < 1){
+                                        drainmp = 1;
+                                    }
+                                    await displaymessage(scene,config,`味方の${combatant.monster_name}は敵からMPを${drainmp}吸収した`);
+                                    combatant.mp_nokori += drainmp;
+                                    if(combatant.mp_nokori > combatant.mp){
+                                        combatant.mp_nokori = combatant.mp;
+                                    }
+                                }
                                 await attack(enemy, damage, i);
                             }
                         }
