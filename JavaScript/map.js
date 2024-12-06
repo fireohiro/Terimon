@@ -320,7 +320,7 @@ export function createMap(scene,playerStatus,gameStatus,config){
         }else{
             //propaty("image")を利用したイベントの場合
             const imageName = obj.properties.find(prop => prop.name === "image")?.value;
-            const addimage = scene.add.image(adjustedX, adjustedY, imageName, 1)
+            const addimage = scene.add.image(adjustedX, adjustedY, imageName)
             .setOrigin(0.5, 0.5) // 必要に応じてオリジンを調整
             .setDepth(10)   // 深度を設定して他のオブジェクトとの重なりを調整
             .setDisplaySize(event.width, event.height);
