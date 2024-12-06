@@ -24,12 +24,12 @@ export function initializeItemMenu(scene, config, gameStatus, itemList) {
 
     // メニュー全体の幅と高さを計算
     const itemWidth = config.width * 0.6;
-    const itemHeight = config.height * 0.95;
+    const itemHeight = config.height * 0.8;
 
     // 背景を生成
     const itemback = scene.add.rectangle(
         config.width * 0.3,
-        0,
+        20,
         itemWidth,
         itemHeight,
         0xFFFFFF,
@@ -41,31 +41,33 @@ export function initializeItemMenu(scene, config, gameStatus, itemList) {
     // ヘッダーを生成
     const headerItem = scene.add.text(
         config.width * 0.35,
-        20,
+        40,
         "アイテム",
         { fontSize: "20px", fill: "#000" }
     );
     const headerCount = scene.add.text(
         config.width * 0.75,
-        20,
+        40,
         "個数",
         { fontSize: "20px", fill: "#000" }
     );
 
     // アイテムメニューコンテナを作成
-    itemContainer = scene.add.container(0, 0, [itemback, headerItem, headerCount]);
+    const camera = scene.cameras.main;
+    itemContainer = scene.add.container(camera.scrollX, camera.scrollY, [itemback, headerItem, headerCount]);
     itemContainer.setVisible(false); // 初期状態は非表示
     itemContainer.setDepth(7);
 
     // アイテムボタンの間隔と配置
     const buttonSpacing = 40;
     const startX = config.width * 0.35;
-    let startY = 60;
+    let startY = 80;
 
     // アイテムリストからボタンを生成
+    const countDisplays = {}; // アイテムIDをキーにカウント表示を管理
+
     itemList.forEach((item, index) => {
         const itemText = `${item.item_name}`;
-        const countText = `${item.su}`;
 
         // アイテムボタンを作成
         const itemButton = createButton(
@@ -76,6 +78,13 @@ export function initializeItemMenu(scene, config, gameStatus, itemList) {
             () => {
                 console.log(`アイテム選択: ${item.item_name}`);
                 useItem(scene, config, gameStatus, item);
+
+                // アイテムの個数を減らし、表示を更新
+                if (item.su > 0) {
+                    countDisplays[item.item_id].setText(`${item.su}`);
+                } else {
+                    console.warn(`アイテム「${item.item_name}」は在庫がありません`);
+                }
             }
         );
 
@@ -83,12 +92,16 @@ export function initializeItemMenu(scene, config, gameStatus, itemList) {
         const countDisplay = scene.add.text(
             config.width * 0.75,
             startY + index * buttonSpacing,
-            countText,
+            `${item.su}`,
             { fontSize: "18px", fill: "#000" }
         );
 
         // ボタンと個数表示をコンテナに追加
         itemContainer.add([itemButton, countDisplay]);
+
+        // 個数表示を管理リストに追加
+        countDisplays[item.item_id] = countDisplay;
+
         console.log("ボタン生成:", itemButton);
     });
 
@@ -100,13 +113,19 @@ export function initializeItemMenu(scene, config, gameStatus, itemList) {
  * ボタン生成用のユーティリティ関数
  */
 function createButton(scene, x, y, text, callback) {
+    console.log(`Creating button at (${x}, ${y}): ${text}`);
     const button = scene.add.text(x, y, text, {
         fontSize: "18px",
         backgroundColor: "#FFFFFF",
         color: "#000",
         padding: { left: 10, right: 10, top: 5, bottom: 5 },
     });
+    
     button.setInteractive();
+
+    // 登録前に既存のリスナーをクリア
+    button.off("pointerdown");
+
     button.on("pointerdown", callback);
     button.on("pointerover", () => button.setStyle({ backgroundColor: "#E0E0E0" }));
     button.on("pointerout", () => button.setStyle({ backgroundColor: "#FFFFFF" }));
@@ -121,6 +140,9 @@ export function useItem(scene, config, gameStatus, item, playerStatus, friends) 
         console.error("Invalid arguments passed to useItem");
         return;
     }
+
+    // 呼び出し回数をデバッグ
+    console.count("useItem called");
 
     console.log(`Using item: ${item.item_name}`);
     const item_id = item.item_id;
@@ -142,8 +164,10 @@ export function useItem(scene, config, gameStatus, item, playerStatus, friends) 
  * アイテムメニューの更新（カメラ追従）
  */
 export function updateItemMenu(scene) {
-    const camera = scene.cameras.main;
     if (itemContainer) {
-        itemContainer.setPosition(camera.scrollX, camera.scrollY);
+        const camera = scene.cameras.main;
+        const saveX = camera.scrollX; // カメラのスクロール位置に合わせる
+        const saveY = camera.scrollY;
+        itemContainer.setPosition(saveX, saveY);
     }
 }
