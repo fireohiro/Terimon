@@ -162,7 +162,7 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
 }
 //ゲームの更新処理
 function update(){
-    if(!createok || gameStatus.fadeflg){
+    if(!createok || gameStatus.fadeflg || gameStatus.shopflg){
         return;
     }
     if(gameStatus.battleflg){
