@@ -10,6 +10,7 @@ export function soundpreload(loader){
     loader.audio('boss2','assets/audio/boss_final.mp3');
 
     //効果音の読み込み
+    loaderloader.audio('run','assets/audio/run.mp3');
     //主にバトルで使用
     loader.audio('encount1','assets/audio/encount1.mp3');
     loader.audio('encount2','assets/audio/encount2.mp3');
@@ -18,11 +19,17 @@ export function soundpreload(loader){
     loader.audio('magic','assets/audio/magic_effect.mp3');
     loader.audio('miss','assets/audio/miss_magic.mp3');
     loader.audio('getmoney','assets/audio/money.mp3');
+    loader.audio('critical','assets/audio/critical.mp3');
+    loader.audio('levelup','assets/audio/levelup.mp3');
+    loader.audio('winner','assets/audio/winner.mp3');
     //主にポーズで使用
     loader.audio('open_pause','assets/audio/pause_open.mp3');
     loader.audio('open','assets/audio/open.mp3');
     loader.audio('yes','assets/audio/yes.mp3');
     loader.audio('no','assets/audio/no.mp3');
+    //ショップ
+    loader.audio('cash','assets/audio/Cash.mp3');
+    loader.audio('mart','assets/audio/mart.mp3');
 }
 export function soundcreate(){
     currentMusic = null;
@@ -67,6 +74,12 @@ export function playEffect(scene,condition){
         open:'open',
         yes:'yes',
         no:'no',
+        cash:'cash',
+        critical:'critical',
+        levelup:'levelup',
+        mart:'mart',
+        run:'run',
+        winner:'winner',
     };
     const effectKey = effectMap[condition];
     if(!effectKey){

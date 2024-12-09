@@ -1,6 +1,7 @@
 import {battleStart} from './battle.js';
 import {findEventAt,triggerEvent,checkTransition,changeMap} from './map.js';
 import { shopEvent,createShop } from './shop.js';
+import { playEffect } from './sound.js';
 
 const battlerate = 2;
 let player;
@@ -157,6 +158,8 @@ export function playerupdate(scene,config,gameStatus,playerStatus,friends,itemLi
             default:
                 player.setTexture('playerImage', 0); 
         }
+    }else{
+        playEffect(scene,'run');
     }
     //移動していたらエンカウント処理を行う
     if(gameStatus.encountflg){

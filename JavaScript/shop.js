@@ -1,5 +1,6 @@
 import {itemGet} from './main.js';
 import {playerstop} from './player.js';
+import { playEffect } from './sound.js';
 
 export function shopPreload(loader) {
     // 必要な画像などを読み込み
@@ -19,8 +20,9 @@ export async function loadItems() {
 }
 
 let shopContainer;
-export function shopEvent(gameStatus){
+export function shopEvent(scene,gameStatus){
     gameStatus.shopflg = !gameStatus.shopflg;
+        playEffect(scene,'mart');
     if (shopContainer) {
         shopContainer.setVisible(gameStatus.shopflg);
         console.log(`shopContainer の表示状態: ${shopContainer.visible}`);
@@ -39,23 +41,23 @@ export async function createShop(scene, playerStatus, config,gameStatus){
         console.error('アイテムリストが取得できませんでした');
         return;
     }
-    // 背景を表示（画面の中央に配置）
-    const background = scene.add.image(620, 300, 'shopBackground').setScale(1.3);
+    // 背景を表示（画面の中央に配置）x+300,y+600
+    const background = scene.add.image(920, 900, 'shopBackground').setScale(1.3);
 
     // NPC画像を表示（左端に配置）
-    const npc = scene.add.image(300, 250, 'shopNpc').setScale(0.55);
+    const npc = scene.add.image(600, 850, 'shopNpc').setScale(0.55);
 
     // アイテムリストの背景枠
-    const itemListBackground = scene.add.rectangle(470, 420, 800, 300, 0xFFFFFF).setStrokeStyle(2, 0x000000);
+    const itemListBackground = scene.add.rectangle(770, 1020, 800, 300, 0xFFFFFF).setStrokeStyle(2, 0x000000);
 
     // アイテム詳細表示の背景枠
-    const itemDetailsBackground = scene.add.rectangle(1050, 350, 300, 200, 0xFFFFFF).setStrokeStyle(2, 0x000000);
+    const itemDetailsBackground = scene.add.rectangle(1350, 950, 300, 200, 0xFFFFFF).setStrokeStyle(2, 0x000000);
 
     // 「アイテム一覧」の見出し
     const itiran = scene.add.text(itemListBackground.x - 150, itemListBackground.y - 120, 'アイテム一覧', { fontSize: '36px', fontStyle: 'bold', color: '#000' });
 
     // 所持金表示の背景枠
-    const goldBackground = scene.add.rectangle(1050, 545, 300, 50, 0xFFFFFF).setStrokeStyle(2, 0x000000);
+    const goldBackground = scene.add.rectangle(1350, 1145, 300, 50, 0xFFFFFF).setStrokeStyle(2, 0x000000);
 
     // 所持金表示テキスト
     const money = scene.add.text(goldBackground.x - 80, goldBackground.y - 15, `所持金 ${playerStatus.money}T`, { fontSize: '22px', color: '#000' });
@@ -165,6 +167,7 @@ export async function createShop(scene, playerStatus, config,gameStatus){
             if (playerStatus.money >= totalPrice) {
                 playerStatus.money -= totalPrice;
                 money.setText(`所持金 ${playerStatus.money}TP`);
+                playEffect(scene,'cash');
                 alert(`${selectedItem.item_name}を${quantity}個購入しました！`);
                 itemGet(selectedItem,quantity);
             } else {

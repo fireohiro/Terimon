@@ -285,6 +285,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                     if(friend.hp_nokori >= 1){
                         let damage;
                         if(combatant.luck >= rannum){
+                            playEffect(scene,'critical');
                             damage = Math.ceil(combatant.pow / 1.5 * 2);
                             await displaymessage(scene,config,`味方の${friend.monster_name}は鳩尾に痛恨の一撃を食らった！ダメージ２倍`);
                         }else{
@@ -572,6 +573,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                         const randnum = Math.floor(Math.random() * 100) + 1;
                         if(combatant.luck >= randnum){
                             damage = Math.ceil(combatant.pow / 1.5) * 2;
+                            playEffect(scene,'critical');
                             await displaymessage(scene,config,'会心の一撃！');
                         }else{
                             damage = Math.ceil(combatant.pow / 1.5 - (enemy.def / 2));
@@ -937,6 +939,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                             let damage = Math.ceil(combatant.pow * (1 + magic.might / 50) / 1.5);
                             let randnum2 = Math.floor(Math.random() * 100) + 1;
                             if (randnum2 <= combatant.luck) {
+                                playEffect(scene,'critical');
                                 damage = damage * 2;
                                 await displaymessage(scene, config, '会心の一撃！');
                                 if(magic.naiyou === 'MP吸収'){
@@ -1101,6 +1104,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                 playerStatus.experience += enemy.experience;
                 if (playerStatus.level < 20 && playerStatus.level * 200 <= playerStatus.experience) {
                     playerStatus.level++;
+                    playEffect(scene,'levelup');
                     playerStatus.experience = 0;
                 
                     try {
@@ -1155,6 +1159,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                 for (const friend of friends) {
                     friend.experience += enemy.experience;
                     if (friend.level < 20 && friend.level * 200 <= friend.experience) {
+                        playEffect(scene,'levelup');
                         friend.level++;
                         friend.experience = 0;
                         try {
@@ -1346,6 +1351,7 @@ async function battleEnd(scene,config,gameStatus,winflg,playerStatus,friends){
             friend.mp_nokori = friend.mp;
         });
     }else{
+        playEffect(scene,'winner');
         for(let s = 0; s < 3; s++){
             if(enemyImages[s]){
                 enemyImages[s].setVisible(false);
