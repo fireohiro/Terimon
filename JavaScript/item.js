@@ -16,7 +16,7 @@ export function itemEvent(gameStatus,scene) {
     }
 }
 
-export function initializeItemMenu(scene, config, gameStatus, itemList) {
+export function initializeItemMenu(scene, config, gameStatus, playerStatus, itemList, friends) {
     if (!scene || !config || !gameStatus || !Array.isArray(itemList)) {
         console.error("Invalid arguments passed to initializeItemMenu");
         return;
@@ -77,7 +77,8 @@ export function initializeItemMenu(scene, config, gameStatus, itemList) {
             itemText,
             () => {
                 console.log(`アイテム選択: ${item.item_name}`);
-                useItem(scene, config, gameStatus, item);
+                useItem(scene, config, gameStatus, item, playerStatus, friends);
+
 
                 // アイテムの個数を減らし、表示を更新
                 if (item.su > 0) {
@@ -136,7 +137,10 @@ function createButton(scene, x, y, text, callback) {
  * アイテム使用処理
  */
 export function useItem(scene, config, gameStatus, item, playerStatus, friends) {
-    if (!scene || !config || !gameStatus || !item) {
+    console.log("playerStatus:", playerStatus);
+    console.log("friends:", friends);
+
+    if (!scene || !config || !gameStatus || !item  || !playerStatus) {
         console.error("Invalid arguments passed to useItem");
         return;
     }
@@ -149,8 +153,23 @@ export function useItem(scene, config, gameStatus, item, playerStatus, friends) 
     console.log(item_id + "を送れてるか確認");
     // アイテム使用処理を実装
     if(item.bunrui == "HP回復"){
-        itemUse(item_id);
-        console.log("消費確認用1");
+        for (const friend of friends) {
+            if (friend.hp_nokori > 0) {
+                friend.hp_nokori += item.naiyou;
+                if (friend.hp < friend.hp_nokori) {
+                    friend.hp_nokori = friend.hp;
+                    itemUse(item_id);
+                    console.log("消費確認用1");
+                }
+            }else if(playerStatus.hp_nokori > 0){
+                playerStatus.hp_nokori += item.naiyou;
+                if(playerStatus.hp < playerStatus.hp_nokori){
+                    playerStatus.hp_nokori = playerStatus.hp;
+                }
+            }else{
+                alert("HPがいっぱいです。");
+            }
+        }
     }else if(item.bunrui == "MP回復"){
         itemUse(item.item_id);
         console.log("消費確認用2");

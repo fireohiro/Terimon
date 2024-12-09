@@ -11,7 +11,7 @@ export function createPause(scene,gameStatus,playerStatus,config,friends,itemLis
             pauseStart(scene,gameStatus,config,playerStatus,friends);
         }
     });
-    initializeItemMenu(scene, config, gameStatus, itemList);
+    initializeItemMenu(scene, config, gameStatus, playerStatus, itemList, friends);
 }
 
 function pauseStart(scene,gameStatus,config,playerStatus,friends){
