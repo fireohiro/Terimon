@@ -10,7 +10,7 @@ export function soundpreload(loader){
     loader.audio('boss2','assets/audio/boss_final.mp3');
 
     //効果音の読み込み
-    loaderloader.audio('run','assets/audio/run.mp3');
+    loader.audio('run','assets/audio/run.mp3');
     //主にバトルで使用
     loader.audio('encount1','assets/audio/encount1.mp3');
     loader.audio('encount2','assets/audio/encount2.mp3');
