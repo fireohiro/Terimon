@@ -152,31 +152,62 @@ export function useItem(scene, config, gameStatus, item, playerStatus, friends) 
     const item_id = item.item_id;
     console.log(item_id + "を送れてるか確認");
     // アイテム使用処理を実装
-    if(item.bunrui == "HP回復"){
+    if (item.bunrui == "HP回復") {
+        let isUsed = false;
         for (const friend of friends) {
-            if (friend.hp_nokori > 0) {
+            if (friend && friend.hp_nokori > 0) {
                 friend.hp_nokori += item.naiyou;
                 if (friend.hp < friend.hp_nokori) {
                     friend.hp_nokori = friend.hp;
-                    itemUse(item_id);
-                    console.log("消費確認用1");
+                    isUsed = true;
                 }
-            }else if(playerStatus.hp_nokori > 0){
-                playerStatus.hp_nokori += item.naiyou;
-                if(playerStatus.hp < playerStatus.hp_nokori){
-                    playerStatus.hp_nokori = playerStatus.hp;
-                }
-            }else{
-                alert("HPがいっぱいです。");
             }
         }
-    }else if(item.bunrui == "MP回復"){
-        itemUse(item.item_id);
-        console.log("消費確認用2");
-    }else{
+        if (playerStatus.hp_nokori > 0) {
+            playerStatus.hp_nokori += item.naiyou;
+            if (playerStatus.hp < playerStatus.hp_nokori) {
+                playerStatus.hp_nokori = playerStatus.hp;
+                isUsed = true;
+            }
+        }
+        if (isUsed) {
+            itemUse(item_id);
+            console.log("消費確認用1");
+        } else {
+            console.log("HPがいっぱいです。");
+            alert("HPがいっぱいです。");
+        }
+        
+    } else if (item.bunrui == "MP回復") {
+        let isUsed = false;
+        for (const friend of friends) {
+            if (friend && friend.mp_nokori > 0) {
+                friend.mp_nokori += item.naiyou;
+                if (friend.mp < friend.mp_nokori) {
+                    friend.mp_nokori = friend.mp;
+                    isUsed = true;
+                }
+            }
+        }
+        if (playerStatus.mp_nokori > 0) {
+            playerStatus.mp_nokori += item.naiyou;
+            if (playerStatus.mp < playerStatus.mp_nokori) {
+                playerStatus.mp_nokori = playerStatus.mp;
+                isUsed = true;
+            }
+        }
+        if (isUsed) {
+            itemUse(item_id);
+            console.log("消費確認用2");
+        } else {
+            console.log("MPがいっぱいです。");
+            alert("MPがいっぱいです。");
+        }
+
+    } else {
         itemUse(item.item_id);
         console.log("消費確認用3");
-    }
+}
 }
 
 /**
