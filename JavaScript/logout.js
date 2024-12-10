@@ -56,7 +56,7 @@ export function logoutmessage(scene,config,gameStatus){
         logouttext.y -= 5;
     });
     backtext.setInteractive().on('pointerdown',()=>{
-         logoutdisplay(gameStatus);
+         logoutdisplay(gameStatus,scene,config);
     });
     backtext.setInteractive().on('pointerover', () => {
         backtext.y += 5;
