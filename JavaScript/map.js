@@ -135,7 +135,7 @@ export function createMap(scene,playerStatus,gameStatus,config){
         }
         layersu = 6;
     }else if(map_id === 8){
-        gameStatus.scale=1.5;
+        gameStatus.scale=3.0;
         map = scene.make.tilemap({key:'dungeonMap'});
         for(let i = 1; i <= 7; i++){
             let tileset = map.addTilesetImage(`rock${i}`, `rock${i}`);
