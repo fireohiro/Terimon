@@ -235,7 +235,6 @@ export function createMap(scene,playerStatus,gameStatus,config){
 
     // トリガーエリアを設定（マップオブジェクトレイヤーを利用）
     const transitionLayer = map.getObjectLayer('Transitions');
-    let graphicsA = scene.add.graphics();
 
     if(transitionLayer){
     // トリガーをマップのオブジェクトレイヤーから設定
@@ -248,11 +247,6 @@ export function createMap(scene,playerStatus,gameStatus,config){
         targetX: obj.properties.find(prop => prop.name === 'targetX')?.value,
         targetY: obj.properties.find(prop => prop.name === 'targetY')?.value
         }));
-    }
-    for (const trigger of transitionTriggers) {
-        // 半透明の四角形を描画
-        graphicsA.fillStyle(0x00ff00, 0.3); // 緑色、30%透明
-        graphicsA.fillRect(trigger.x, trigger.y, trigger.width, trigger.height);
     }
     
     dataMap(map,scene,playerStatus,gameStatus,layer,config);
