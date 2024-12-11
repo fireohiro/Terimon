@@ -25,19 +25,11 @@ export function shopEvent(scene,gameStatus, playerStatus, config){
     if(gameStatus.shopflg){
         playEffect(scene,'mart');
         createShop(scene, playerStatus, config, gameStatus);
-        // if (shopContainer) {
-        //     shopContainer.setVisible(gameStatus.shopflg);
-        //     console.log(`shopContainer の表示状態: ${shopContainer.visible}`);
-        // } else {
-        //     console.error('shopContainer が見つかりません！'); 
-        // }
     }else{
         if(shopContainer){
-            console.log('通った')
             shopContainer.destroy();
         }
     }
-    console.log(gameStatus.shopflg);
 }
 
 export async function createShop(scene, playerStatus, config,gameStatus){
@@ -189,8 +181,6 @@ export async function createShop(scene, playerStatus, config,gameStatus){
     ];
     shopContainer = scene.add.container(0, 0, containerItems);
     shopContainer.setDepth(9);
-    
-    console.log(shopContainer);
 }
 
 export function shopUpdate(scene){
