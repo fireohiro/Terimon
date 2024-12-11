@@ -4,6 +4,7 @@ import {mappreload,createMap} from './map.js';
 import {createPause,updatepause} from './pause.js';
 import {playerpreload,playerupdate} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
+import {itemUpdate} from './item.js';
 import {statuspreload,statusUpdate} from './status.js';
 import {saveUpdate} from './save.js';
 import{logoutupdate} from './logout.js';
@@ -171,6 +172,9 @@ function update(){
     if(gameStatus.pauseflg){
         updatepause(this,playerStatus);
         //アイテム位置調整
+        if(gameStatus.itemflg){
+            itemUpdate(this);
+        }
         //装備位置調整
         // //ステータス位置調整
         if(gameStatus.statusflg){

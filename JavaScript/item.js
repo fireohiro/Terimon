@@ -232,7 +232,7 @@ export function useItem(scene, config, gameStatus, item, playerStatus, friends) 
 /**
  * アイテムメニューの更新（カメラ追従）
  */
-export function updateItemMenu(scene) {
+export function itemUpdate(scene) {
     if (itemContainer) {
         const camera = scene.cameras.main;
         const saveX = camera.scrollX; // カメラのスクロール位置に合わせる
