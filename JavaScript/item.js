@@ -17,7 +17,7 @@ export function itemEvent(gameStatus,scene) {
 }
 
 export function initializeItemMenu(scene, config, gameStatus, playerStatus, itemList, friends) {
-    if (!scene || !config || !gameStatus || !Array.isArray(itemList)) {
+    if (!scene || !config || !gameStatus) {
         console.error("Invalid arguments passed to initializeItemMenu");
         return;
     }
@@ -64,30 +64,36 @@ export function initializeItemMenu(scene, config, gameStatus, playerStatus, item
     let startY = 80;
 
     // アイテムリストからボタンを生成
+if (itemList && Array.isArray(itemList)) { // itemListが存在し、配列である場合のみ処理を進める
     const countDisplays = {}; // アイテムIDをキーにカウント表示を管理
 
     itemList.forEach((item, index) => {
         const itemText = `${item.item_name}`;
 
         // アイテムボタンを作成
-        const itemButton = createButton(
-            scene,
-            startX,
-            startY + index * buttonSpacing,
-            itemText,
-            () => {
-                console.log(`アイテム選択: ${item.item_name}`);
-                useItem(scene, config, gameStatus, item, playerStatus, friends);
+const itemButton = createButton(
+    scene,
+    startX,
+    startY + index * buttonSpacing,
+    itemText,
+    () => {
+        if (item.su <= 0) {
+            console.warn(`アイテム「${item.item_name}」の在庫がありません`);
+            alert(`アイテム「${item.item_name}」は在庫切れです`);
+            return;
+        }
+        console.log(`アイテム選択: ${item.item_name}`);
+        useItem(scene, config, gameStatus, item, playerStatus, friends);
 
+        // アイテムの個数を減らし、表示を更新
+        if (item.su >= 0) {
+            countDisplays[item.item_id].setText(`${item.su}`);
+        } else {
+            console.warn(`アイテム「${item.item_name}」は在庫がありません`);
+        }
+    }
+);
 
-                // アイテムの個数を減らし、表示を更新
-                if (item.su > 0) {
-                    countDisplays[item.item_id].setText(`${item.su}`);
-                } else {
-                    console.warn(`アイテム「${item.item_name}」は在庫がありません`);
-                }
-            }
-        );
 
         // 個数表示用のテキストを作成
         const countDisplay = scene.add.text(
@@ -105,7 +111,9 @@ export function initializeItemMenu(scene, config, gameStatus, playerStatus, item
 
         console.log("ボタン生成:", itemButton);
     });
-
+} else {
+    console.warn("itemListが無効または空です:", itemList);
+}
     console.log("アイテムメニュー初期化完了:", itemContainer);
 }
 
@@ -152,7 +160,7 @@ export function useItem(scene, config, gameStatus, item, playerStatus, friends) 
     const item_id = item.item_id;
     console.log(item_id + "を送れてるか確認");
     // アイテム使用処理を実装
-    if (item.bunrui == "HP回復") {
+    if (item.bunrui == "HP回復" && item.su > 0) {
         let isUsed = false; // 初期化は処理の最初で行う
     
         // フレンドのHP回復処理
