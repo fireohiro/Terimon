@@ -791,7 +791,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                     break;
             case "俺が出る":
                 let syouhi = Math.floor(playerStatus.mp / 5);
-                if(mp_nokori >= syouhi){
+                if(playerStatus.mp_nokori >= syouhi){
                     playerStatus.mp_nokori -= syouhi;
                     gameStatus.playerfight = true;
                     koutai = true;
@@ -815,7 +815,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                     await displaymessage(scene,config,`${playerStatus.account_name}の味方は全員倒れていて交代することができない`);
                 }else{
                     let syouhi = Math.floor(playerStatus.mp / 5);
-                    if(mp_nokori >= syouhi){
+                    if(playerStatus.mp_nokori >= syouhi){
                         playerStatus.mp_nokori -= syouhi;
                         gameStatus.playerfight = false;
                         koutai = true;
