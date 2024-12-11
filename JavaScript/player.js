@@ -1,6 +1,6 @@
 import {battleStart} from './battle.js';
 import {findEventAt,triggerEvent,checkTransition,changeMap} from './map.js';
-import { shopEvent,createShop } from './shop.js';
+import { shopEvent } from './shop.js';
 import { playEffect } from './sound.js';
 
 const battlerate = 2;

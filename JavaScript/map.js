@@ -1,6 +1,6 @@
 import {dataMap,playerupdate,getplayer} from './player.js';
 import { playsound } from './sound.js';
-import { createShop,shopEvent } from './shop.js';
+import { shopEvent } from './shop.js';
 let map;
 let mapData;
 let tilesets = [];
@@ -383,8 +383,7 @@ export function createMap(scene,playerStatus,gameStatus,config){
 
   function shopOpen(scene, playerStatus, config, gameStatus) {
     if (!gameStatus.shopflg) { // ショップが開いていない場合のみ処理
-        createShop(scene, playerStatus, config, gameStatus);
-        shopEvent(scene,gameStatus);//, playerStatus, config
+        shopEvent(scene,gameStatus, playerStatus, config);//, playerStatus, config
     }else{
         
     }
