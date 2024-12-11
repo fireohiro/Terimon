@@ -7,7 +7,7 @@ import {battlepreload,battleupdate} from './battle.js';
 import {statuspreload,statusUpdate} from './status.js';
 import {saveUpdate} from './save.js';
 import{logoutupdate} from './logout.js';
-import { shopPreload, createShop,shopUpdate } from './shop.js';
+import { shopPreload ,shopUpdate } from './shop.js';
 import {soundpreload, soundcreate} from './sound.js';
 
 //Phaserの設定
@@ -150,7 +150,6 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     await fetchGear();
     createMap(this,playerStatus,gameStatus,config);
     createPause(this,gameStatus,playerStatus,config,statuses,itemList,gearList);
-    createShop(this, playerStatus, config, gameStatus);
 
     if(playerStatus.map_id === 3 || playerStatus.map_id === 6 || playerStatus.map_id === 7 || playerStatus.map_id === 8){
         gameStatus.encountflg = true;

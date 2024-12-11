@@ -33,16 +33,15 @@ export function shopEvent(scene,gameStatus, playerStatus, config){
         // }
     }else{
         if(shopContainer){
+            console.log('通った')
             shopContainer.destroy();
         }
     }
+    console.log(gameStatus.shopflg);
 }
 
 export async function createShop(scene, playerStatus, config,gameStatus){
     playerstop();
-    if (shopContainer) {
-        return; // 既に作成済みなら何もしない
-    }
     const shopItems = await loadItems(); // 非同期処理でデータ取得
     if (!shopItems || shopItems.length === 0) {
         console.error('アイテムリストが取得できませんでした');
@@ -82,10 +81,7 @@ export async function createShop(scene, playerStatus, config,gameStatus){
     exitButton.on('pointerover', () => exitButton.setStyle({ color: '#ff0000', fontStyle: 'bold' }));
     exitButton.on('pointerout', () => exitButton.setStyle({ color: '#000000', fontStyle: 'normal' }));
     exitButton.on('pointerdown', () => {
-        if (shopContainer) {
-            gameStatus.shopflg = false;
-            shopContainer.setVisible(false); 
-        }
+        shopEvent(scene,gameStatus, playerStatus, config);
     });
 
     // アイテム詳細テキスト
@@ -192,7 +188,9 @@ export async function createShop(scene, playerStatus, config,gameStatus){
         detailText, ...itemTexts
     ];
     shopContainer = scene.add.container(0, 0, containerItems);
-    shopContainer.setDepth(999);
+    shopContainer.setDepth(9);
+    
+    console.log(shopContainer);
 }
 
 export function shopUpdate(scene){
