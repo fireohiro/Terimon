@@ -1,6 +1,6 @@
 let currentMusic;
 export function soundpreload(loader){
-    // loader.audio('town','assets/audio/town_music.mp3');
+    loader.audio('town','assets/audio/town_music.mp3');
     loader.audio('battle','assets/audio/nomal_battle.mp3');
     loader.audio('battle2','assets/audio/battle2.mp3');
     loader.audio('battle3','assets/audio/battle3.mp3');
@@ -10,7 +10,7 @@ export function soundpreload(loader){
     loader.audio('boss2','assets/audio/boss_final.mp3');
 
     //効果音の読み込み
-    loaderloader.audio('run','assets/audio/run.mp3');
+    loader.audio('run','assets/audio/run.mp3');
     //主にバトルで使用
     loader.audio('encount1','assets/audio/encount1.mp3');
     loader.audio('encount2','assets/audio/encount2.mp3');
@@ -37,7 +37,7 @@ export function soundcreate(){
 
 export function playsound(scene,condition){
     const musicMap = { 
-        // 4 : 'town',
+        4 : 'town',
         battle : 'battle',
         battle2 : 'battle2',
         battle3:'battle3',

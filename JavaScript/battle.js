@@ -790,9 +790,15 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                     }
                     break;
             case "俺が出る":
-                gameStatus.playerfight = true;
-                koutai = true;
-                await displaymessage(scene,config,`${playerStatus.account_name}が前に出た！`);
+                let syouhi = Math.floor(playerStatus.mp / 5);
+                if(mp_nokori >= syouhi){
+                    playerStatus.mp_nokori -= syouhi;
+                    gameStatus.playerfight = true;
+                    koutai = true;
+                    await displaymessage(scene,config,`MPを${syouhi}消費して${playerStatus.account_name}が前に出た！`);
+                }else{
+                    await displaymessage(scene,config,`${playerStatus.account_name}のMPが足らず交代することができなかった`);
+                }
                 break;
             case "やっぱ引く":
                 let cans = false;
@@ -808,9 +814,15 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                     playEffect(scene,'miss');
                     await displaymessage(scene,config,`${playerStatus.account_name}の味方は全員倒れていて交代することができない`);
                 }else{
-                    gameStatus.playerfight = false;
-                    koutai = true;
-                    await displaymessage(scene,config,`${playerStatus.account_name}はやっぱり家に引きこもることを決めた！`);
+                    let syouhi = Math.floor(playerStatus.mp / 5);
+                    if(mp_nokori >= syouhi){
+                        playerStatus.mp_nokori -= syouhi;
+                        gameStatus.playerfight = false;
+                        koutai = true;
+                        await displaymessage(scene,config,`${playerStatus.account_name}はやっぱり家に引きこもることを決めた！`);
+                    }else{
+                        await displaymessage(scene,config,`${playerStatus.account_name}のMPが足らず交代することができなかった`);
+                    }
                 }
                 break;
         }
@@ -897,7 +909,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                         }
                     // HP回復
                     } else if (magic.naiyou === 'HP回復') {
-                        let kouka = Math.floor((combatant.pow + combatant.def) / 2) * magic.syouhi_mp;
+                        let kouka = Math.floor((combatant.pow + combatant.def) / 3) * Math.floor(magic.syouhi_mp / 4);
                         for (const friend of friends) {
                             if (friend.hp_nokori > 0) {
                                 friend.hp_nokori += kouka;
@@ -1359,6 +1371,11 @@ async function battleEnd(scene,config,gameStatus,winflg,playerStatus,friends){
         }
         const message = '勝った';
         await displaymessage(scene,config,message);
+        friends.forEach(friend=>{
+            if(friend.hp_nokori === 0){
+                friend.hp_nokori = 1;
+            }
+        });
     }
     gameStatus.battleflg = false;
     if(back){

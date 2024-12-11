@@ -17,7 +17,7 @@ export function itemEvent(gameStatus,scene) {
 }
 
 export function initializeItemMenu(scene, config, gameStatus, playerStatus, itemList, friends) {
-    if (!scene || !config || !gameStatus || !Array.isArray(itemList)) {
+    if (!scene || !config || !gameStatus) {
         console.error("Invalid arguments passed to initializeItemMenu");
         return;
     }
@@ -64,30 +64,36 @@ export function initializeItemMenu(scene, config, gameStatus, playerStatus, item
     let startY = 80;
 
     // アイテムリストからボタンを生成
+if (itemList && Array.isArray(itemList)) { // itemListが存在し、配列である場合のみ処理を進める
     const countDisplays = {}; // アイテムIDをキーにカウント表示を管理
 
     itemList.forEach((item, index) => {
         const itemText = `${item.item_name}`;
 
         // アイテムボタンを作成
-        const itemButton = createButton(
-            scene,
-            startX,
-            startY + index * buttonSpacing,
-            itemText,
-            () => {
-                console.log(`アイテム選択: ${item.item_name}`);
-                useItem(scene, config, gameStatus, item, playerStatus, friends);
+const itemButton = createButton(
+    scene,
+    startX,
+    startY + index * buttonSpacing,
+    itemText,
+    () => {
+        if (item.su <= 0) {
+            console.warn(`アイテム「${item.item_name}」の在庫がありません`);
+            alert(`アイテム「${item.item_name}」は在庫切れです`);
+            return;
+        }
+        console.log(`アイテム選択: ${item.item_name}`);
+        useItem(scene, config, gameStatus, item, playerStatus, friends);
 
+        // アイテムの個数を減らし、表示を更新
+        if (item.su >= 0) {
+            countDisplays[item.item_id].setText(`${item.su}`);
+        } else {
+            console.warn(`アイテム「${item.item_name}」は在庫がありません`);
+        }
+    }
+);
 
-                // アイテムの個数を減らし、表示を更新
-                if (item.su > 0) {
-                    countDisplays[item.item_id].setText(`${item.su}`);
-                } else {
-                    console.warn(`アイテム「${item.item_name}」は在庫がありません`);
-                }
-            }
-        );
 
         // 個数表示用のテキストを作成
         const countDisplay = scene.add.text(
@@ -105,7 +111,9 @@ export function initializeItemMenu(scene, config, gameStatus, playerStatus, item
 
         console.log("ボタン生成:", itemButton);
     });
-
+} else {
+    console.warn("itemListが無効または空です:", itemList);
+}
     console.log("アイテムメニュー初期化完了:", itemContainer);
 }
 
@@ -152,37 +160,79 @@ export function useItem(scene, config, gameStatus, item, playerStatus, friends) 
     const item_id = item.item_id;
     console.log(item_id + "を送れてるか確認");
     // アイテム使用処理を実装
-    if(item.bunrui == "HP回復"){
+    if (item.bunrui == "HP回復" && item.su > 0) {
+        let isUsed = false; // 初期化は処理の最初で行う
+    
+        // フレンドのHP回復処理
         for (const friend of friends) {
-            if (friend.hp_nokori > 0) {
+            if (friend && friend.hp_nokori > 0 && friend.hp_nokori < friend.hp) {
                 friend.hp_nokori += item.naiyou;
-                if (friend.hp < friend.hp_nokori) {
+                if (friend.hp_nokori > friend.hp) {
                     friend.hp_nokori = friend.hp;
-                    itemUse(item_id);
-                    console.log("消費確認用1");
                 }
-            }else if(playerStatus.hp_nokori > 0){
-                playerStatus.hp_nokori += item.naiyou;
-                if(playerStatus.hp < playerStatus.hp_nokori){
-                    playerStatus.hp_nokori = playerStatus.hp;
-                }
-            }else{
-                alert("HPがいっぱいです。");
+                isUsed = true;
             }
         }
-    }else if(item.bunrui == "MP回復"){
-        itemUse(item.item_id);
-        console.log("消費確認用2");
-    }else{
+    
+        // プレイヤーのHP回復処理
+        if (playerStatus.hp_nokori > 0 && playerStatus.hp_nokori < playerStatus.hp) {
+            playerStatus.hp_nokori += item.naiyou;
+            if (playerStatus.hp_nokori > playerStatus.hp) {
+                playerStatus.hp_nokori = playerStatus.hp;
+            }
+            isUsed = true;
+        }
+    
+        // アイテムが使用された場合のみ消費
+        if (isUsed) {
+            itemUse(item_id);
+            console.log("消費確認用1");
+        } else {
+            console.log("HPがいっぱいです。");
+            alert("HPがいっぱいです。");
+        }
+    } else if (item.bunrui == "MP回復") {
+        let isUsed = false;
+    
+        // フレンドのMP回復処理
+        for (const friend of friends) {
+            if (friend && friend.mp_nokori > 0 && friend.mp_nokori < friend.mp) {
+                friend.mp_nokori += item.naiyou;
+                if (friend.mp_nokori > friend.mp) {
+                    friend.mp_nokori = friend.mp;
+                }
+                isUsed = true;
+            }
+        }
+    
+        // プレイヤーのMP回復処理
+        if (playerStatus.mp_nokori > 0 && playerStatus.mp_nokori < playerStatus.mp) {
+            playerStatus.mp_nokori += item.naiyou;
+            if (playerStatus.mp_nokori > playerStatus.mp) {
+                playerStatus.mp_nokori = playerStatus.mp;
+            }
+            isUsed = true;
+        }
+    
+        // アイテムが使用された場合のみ消費
+        if (isUsed) {
+            itemUse(item_id);
+            console.log("消費確認用2");
+        } else {
+            console.log("MPがいっぱいです。");
+            alert("MPがいっぱいです。");
+        }
+    } else {
         itemUse(item.item_id);
         console.log("消費確認用3");
     }
+    
 }
 
 /**
  * アイテムメニューの更新（カメラ追従）
  */
-export function updateItemMenu(scene) {
+export function itemUpdate(scene) {
     if (itemContainer) {
         const camera = scene.cameras.main;
         const saveX = camera.scrollX; // カメラのスクロール位置に合わせる

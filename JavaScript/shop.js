@@ -20,22 +20,20 @@ export async function loadItems() {
 }
 
 let shopContainer;
-export function shopEvent(scene,gameStatus){
+export function shopEvent(scene,gameStatus, playerStatus, config){
     gameStatus.shopflg = !gameStatus.shopflg;
+    if(gameStatus.shopflg){
         playEffect(scene,'mart');
-    if (shopContainer) {
-        shopContainer.setVisible(gameStatus.shopflg);
-        console.log(`shopContainer の表示状態: ${shopContainer.visible}`);
-    } else {
-        console.error('shopContainer が見つかりません！'); 
+        createShop(scene, playerStatus, config, gameStatus);
+    }else{
+        if(shopContainer){
+            shopContainer.destroy();
+        }
     }
 }
 
 export async function createShop(scene, playerStatus, config,gameStatus){
     playerstop();
-    if (shopContainer) {
-        return; // 既に作成済みなら何もしない
-    }
     const shopItems = await loadItems(); // 非同期処理でデータ取得
     if (!shopItems || shopItems.length === 0) {
         console.error('アイテムリストが取得できませんでした');
@@ -75,10 +73,7 @@ export async function createShop(scene, playerStatus, config,gameStatus){
     exitButton.on('pointerover', () => exitButton.setStyle({ color: '#ff0000', fontStyle: 'bold' }));
     exitButton.on('pointerout', () => exitButton.setStyle({ color: '#000000', fontStyle: 'normal' }));
     exitButton.on('pointerdown', () => {
-        if (shopContainer) {
-            gameStatus.shopflg = false;
-            shopContainer.setVisible(false); 
-        }
+        shopEvent(scene,gameStatus, playerStatus, config);
     });
 
     // アイテム詳細テキスト
@@ -131,10 +126,10 @@ export async function createShop(scene, playerStatus, config,gameStatus){
     };
 
     // アイテムリスト表示
-    let yOffset = 350;
+    let yOffset = 950;
     let itemTexts = [];
     shopItems.forEach((item, index) => {
-        let itemText = scene.add.text(150, yOffset, `${item.price}TP - ${item.item_name}`, { fontSize: '24px', color: '#000' });
+        let itemText = scene.add.text(450, yOffset, `${item.price}TP - ${item.item_name}`, { fontSize: '24px', color: '#000' });
         itemText.setInteractive();
         itemTexts.push(itemText);
         yOffset += 30;
@@ -185,8 +180,7 @@ export async function createShop(scene, playerStatus, config,gameStatus){
         detailText, ...itemTexts
     ];
     shopContainer = scene.add.container(0, 0, containerItems);
-    shopContainer.setVisible(false);
-    shopContainer.setDepth(7);
+    shopContainer.setDepth(9);
 }
 
 export function shopUpdate(scene){

@@ -4,10 +4,11 @@ import {mappreload,createMap} from './map.js';
 import {createPause,updatepause} from './pause.js';
 import {playerpreload,playerupdate} from './player.js';
 import {battlepreload,battleupdate} from './battle.js';
+import {itemUpdate} from './item.js';
 import {statuspreload,statusUpdate} from './status.js';
 import {saveUpdate} from './save.js';
 import{logoutupdate} from './logout.js';
-import { shopPreload, createShop,shopUpdate } from './shop.js';
+import { shopPreload ,shopUpdate } from './shop.js';
 import {soundpreload, soundcreate} from './sound.js';
 
 //Phaserの設定
@@ -150,7 +151,6 @@ async function create(){//asyncとは、非同期処理を使えるようにす�
     await fetchGear();
     createMap(this,playerStatus,gameStatus,config);
     createPause(this,gameStatus,playerStatus,config,statuses,itemList,gearList);
-    createShop(this, playerStatus, config, gameStatus);
 
     if(playerStatus.map_id === 3 || playerStatus.map_id === 6 || playerStatus.map_id === 7 || playerStatus.map_id === 8){
         gameStatus.encountflg = true;
@@ -172,6 +172,9 @@ function update(){
     if(gameStatus.pauseflg){
         updatepause(this,playerStatus);
         //アイテム位置調整
+        if(gameStatus.itemflg){
+            itemUpdate(this);
+        }
         //装備位置調整
         // //ステータス位置調整
         if(gameStatus.statusflg){
