@@ -20,14 +20,21 @@ export async function loadItems() {
 }
 
 let shopContainer;
-export function shopEvent(scene,gameStatus){
+export function shopEvent(scene,gameStatus, playerStatus, config){
     gameStatus.shopflg = !gameStatus.shopflg;
+    if(gameStatus.shopflg){
         playEffect(scene,'mart');
-    if (shopContainer) {
-        shopContainer.setVisible(gameStatus.shopflg);
-        console.log(`shopContainer の表示状態: ${shopContainer.visible}`);
-    } else {
-        console.error('shopContainer が見つかりません！'); 
+        createShop(scene, playerStatus, config, gameStatus);
+        // if (shopContainer) {
+        //     shopContainer.setVisible(gameStatus.shopflg);
+        //     console.log(`shopContainer の表示状態: ${shopContainer.visible}`);
+        // } else {
+        //     console.error('shopContainer が見つかりません！'); 
+        // }
+    }else{
+        if(shopContainer){
+            shopContainer.destroy();
+        }
     }
 }
 
@@ -131,10 +138,10 @@ export async function createShop(scene, playerStatus, config,gameStatus){
     };
 
     // アイテムリスト表示
-    let yOffset = 350;
+    let yOffset = 950;
     let itemTexts = [];
     shopItems.forEach((item, index) => {
-        let itemText = scene.add.text(150, yOffset, `${item.price}TP - ${item.item_name}`, { fontSize: '24px', color: '#000' });
+        let itemText = scene.add.text(450, yOffset, `${item.price}TP - ${item.item_name}`, { fontSize: '24px', color: '#000' });
         itemText.setInteractive();
         itemTexts.push(itemText);
         yOffset += 30;
@@ -185,8 +192,7 @@ export async function createShop(scene, playerStatus, config,gameStatus){
         detailText, ...itemTexts
     ];
     shopContainer = scene.add.container(0, 0, containerItems);
-    shopContainer.setVisible(false);
-    shopContainer.setDepth(7);
+    shopContainer.setDepth(999);
 }
 
 export function shopUpdate(scene){

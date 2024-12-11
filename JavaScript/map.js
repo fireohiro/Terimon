@@ -384,7 +384,7 @@ export function createMap(scene,playerStatus,gameStatus,config){
   function shopOpen(scene, playerStatus, config, gameStatus) {
     if (!gameStatus.shopflg) { // ショップが開いていない場合のみ処理
         createShop(scene, playerStatus, config, gameStatus);
-        shopEvent(scene,gameStatus);
+        shopEvent(scene,gameStatus);//, playerStatus, config
     }else{
         
     }
