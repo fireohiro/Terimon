@@ -1,4 +1,4 @@
-import {itemEvent, initializeItemMenu} from './item.js';
+import {itemEvent} from './item.js';
 import {statusEvent} from './status.js';
 import {saveEvent} from './save.js';
 import{logoutmessage,logoutdisplay} from './logout.js';
@@ -8,19 +8,19 @@ let moneytext;
 export function createPause(scene,gameStatus,playerStatus,config,friends,itemList,gearList){
     scene.input.keyboard.on('keydown',(event) => {
         if(event.key === 'Escape'){
-            pauseStart(scene,gameStatus,config,playerStatus,friends);
+            pauseStart(scene,gameStatus,config,playerStatus,friends,itemList,gearList);
         }
     });
-    initializeItemMenu(scene, config, gameStatus, playerStatus, itemList, friends);
+    // initializeItemMenu(scene, config, gameStatus, playerStatus, itemList, friends);
 }
 
-function pauseStart(scene,gameStatus,config,playerStatus,friends){
+function pauseStart(scene,gameStatus,config,playerStatus,friends,itemList,gearList){
     gameStatus.pauseflg = !gameStatus.pauseflg;
     //ポーズ中の物理処理の停止と再稼働
     if(gameStatus.pauseflg){
         playEffect(scene,'pause');
         scene.physics.world.pause();//停止
-        menuBar(scene,playerStatus,config,gameStatus,friends);
+        menuBar(scene,playerStatus,config,gameStatus,friends,itemList,gearList);
     }else{
         if(menuContainer){
             menuContainer.destroy();
@@ -29,7 +29,7 @@ function pauseStart(scene,gameStatus,config,playerStatus,friends){
         scene.physics.world.resume();//再稼働
         if(gameStatus.itemflg === true){
             //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            itemEvent(gameStatus,scene);
+            itemEvent(scene, config, gameStatus, playerStatus, itemList, friends);
         }
         if(gameStatus.gearflg === true){
             //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -49,7 +49,7 @@ function pauseStart(scene,gameStatus,config,playerStatus,friends){
     }
 }
 
-async function menuBar(scene,playerStatus,config,gameStatus,friends){
+async function menuBar(scene,playerStatus,config,gameStatus,friends,itemList,gearList){
     //メニューのサイズを設定
     const menuWidth = config.width * 0.16;
     const menuHeight = config.height * 0.50;
@@ -88,7 +88,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friends){
             //gameStatus.logoutflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
             logoutdisplay(gameStatus,scene,config);
         }
-        itemEvent(gameStatus,scene);
+        itemEvent(scene, config, gameStatus, playerStatus, itemList, friends);
     });
     itemtext.setInteractive().on('pointerover', () => {
         itemtext.y += 5;
@@ -102,7 +102,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friends){
         //装備用のプログラムの関数を呼び出す
         if(gameStatus.itemflg === true){
             //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            itemEvent(gameStatus,scene);
+            itemEvent(scene, config, gameStatus, playerStatus, itemList, friends);
         }
         if(gameStatus.statusflg === true){
             //gameStatus.statusflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -128,7 +128,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friends){
         //ステータス表示用のプログラムの関数を呼び出す
         if(gameStatus.itemflg === true){
             //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            itemEvent(gameStatus,scene);
+            itemEvent(scene, config, gameStatus, playerStatus, itemList, friends);
         }
         if(gameStatus.gearflg === true){
             //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -154,7 +154,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friends){
     savetext.setInteractive().on('pointerdown',()=>{
         if(gameStatus.itemflg === true){
             //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            itemEvent(gameStatus,scene);
+            itemEvent(scene, config, gameStatus, playerStatus, itemList, friends);
         }
         if(gameStatus.gearflg === true){
             //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
@@ -182,7 +182,7 @@ async function menuBar(scene,playerStatus,config,gameStatus,friends){
         //ログアウト用のプログラムの関数を呼び出す
         if(gameStatus.itemflg === true){
             //gameStatus.itemflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
-            itemEvent(gameStatus,scene);
+            itemEvent(scene, config, gameStatus, playerStatus, itemList, friends);
         }
         if(gameStatus.gearflg === true){
             //gameStatus.gearflgをfalseになるようflgチェンジ関数を呼ぶほかも同じようにする
