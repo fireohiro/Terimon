@@ -132,6 +132,32 @@ export async function fetchGear() {
 
 //アセット（画像、音声など）の読み鋳込み
 function preload(){
+    // ローディングバーの表示
+    let loadingBar = this.add.graphics();
+
+    // %表示用のテキスト
+    let loadingText = this.add.text(
+        this.sys.game.config.width / 2,
+        this.sys.game.config.height / 2 - 15,
+        '0%',
+        { fontSize: '20px', fill: '#ffffff' }
+    ).setOrigin(0.5, 0.5);
+
+
+    // 読み込み進捗イベント
+    this.load.on('progress', (value) => {
+        // ローディングバーの更新
+        loadingBar.clear();
+        loadingBar.fillStyle(0xffffff, 0.5);
+        loadingBar.fillRect(
+        0,
+        this.sys.game.config.height / 2,
+        this.sys.game.config.width * value,
+        20
+        );
+        // %の更新
+        loadingText.setText(`${Math.floor(value * 100)}%`);
+    });
     mappreload(this.load);//map.jsのpreload処理を行う
     playerpreload(this.load);//player.jsのpreload処理を行う
     battlepreload(this.load);//battle.jsのpreload処理を行う
