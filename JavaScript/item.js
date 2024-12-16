@@ -1,18 +1,32 @@
 import {itemUse} from './main.js';
+import { playEffect } from './sound.js';
 let itemContainer = null;
 
 /**
  * アイテムメニューの表示切り替え
  */
-export function itemEvent(gameStatus,scene) {
-    if (!gameStatus || typeof gameStatus !== "object") {
-        console.error("Invalid gameStatus:", gameStatus);
-        return;
-    }
+// export function itemEvent(gameStatus,scene) {
+//     if (!gameStatus || typeof gameStatus !== "object") {
+//         console.error("Invalid gameStatus:", gameStatus);
+//         return;
+//     }
 
+//     gameStatus.itemflg = !gameStatus.itemflg;
+//     if (itemContainer) {
+//         itemContainer.setVisible(gameStatus.itemflg);
+//     }
+// }
+
+export function itemEvent(scene, config, gameStatus, playerStatus, itemList, friends){
     gameStatus.itemflg = !gameStatus.itemflg;
-    if (itemContainer) {
-        itemContainer.setVisible(gameStatus.itemflg);
+    if(gameStatus.itemflg){
+        playEffect(scene,'open');
+        initializeItemMenu(scene, config, gameStatus, playerStatus, itemList, friends);
+    }else{
+        playEffect(scene,'no');
+        if(itemContainer){
+            itemContainer.destroy();
+        }
     }
 }
 
@@ -55,7 +69,7 @@ export function initializeItemMenu(scene, config, gameStatus, playerStatus, item
     // アイテムメニューコンテナを作成
     const camera = scene.cameras.main;
     itemContainer = scene.add.container(camera.scrollX, camera.scrollY, [itemback, headerItem, headerCount]);
-    itemContainer.setVisible(false); // 初期状態は非表示
+    // itemContainer.setVisible(false); // 初期状態は非表示
     itemContainer.setDepth(7);
 
     // アイテムボタンの間隔と配置
