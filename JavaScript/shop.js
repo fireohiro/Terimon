@@ -39,23 +39,25 @@ export async function createShop(scene, playerStatus, config,gameStatus){
         console.error('アイテムリストが取得できませんでした');
         return;
     }
+    const centerX = scene.cameras.main.centerX;
+    const centerY = scene.cameras.main.centerY;
     // 背景を表示（画面の中央に配置）x+300,y+600
-    const background = scene.add.image(920, 900, 'shopBackground').setScale(1.3);
+    const background = scene.add.image(centerX+300, centerY+600, 'shopBackground').setScale(1.5);
 
     // NPC画像を表示（左端に配置）
-    const npc = scene.add.image(600, 850, 'shopNpc').setScale(0.55);
+    const npc = scene.add.image(centerX, centerY+550, 'shopNpc').setScale(0.57);
 
     // アイテムリストの背景枠
-    const itemListBackground = scene.add.rectangle(770, 1020, 800, 300, 0xFFFFFF).setStrokeStyle(2, 0x000000);
+    const itemListBackground = scene.add.rectangle(centerX+100, centerY+750, config.width/2, config.height*0.45, 0xFFFFFF).setStrokeStyle(2, 0x000000);
 
     // アイテム詳細表示の背景枠
-    const itemDetailsBackground = scene.add.rectangle(1350, 950, 300, 200, 0xFFFFFF).setStrokeStyle(2, 0x000000);
+    const itemDetailsBackground = scene.add.rectangle(centerX+700, centerY+600, config.width*0.25, config.height*0.3, 0xFFFFFF).setStrokeStyle(2, 0x000000);
 
     // 「アイテム一覧」の見出し
     const itiran = scene.add.text(itemListBackground.x - 150, itemListBackground.y - 120, 'アイテム一覧', { fontSize: '36px', fontStyle: 'bold', color: '#000' });
 
     // 所持金表示の背景枠
-    const goldBackground = scene.add.rectangle(1350, 1145, 300, 50, 0xFFFFFF).setStrokeStyle(2, 0x000000);
+    const goldBackground = scene.add.rectangle(centerX+700, centerY+800, config.width*0.25, config.height*0.08, 0xFFFFFF).setStrokeStyle(2, 0x000000);
 
     // 所持金表示テキスト
     const money = scene.add.text(goldBackground.x - 80, goldBackground.y - 15, `所持金 ${playerStatus.money}T`, { fontSize: '22px', color: '#000' });
@@ -126,10 +128,10 @@ export async function createShop(scene, playerStatus, config,gameStatus){
     };
 
     // アイテムリスト表示
-    let yOffset = 950;
+    let yOffset = centerY+680;
     let itemTexts = [];
     shopItems.forEach((item, index) => {
-        let itemText = scene.add.text(450, yOffset, `${item.price}TP - ${item.item_name}`, { fontSize: '24px', color: '#000' });
+        let itemText = scene.add.text(centerX-150, yOffset, `${item.price}TP - ${item.item_name}`, { fontSize: '24px', color: '#000' });
         itemText.setInteractive();
         itemTexts.push(itemText);
         yOffset += 30;
@@ -186,6 +188,7 @@ export async function createShop(scene, playerStatus, config,gameStatus){
 export function shopUpdate(scene){
     if (shopContainer) {
         const camera = scene.cameras.main;
-        shopContainer.setPosition(camera.scrollX, camera.scrollY);
+        shopContainer.setPosition(scene.cameras.main.scrollX, scene.cameras.main.scrollY);
+        shopContainer.setSize(camera.width, camera.height);
     }
 }
