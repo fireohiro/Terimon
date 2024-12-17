@@ -188,7 +188,10 @@ export async function createShop(scene, playerStatus, config,gameStatus){
 export function shopUpdate(scene){
     if (shopContainer) {
         const camera = scene.cameras.main;
-        shopContainer.setPosition(scene.cameras.main.scrollX, scene.cameras.main.scrollY);
-        shopContainer.setSize(camera.width, camera.height);
+        shopContainer.x = camera.scrollX;
+        shopContainer.y = camera.scrollY;
+        scene.cameras.main.startFollow(player, true, 0.1, 0.1);
+        // shopContainer.setPosition(scene.cameras.main.scrollX, scene.cameras.main.scrollY);
+        // shopContainer.setSize(camera.width, camera.height);
     }
 }
