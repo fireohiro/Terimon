@@ -1,6 +1,9 @@
 import { playEffect } from './sound.js';
 let gearContainer = null;
-let temporary_id = null;
+let temporary = null;
+let temporary_gearid = null;
+let temporary_upstatus = null;
+let temporary_naiyou = null;
 
 export function gearEvent(scene, config, gameStatus, playerStatus, gearList, friends){
     gameStatus.gearflg = !gameStatus.gearflg;
@@ -12,6 +15,11 @@ export function gearEvent(scene, config, gameStatus, playerStatus, gearList, fri
         if(gearContainer){
             gearContainer.destroy();
         }
+    }
+
+    if(playerStatus.gear_id != null){
+        temporary_gearid = playerStatus.gear_id;
+        
     }
 }
 
@@ -68,48 +76,37 @@ if (gearList && Array.isArray(gearList)) { // gearListが存在し、配列で�
 
     gearList.forEach((gear, index) => {
         const gearText = `${gear.gear_name}`;
-
+    
         // アイテムボタンを作成
-const gearButton = createButton(
-    scene,
-    startX,
-    startY + index * buttonSpacing,
-    gearText,
-    () => {
-        // if (gear.gear_set <= 0) {
-        //     console.warn(`アイテム「${gear.gear_name}」の在庫がありません`);
-        //     alert(`アイテム「${gear.gear_name}」は在庫切れです`);
-        //     return;
-        // }
-        console.log(`アイテム選択: ${gear.gear_name}`);
-        usegear(scene, config, gameStatus, gear, playerStatus, friends);
-
-        // アイテムの個数を減らし、表示を更新
-        // if (gear.gear_set >= 0) {
-        //     countDisplays[gear.gear_id].setText(`${gear.gear_set}`);
-        // } else {
-        //     console.warn(`アイテム「${gear.gear_name}」は在庫がありません`);
-        // }
-    }
-);
-
+        const gearButton = createButton(
+            scene,
+            startX,
+            startY + index * buttonSpacing,
+            gearText,
+            () => {
+                console.log(`アイテム選択: ${gear.gear_name}`);
+                usegear(scene, config, gameStatus, gear, gearList,  playerStatus, friends, countDisplays);
+            }
+        );
+    
         // 個数表示用のテキストを作成
         const countDisplay = scene.add.text(
-        config.width * 0.75,
-        startY + index * buttonSpacing,
-        gear.gear_set === 1 ? "E" : ``,
-        { fontSize: "18px", fill: "#000" }
-    );
-
-    // ボタンと個数表示をコンテナに追加
-    gearContainer.add([gearButton, countDisplay]);
-
-    // 個数表示を管理リストに追加
-    countDisplays[gear.gear_id] = countDisplay;
-
-
+            config.width * 0.75,
+            startY + index * buttonSpacing,
+            gear.gear_set === 1 ? "E" : ``,
+            { fontSize: "18px", fill: "#000" }
+        );
+    
+        // ボタンと個数表示をコンテナに追加
+        gearContainer.add([gearButton, countDisplay]);
+    
+        // 個数表示を管理リストに追加
+        countDisplays[gear.gear_id] = countDisplay;
+    
         console.log("ボタン生成:", gearButton);
     });
+    
+
 } else {
     console.warn("gearListが無効または空です:", gearList);
 }
@@ -138,35 +135,72 @@ function createButton(scene, x, y, text, callback) {
     button.on("pointerover", () => button.setStyle({ backgroundColor: "#E0E0E0" }));
     button.on("pointerout", () => button.setStyle({ backgroundColor: "#FFFFFF" }));
     return button;
+    
 }
 
 /**
  * 装備登録処理
  */
-export function usegear(scene, config, gameStatus, gear, playerStatus, friends) {
-    
+
+export function usegear(scene, config, gameStatus, gear, gearList, playerStatus, friends, countDisplays) {
     console.log("playerStatus:", playerStatus);
     console.log("friends:", friends);
 
-    if (!scene || !config || !gameStatus || !gear  || !playerStatus) {
+    if (!scene || !config || !gameStatus || !gear || !playerStatus) {
         console.error("Invalid arguments passed to usegear");
         return;
     }
 
+    console.count("usegear called");
 
-    if(temporary_id){
-        
-    }
-    playerStatus.gear_id = gear.gear_id;
-    gear.gear_set = 1;
 
-    // アイテム使用処理を実装
-    if (gear.up_status == "pow") {
+    console.log(playerStatus.gear_id);
+    console.log(gear.gear_set);
+    // 元の装備を外す処理
+    if (playerStatus.gear_id !== null) {
+        console.log(`元の装備を外します: gear_id=${playerStatus.gear_id}`);
 
+        if (temporary_upstatus === "pow") {
+            playerStatus.pow -= temporary_naiyou; // 元の装備のステータスを下げる
+            console.log(`元の装備のステータスを減算: pow -${temporary_naiyou}`);
         }
 
-    temporary_id = gear.gear_id;
+        // 表示を更新
+        if (countDisplays[temporary_gearid]) {
+            countDisplays[temporary_gearid].setText(""); // 非装備状態に
+        }
     }
+
+    // 新しい装備を設定
+    playerStatus.gear_id = gear.gear_id; // プレイヤーの装備を更新
+    gear.gear_set = 1; // 装備状態にする
+    console.log(`新しい装備を設定: ${gear.gear_name} (${gear.gear_id})`);
+
+    // 新しい装備のステータスを追加
+    if (gear.up_status === "pow") {
+        playerStatus.pow += gear.naiyou; // ステータスを加算
+        console.log(`新しい装備のステータスを加算: pow +${gear.naiyou}`);
+    }
+
+    console.log(playerStatus.gear_id);
+    console.log(gear.gear_set);
+
+    // 表示を更新
+    if (countDisplays[gear.gear_id]) {
+        countDisplays[gear.gear_id].setText("E"); // 装備状態を表示
+    }
+
+    console.log(playerStatus.gear_id);
+    console.log(gear.gear_set);
+
+    // 一時変数に新しい装備情報を保存
+    temporary_gearid = gear.gear_id;
+    temporary_upstatus = gear.up_status;
+    temporary_naiyou = gear.naiyou;
+
+    console.log("装備変更処理が完了しました。");
+}
+
 
 
 /**
