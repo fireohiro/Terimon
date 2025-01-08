@@ -28,11 +28,12 @@ try {
 // SQLクエリの実行
 try {
     $sql = $pdo->prepare(
-        'SELECT g.*
-         FROM gear AS g 
-         INNER JOIN get_gear AS gg ON g.gear_id = gg.gear_id 
-         WHERE gg.account_id = ?'
+        'SELECT g.*, gg.gear_set
+        FROM gear AS g 
+        INNER JOIN get_gear AS gg ON g.gear_id = gg.gear_id 
+        WHERE gg.account_id = ?'
     );
+    
     $sql->execute([$account_id]);
 
     // アイテムを取得

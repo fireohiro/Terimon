@@ -153,12 +153,19 @@ export function usegear(scene, config, gameStatus, gear, gearList, playerStatus,
 
     console.count("usegear called");
 
-
     console.log(playerStatus.gear_id);
     console.log(gear.gear_set);
+
     // 元の装備を外す処理
     if (playerStatus.gear_id !== null) {
         console.log(`元の装備を外します: gear_id=${playerStatus.gear_id}`);
+
+        // `gearList` から元の装備を見つける
+        const previousGear = gearList.find(item => item.gear_id === playerStatus.gear_id);
+        if (previousGear) {
+            previousGear.gear_set = 0; // 元の装備の `gear_set` を 0 に更新
+            console.log(`元の装備のgear_setを0に設定: gear_id=${previousGear.gear_id}`);
+        }
 
         if (temporary_upstatus === "pow") {
             playerStatus.pow -= temporary_naiyou; // 元の装備のステータスを下げる
