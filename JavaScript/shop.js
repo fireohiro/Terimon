@@ -87,23 +87,23 @@ export async function createShop(scene, playerStatus, config,gameStatus){
     let decrementButton,incrementButton;
 
     // 購入数と合計価格の表示
-    const updateQuantityDisplay = (item) => {
+    const updateQuantityDisplay = (selectedItem) => {
         if (quantityText && totalPriceText) {
             quantityText.setText(`個数: ${quantity}`);
-            totalPriceText.setText(`合計: ${item.price * quantity}T`);
+            totalPriceText.setText(`合計: ${selectedItem.price * quantity}T`);
         }
     };
 
     // 個数変更ボタン
     
-    const addQuantityButtons = (x, y, item) => {
+    const addQuantityButtons = (x, y, selectedItem) => {
     if (!decrementButton || !incrementButton || !quantityText || !totalPriceText) {
         decrementButton = scene.add.text(x, y, '-', { fontSize: '24px', color: '#000' });
         decrementButton.setInteractive();
         decrementButton.on('pointerdown', () => {
             if (quantity > 1) {
                 quantity--;
-                updateQuantityDisplay(item);
+                updateQuantityDisplay(selectedItem);
             }
         });
 
@@ -114,17 +114,17 @@ export async function createShop(scene, playerStatus, config,gameStatus){
         incrementButton.on('pointerdown', () => {
             if (quantity < 50) {
                 quantity++;
-                updateQuantityDisplay(item);
+                updateQuantityDisplay(selectedItem);
             }
         });
 
-        totalPriceText = scene.add.text(x, y + 40, `合計: ${item.price * quantity}TP`, { fontSize: '24px', color: '#000' });
+        totalPriceText = scene.add.text(x, y + 40, `合計: ${selectedItem.price * quantity}TP`, { fontSize: '24px', color: '#000' });
         // 必要なテキストやボタンが作成された後に追加
         if (shopContainer) {
             shopContainer.add([decrementButton, quantityText, incrementButton, totalPriceText]);
         }
     }else{
-        updateQuantityDisplay(item);
+        updateQuantityDisplay(selectedItem);
     }
     };
 
