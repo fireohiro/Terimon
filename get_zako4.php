@@ -2,7 +2,7 @@
     require 'db-connect.php';
     $pdo=new PDO($connect,USER,PASS);
     //ボスをランダムで３体出現させる
-    $sql=$pdo->query("select * from monster where bunrui = '雑魚' and monster_id between 1 and 6 order by rand() limit 3");
+    $sql=$pdo->query("select * from monster where bunrui = '雑魚' limit 3");
     $result = $sql->fetchAll();
     $enemyData = [];
     foreach($result as $monster){

@@ -26,10 +26,10 @@ try {
 
     // モンスター情報を保存
     foreach ($data['itemList'] as $item) {
-        $sql = $pdo->prepare('select * from get_item where account_id = ? and item_id = ?');
+        $sql = $pdo->prepare('select count(*) as cnt from get_item where account_id = ? and item_id = ?');
         $sql->execute([$_SESSION['user']['account_id'],$item['item_id']]);
         $kekka = $sql->fetch(PDO::FETCH_ASSOC);
-        if($kekka !== null){
+        if($kekka['cnt'] > 0){
             $sql = $pdo->prepare('update get_item set su = ? where account_id = ? and item_id = ?');
             $result = $sql->execute([
                 $item['su'],

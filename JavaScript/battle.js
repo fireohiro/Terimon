@@ -1225,7 +1225,7 @@ async function battleturn(scene,config,gameStatus,playerStatus,friends,itemList,
                 }
             }
             const nakama = Math.floor(Math.random() * 100) + 1;
-            if(nakama <= 10){
+            if(nakama <= 25){
                 try {
                     await displaymessage(scene, config, `敵の${enemy.name}が仲間になりたそうにしている。`);
                     await displaymessage(scene, config, `${enemy.name}が仲間に加わった！`);

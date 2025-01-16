@@ -42,7 +42,7 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
     // ステータス属性の表示
     const attributes = scene.add.text(
         config.width * 0.3 + 20, statusHeight * 0.2,
-        `こうげき: ${playerStatus.pow}　　　まもり: ${playerStatus.def}\nすばやさ: ${playerStatus.speed}　　　運: ${playerStatus.luck}`,
+        `ちから: ${playerStatus.pow}　　　まもり: ${playerStatus.def}\nすばやさ: ${playerStatus.speed}　　　運: ${playerStatus.luck}`,
         { fontSize: '30px', fill: '#000' }
     );
 
@@ -60,7 +60,7 @@ export function createStatusScreen(scene,gameStatus, playerStatus,friends, confi
                 `${friendStatus.monster_name} Lv.${friendStatus.level}\nHP: ${friendStatus.hp_nokori} / ${friendStatus.hp}　　　MP: ${friendStatus.mp_nokori} / ${friendStatus.mp}`,
                 { fontSize: '30px', fill: '#000' });
             friendattributes = scene.add.text(config.width * 0.3 + 20, statusHeight * 0.415 + index * statusHeight * 0.25,
-                `こうげき: ${friendStatus.pow}　　　まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}　　　運: ${friendStatus.luck}`,
+                `ちから: ${friendStatus.pow}　　　まもり: ${friendStatus.def}\nすばやさ: ${friendStatus.speed}　　　運: ${friendStatus.luck}`,
                 { fontSize: '30px', fill: '#000' });
             friendElements.push(friendInfo, friendattributes, friendImage);
         });
